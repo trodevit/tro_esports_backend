@@ -1,0 +1,23 @@
+name: Deploy project to our server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ftp-deploy:
+    name: Deploy to FTP Server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to FTP Server
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ftp.zobayerdev.top
+          username: always_update@always-update.zobayerdev.top
+          password: "always_update"
+          protocol: ftps
+          port: 21
