@@ -55,6 +55,10 @@ class AuthController extends Controller
 
         $user = Auth::user();
 
+        if ($user->blocked == true) {
+            abort(403, 'Your account has been suspended. Please contact support.');
+        }
+
         return $this->successResponse(['user'=>$user, 'token'=>$token],'User logged in successfully',200);
     }
 
@@ -62,7 +66,10 @@ class AuthController extends Controller
     {
         $user = Auth::user();
 
-        $this->authorize('view', $user);
+        if ($user->blocked == true) {
+
+            abort(403, 'Your account has been suspended. Please contact support.');
+        }
 
         return $this->successResponse($user,'User logged in successfully',200);
     }
