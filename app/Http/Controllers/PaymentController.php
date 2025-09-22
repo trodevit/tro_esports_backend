@@ -50,7 +50,7 @@ class PaymentController extends Controller
             if ($response->failed()) {
                 dd($response->message());
             }
-            $data['status']=$response->status();
+            $data['status']='pending';
 
             $payment = PaymentInfo::create($data);
             dd($payment);
