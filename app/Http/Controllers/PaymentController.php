@@ -32,6 +32,8 @@ class PaymentController extends Controller
 
         $data['amount'] = Matches::where('id', $data['match_id'])->value('entry_fee');
 
+        $data['orderId'] = $order_id;
+
 //        dd($data);
 
         try {

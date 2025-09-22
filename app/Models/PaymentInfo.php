@@ -18,6 +18,7 @@ class PaymentInfo extends Model
         'date',
         'time',
         'match_id',
-        'match_name'
+        'match_name',
+        'orderId'
     ];
 }
