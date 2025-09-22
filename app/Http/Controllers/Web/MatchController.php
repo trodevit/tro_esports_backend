@@ -96,7 +96,7 @@ class MatchController extends Controller
 
         $match->update($data);
 
-        return redirect()->route('matches.index')->with('success', 'Match updated successfully');
+        return redirect()->route('matches.index',['updated' => $match->id])->with('success', 'Match updated successfully');
     }
 
     /**
