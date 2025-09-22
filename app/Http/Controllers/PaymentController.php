@@ -21,7 +21,7 @@ class PaymentController extends Controller
         $order_id = Str::random(16);
         $data = $request->validate([
             'match_id' => 'required|exists:matches,id',
-            'games_username' => 'required',
+            'game_username' => 'required',
             'date'=> 'required',
             'time'=> 'required',
         ]);

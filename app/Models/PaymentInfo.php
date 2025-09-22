@@ -8,7 +8,7 @@ class PaymentInfo extends Model
 {
     protected $fillable = [
         'user_id',
-        'games_username',
+        'game_username',
         'payment_number',
         'method',
         'email',
