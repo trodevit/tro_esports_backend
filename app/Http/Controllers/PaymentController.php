@@ -18,6 +18,7 @@ class PaymentController extends Controller
     }
     public function paymentInit(Request $request)
     {
+        try {
         $order_id = Str::random(16);
         $data = $request->validate([
             'match_id' => 'required|exists:matches,id',
@@ -36,7 +37,7 @@ class PaymentController extends Controller
 
 //        dd($data);
 
-        try {
+
             $checkoutRequest = CheckoutRequest::make()
                 ->setFullName(Auth::user()->name)
                 ->setEmail(Auth::user()->email)
