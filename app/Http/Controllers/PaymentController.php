@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Matches;
+use App\Models\PaymentInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -48,7 +49,10 @@ class PaymentController extends Controller
             if ($response->failed()) {
                 dd($response->message());
             }
+            $data['status']=$response->status();
 
+            $payment = PaymentInfo::create($data);
+            dd($payment);
             return response()->json([
                 'status'=>true,
                 'message'=>'Checking Out',
