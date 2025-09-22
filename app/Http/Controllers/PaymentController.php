@@ -55,7 +55,7 @@ class PaymentController extends Controller
             $data['status']='pending';
 
             $payment = PaymentInfo::create($data);
-            dd($payment);
+//            dd($payment);
             return response()->json([
                 'status'=>true,
                 'message'=>'Checking Out',
@@ -73,11 +73,28 @@ class PaymentController extends Controller
 
             if ($response->success()) {
                 $order = $response->metadata('order_id');
+
+                PaymentInfo::where('orderId',$order)->update([
+                    'payment_number'=>$response->senderNumber(),
+                    'method'=>$response->paymentMethod(),
+                    'transaction_id'=>$response->transactionId(),
+                    'status'=>$response->status(),
+                ]);
+
+
                 dd($response->toArray()); // Handle success
             } elseif ($response->pending()) {
-                // Handle pending status
+                $order = $response->metadata('order_id');
+
+                PaymentInfo::where('orderId',$order)->update([
+                    'status'=>$response->status(),
+                ]);
             } elseif ($response->failed()) {
-                // Handle failure
+                $order = $response->metadata('order_id');
+
+                PaymentInfo::where('orderId',$order)->update([
+                    'status'=>$response->status(),
+                ]);
             }
         } catch (\UddoktaPay\LaravelSDK\Exceptions\UddoktaPayException $e) {
             dd("Verification Error: " . $e->getMessage());
