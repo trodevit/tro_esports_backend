@@ -64,6 +64,9 @@ class PaymentController extends Controller
         } catch (\UddoktaPay\LaravelSDK\Exceptions\UddoktaPayException $e) {
             dd("Initialization Error: " . $e->getMessage());
         }
+        catch (\Exception $e) {
+            dd($e->getMessage());
+        }
     }
 
     public function verify(Request $request)
