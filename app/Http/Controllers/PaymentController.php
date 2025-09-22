@@ -49,7 +49,11 @@ class PaymentController extends Controller
                 dd($response->message());
             }
 
-            return redirect($response->paymentURL());
+            return response()->json([
+                'status'=>true,
+                'message'=>'Checking Out',
+                'url'=>$response->paymentURL()
+            ]);
         } catch (\UddoktaPay\LaravelSDK\Exceptions\UddoktaPayException $e) {
             dd("Initialization Error: " . $e->getMessage());
         }
