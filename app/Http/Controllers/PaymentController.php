@@ -28,8 +28,9 @@ class PaymentController extends Controller
 
         $data['match_name'] = Matches::where('id', $data['match_id'])->value('match_name');
         $data['user_id']   = Auth::id();
+        $data['email'] = Auth::user()->email;
 
-        $amount = Matches::where('id', $data['match_id'])->value('entry_fee');
+        $data['amount'] = Matches::where('id', $data['match_id'])->value('entry_fee');
 
 //        dd($data);
 
