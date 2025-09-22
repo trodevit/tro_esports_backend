@@ -13,6 +13,7 @@ class PaymentInfo extends Model
         'method',
         'email',
         'amount',
+        'status',
         'transaction_id',
         'date',
         'time',
