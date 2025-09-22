@@ -44,7 +44,7 @@ class PaymentController extends Controller
 
             $response = $this->uddoktapay()->checkout($checkoutRequest);
 
-            dd($response);
+
             if ($response->failed()) {
                 dd($response->message());
             }
