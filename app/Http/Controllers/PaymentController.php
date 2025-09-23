@@ -36,7 +36,7 @@ class PaymentController extends Controller
 
         $data['orderId'] = $order_id;
 
-        dd($data);
+//        dd($data);
 
 
             $checkoutRequest = CheckoutRequest::make()
