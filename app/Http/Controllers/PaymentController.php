@@ -138,4 +138,11 @@ class PaymentController extends Controller
             dd("Verification Error: " . $e->getMessage());
         }
     }
+
+    public function paymentHistory()
+    {
+        $payment = PaymentInfo::where('user_id',Auth::id())->get();
+
+        return $this->successResponse($payment,'Your Payment History',200);
+    }
 }

@@ -23,14 +23,14 @@ class AuthController extends Controller
                 'email' => 'required|string|email|unique:users',
                 'password' => 'required|string|confirmed',
                 'phone' => 'required|string|unique:users',
-                'uid' => 'required|string|unique:users',
+                'game_username' => 'required|string|unique:users',
             ]);
 
             $data['password'] = Hash::make($data['password']);
 
             $user = User::create($data);
 
-            return $this->errorResponse($user,'User registered successfully',201);
+            return $this->successResponse($user,'User registered successfully',201);
         }
         catch (\Exception $e) {
             return $this->errorResponse(null,'Something went wrong: '.$e->getMessage(), 500);
@@ -72,6 +72,34 @@ class AuthController extends Controller
         }
 
         return $this->successResponse($user,'User logged in successfully',200);
+    }
+
+    public function phoneCheck(Request $request)
+    {
+        $data = $request->validate([
+            'phone' => 'required|string',
+        ]);
+
+        $exists = User::where('phone', $data['phone'])->first();
+
+        if ($exists) {
+
+            return $this->successResponse([$exists->name, $exists->email,$exists->phone], 'Matched', 200);
+        }
+
+        return $this->errorResponse(null, 'Not Matched', 400);
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $data = $request->validate([
+            'phone' => 'required|string|exists:users',
+            'password' => 'required|string|confirmed',
+        ]);
+
+        $user = User::where('phone',$data['phone'])->update(['password' => Hash::make($data['password'])]);
+
+        return $this->successResponse(['user'=>$user], 'Password reset successfully', 200);
     }
 
     public function logout(){
