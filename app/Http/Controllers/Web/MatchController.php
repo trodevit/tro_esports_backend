@@ -46,7 +46,7 @@ class MatchController extends Controller
             'room_details'    => 'nullable|string',
         ]);
 
-        $data['match_time'] = \Carbon\Carbon::parse($request->match_time)->format('h:i A');
+        $data['match_time'] = \Carbon\Carbon::parse($request->match_time)->format('H:i');
 
         $upload = Matches::create($data);
 
@@ -95,7 +95,7 @@ class MatchController extends Controller
             'version'         => 'required|string|max:50',
             'room_details'    => 'nullable|string',
         ]);
-        $data['match_time'] = \Carbon\Carbon::parse($request->match_time)->format('h:i A');
+        $data['match_time'] = \Carbon\Carbon::parse($request->match_time)->format('H:i');
         $match->update($data);
 
         return redirect()->route('matches.index',['updated' => $match->id])->with('success', 'Match updated successfully');
