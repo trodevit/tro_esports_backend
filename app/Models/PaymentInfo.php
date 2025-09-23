@@ -21,4 +21,8 @@ class PaymentInfo extends Model
         'match_name',
         'orderId'
     ];
+
+    protected $casts = [
+        'partners_name' => 'array',
+    ];
 }

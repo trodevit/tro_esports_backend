@@ -25,6 +25,7 @@ class PaymentController extends Controller
             'game_username' => 'required',
             'date'=> 'required',
             'time'=> 'required',
+            'partners_name'=>'nullable|array',
         ]);
 
         $data['match_name'] = Matches::where('id', $data['match_id'])->value('match_name');
@@ -35,7 +36,7 @@ class PaymentController extends Controller
 
         $data['orderId'] = $order_id;
 
-//        dd($data);
+        dd($data);
 
 
             $checkoutRequest = CheckoutRequest::make()
@@ -78,7 +79,7 @@ class PaymentController extends Controller
             if ($response->success()) {
                 $order = $response->metadata('order_id');
 
-                PaymentInfo::where('orderId',$order)->update([
+               $payment = PaymentInfo::where('orderId',$order)->update([
                     'payment_number'=>$response->senderNumber(),
                     'method'=>$response->paymentMethod(),
                     'transaction_id'=>$response->transactionId(),
@@ -86,7 +87,8 @@ class PaymentController extends Controller
                 ]);
 
 
-                dd($response->toArray()); // Handle success
+                return response()->json([$payment]);
+
             } elseif ($response->pending()) {
                 $order = $response->metadata('order_id');
 
