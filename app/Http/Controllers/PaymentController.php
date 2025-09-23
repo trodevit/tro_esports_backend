@@ -40,7 +40,7 @@ class PaymentController extends Controller
             $requestDateTime = Carbon::parse($data['date'].' '.$data['time']);
 
             $matchDateTime = Carbon::createFromFormat('Y-m-d H:i:s',Matches::where('id', $data['match_id'])->value('match_date').' '.Matches::where('id', $data['match_id'])->value('match_time'));
-            dd($requestDateTime, $matchDateTime);
+//            dd($requestDateTime, $matchDateTime);
 
             if ($requestDateTime->greaterThanOrEqualTo($matchDateTime)) {
                 return response()->json([
