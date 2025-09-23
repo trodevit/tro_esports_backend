@@ -46,14 +46,16 @@ class PaymentController extends Controller
             $matchDateTime = Carbon::parse("$matchDate $matchTime");
             $userDateTime  = Carbon::parse("$currentDate $currentTime");
 
-//            dd($userDateTime, $matchDateTime);
-
-
             if ($userDateTime->gte($matchDateTime)) {
                 return response()->json([
                     'status' => false,
                     'message' => 'You cannot register after the match has started!'
                 ], 400);
+            }
+            else{
+                $count = PaymentInfo::where('match_id',$data['match_id'])->count();
+
+                dd($count);
             }
 
 //        dd($data);
