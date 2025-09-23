@@ -46,7 +46,7 @@ class PaymentController extends Controller
             $matchDateTime = Carbon::parse("$matchDate $matchTime");
             $userDateTime  = Carbon::parse("$currentDate $currentTime");
 
-            dd($userDateTime, $matchDateTime);
+//            dd($userDateTime, $matchDateTime);
 
 
             if ($userDateTime->gte($matchDateTime)) {
