@@ -37,15 +37,14 @@ class PaymentController extends Controller
 
             $data['orderId'] = $order_id;
 
-            $requestDateTime = Carbon::parse($data['date'].' '.$data['time']);
-
             $matchDate = Matches::where('id', $data['match_id'])->value('match_date');
             $matchTime = Matches::where('id', $data['match_id'])->value('match_time');
 
-            $matchDateTime = Carbon::createFromFormat('Y-m-d H:i:s',Matches::where('id', $data['match_id'])->value('match_date').' '.Matches::where('id', $data['match_id'])->value('match_time'));
-//            dd($requestDateTime, $matchDateTime);
+            $matchDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $matchDate . ' ' . $matchTime);
+            $userDateTime  = Carbon::createFromFormat('Y-m-d H:i:s', $data['date'] . ' ' . $data['time']);
 
-            if ($data['date'] > $matchDate && $data['time'] > $matchTime) {
+
+            if ($userDateTime->gte($matchDateTime)) {
                 return response()->json([
                     'status' => false,
                     'message' => 'You cannot register after the match has started!'
