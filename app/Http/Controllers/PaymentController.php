@@ -57,7 +57,7 @@ class PaymentController extends Controller
             $data['status']='pending';
 
             $payment = PaymentInfo::create($data);
-//            dd($payment);
+            dd($payment);
             return response()->json([
                 'status'=>true,
                 'message'=>'Checking Out',

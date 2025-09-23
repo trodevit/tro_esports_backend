@@ -19,7 +19,8 @@ class PaymentInfo extends Model
         'time',
         'match_id',
         'match_name',
-        'orderId'
+        'orderId',
+        'partners_name'
     ];
 
     protected $casts = [
