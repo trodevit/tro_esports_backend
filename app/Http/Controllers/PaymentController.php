@@ -19,22 +19,22 @@ class PaymentController extends Controller
     public function paymentInit(Request $request)
     {
         try {
-        $order_id = Str::random(16);
-        $data = $request->validate([
-            'match_id' => 'required|exists:matches,id',
-            'game_username' => 'required',
-            'date'=> 'required',
-            'time'=> 'required',
-            'partners_name'=>'nullable|array',
-        ]);
+            $order_id = Str::random(16);
+            $data = $request->validate([
+                'match_id' => 'required|exists:matches,id',
+                'game_username' => 'required',
+                'date'=> 'required',
+                'time'=> 'required',
+                'partners_name'=>'nullable|array',
+            ]);
 
-        $data['match_name'] = Matches::where('id', $data['match_id'])->value('match_name');
-        $data['user_id']   = Auth::id();
-        $data['email'] = Auth::user()->email;
+            $data['match_name'] = Matches::where('id', $data['match_id'])->value('match_name');
+            $data['user_id']   = Auth::id();
+            $data['email'] = Auth::user()->email;
 
-        $data['amount'] = Matches::where('id', $data['match_id'])->value('entry_fee');
+            $data['amount'] = Matches::where('id', $data['match_id'])->value('entry_fee');
 
-        $data['orderId'] = $order_id;
+            $data['orderId'] = $order_id;
 
 //        dd($data);
 
