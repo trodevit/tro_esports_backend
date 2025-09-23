@@ -117,7 +117,7 @@
                             @endphp
                             <tr>
                                 <td class="text-muted">{{ $payments->firstItem() + $index }}</td>
-                                <td><span class="fw-semibold">#{{ $p->user_id }}</span></td>
+                                <td><span class="fw-semibold">{{ $p->user_id }}</span></td>
                                 <td><span class="truncate" title="{{ $p->game_username }}">{{ $p->game_username }}</span></td>
                                 <td><span class="truncate" title="{{ $p->payment_number }}">{{ $p->payment_number }}</span></td>
                                 <td><span class="badge text-bg-info">{{ strtoupper($p->method) }}</span></td>
