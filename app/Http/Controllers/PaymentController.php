@@ -54,8 +54,14 @@ class PaymentController extends Controller
             }
             else{
                 $count = PaymentInfo::where('match_id',$data['match_id'])->count();
+                $playerLimit = Matches::find($data['match_id']);
 
-                dd($count);
+                if ($count>$playerLimit->player_limit) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Room is full you cannot register'
+                    ], 400);
+                }
             }
 
 //        dd($data);
