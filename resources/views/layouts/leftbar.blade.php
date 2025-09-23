@@ -146,10 +146,10 @@
 
                     {{-- Notice (placeholder route -> replace "#") --}}
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center px-3 py-2 {{ request()->routeIs('notices.*') ? 'active' : '' }}"
-                           href="#">
+                        <a class="nav-link d-flex align-items-center px-3 py-2 {{ request()->routeIs('payments.*') ? 'active' : '' }}"
+                           href="{{ route('payments') }}">
                             <i class="iconoir-calendar menu-icon me-2"></i>
-                            <span class="flex-grow-1">Notice</span>
+                            <span class="flex-grow-1">Payment</span>
                         </a>
                     </li>
 

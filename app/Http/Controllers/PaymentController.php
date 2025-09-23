@@ -13,6 +13,11 @@ use UddoktaPay\LaravelSDK\UddoktaPay;
 
 class PaymentController extends Controller
 {
+    public function index()
+    {
+        $payment = PaymentInfo::latest()->paginate(15);
+        return view('payment.index',['payments'=>$payment]);
+    }
     public function uddoktapay()
     {
         return UddoktaPay::make(env('UDDOKTAPAY_API_KEY'), env('UDDOKTAPAY_API_URL'));

@@ -28,6 +28,7 @@ Route::middleware(AdminAuth::class)->group(function () {
     Route::resource('matches',MatchController::class);
     Route::resource('prizes',PrizeController::class);
     Route::resource('players',PlayerController::class);
+    Route::get('payments',[PaymentController::class,'index'])->name('payments');
 
     Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 });
