@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Matches;
 use App\Models\PaymentInfo;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -35,6 +36,19 @@ class PaymentController extends Controller
             $data['amount'] = Matches::where('id', $data['match_id'])->value('entry_fee');
 
             $data['orderId'] = $order_id;
+
+            $requestDateTime = Carbon::parse($data['date'].' '.$data['time']);
+
+
+            $matchDateTime = Carbon::parse(Matches::where('id', $data['match_id'])->value('match_date').' '.Matches::where('id', $data['match_id'])->value('match_time'));
+
+
+            if ($requestDateTime->greaterThanOrEqualTo($matchDateTime)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'You cannot register after the match has started!'
+                ], 400);
+            }
 
 //        dd($data);
 
