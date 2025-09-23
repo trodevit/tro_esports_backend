@@ -37,11 +37,11 @@ class PaymentController extends Controller
 
             $data['orderId'] = $order_id;
 
-            $matchDate = date('Y-m-d',Matches::where('id', $data['match_id'])->value('match_date'));
-            $matchTime = date('H:i:s',Matches::where('id', $data['match_id'])->value('match_time'));
+            $matchDate = date('Y-m-d',strtotime(Matches::where('id', $data['match_id'])->value('match_date')));
+            $matchTime = date('H:i:s',strtotime(Matches::where('id', $data['match_id'])->value('match_time')));
 
-            $currentDate = date('Y-m-d',$data['date']);
-            $currentTime = date('H:i:s',$data['time']);
+            $currentDate = date('Y-m-d',strtotime($data['date']));
+            $currentTime = date('H:i:s',strtotime($data['time']));
 
             $matchDateTime = Carbon::parse("$matchDate $matchTime");
             $userDateTime  = Carbon::parse("$currentDate $currentTime");
