@@ -57,7 +57,7 @@ class PaymentController extends Controller
             $data['status']='pending';
 
             $payment = PaymentInfo::create($data);
-            dd($payment);
+//            dd($payment);
             return response()->json([
                 'status'=>true,
                 'message'=>'Checking Out',
@@ -86,8 +86,12 @@ class PaymentController extends Controller
                     'status'=>$response->status(),
                 ]);
 
+               $match = PaymentInfo::where('orderId',$order)
+                   ->join('matches','matches.id','=','payment_infos.match_id')
+                   ->select('payment_infos.*','matches.room_details')
+                   ->get();
 
-                return response()->json([$payment]);
+                return response()->json([$match]);
 
             } elseif ($response->pending()) {
                 $order = $response->metadata('order_id');
