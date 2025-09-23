@@ -176,7 +176,7 @@
                     <h1>@yield('page_title','Dashboard')</h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
                             @yield('breadcrumb') {{-- e.g. <li class="breadcrumb-item active">Analytics</li> --}}
                         </ol>
                     </nav>
