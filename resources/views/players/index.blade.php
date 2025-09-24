@@ -61,7 +61,7 @@
                                 <a class="text-decoration-none" href="tel:{{ $player->phone }}">{{ $player->phone ?: '—' }}</a>
                             </td>
 
-                            <td class="text-nowrap">{{ $player->uid ?: '—' }}</td>
+                            <td class="text-nowrap">{{ $player->game_username ?: '—' }}</td>
 
                             <td>
                                 @if($player->blocked)
