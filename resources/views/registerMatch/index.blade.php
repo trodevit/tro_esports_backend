@@ -7,6 +7,8 @@
         Partner Players: {{ implode(', ', array_filter($registerd->partners_name ?? [])) }}
         Match Type: {{$registerd->match_type}}
         Total Pay: {{$registerd->amount}}
+        Payment Number: {{$registerd->payment_number}}
+        User Number: {{$registerd->phone}}
         Add Money: <input type="number" name="balance">
         Add Position: <input type="text" name="position">
     @endforeach
