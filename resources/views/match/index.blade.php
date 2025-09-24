@@ -51,6 +51,7 @@
                         <th>Date & Time</th>
                         <th class="text-end">Grand Prize</th>
                         <th class="text-center">Details</th>
+                        <th class="text-center">Register</th>
                         <th class="text-end" style="width:72px;">Actions</th>
                     </tr>
                     </thead>
@@ -96,6 +97,12 @@
                             <td class="text-center">
                                 <a href="{{ route('matches.show',$match->id) }}" class="btn btn-sm btn-outline-info rounded-pill">
                                     Details
+                                </a>
+                            </td>
+
+                            <td class="text-center">
+                                <a href="{{ route('register.match',$match->id) }}" class="btn btn-sm btn-outline-warning rounded-pill">
+                                    Register
                                 </a>
                             </td>
 
