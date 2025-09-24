@@ -4,7 +4,7 @@
 
     @foreach($register as $registerd)
         Main Player: {{$registerd->game_username}}
-        Partner Players: {{is_array($registerd->partners_name)}}
+        Partner Players: {{ implode(', ', array_filter($registerd->partners_name ?? [])) }}
     @endforeach
 
 @endsection
