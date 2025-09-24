@@ -71,7 +71,7 @@
                             <div class="col-12 col-lg-4">
                                 <div class="p-3 bg-body-tertiary rounded-3 border">
                                     <h6 class="fw-semibold mb-3">Quick Update</h6>
-                                    <form action="{{ route('register.update', $registerd->id ?? 0) }}" method="POST" class="row g-3">
+                                    <form action="#" method="POST" class="row g-3">
                                         @csrf
                                         @method('PUT')
                                         <div class="col-12">
