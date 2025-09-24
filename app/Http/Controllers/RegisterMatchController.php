@@ -10,9 +10,9 @@ class RegisterMatchController extends Controller
     public function show($id)
     {
         $register = PaymentInfo::where('match_id',$id)
-            ->join('matches','matches.id','=','payment_info.match_id')
-            ->select('payment_info.*','matches.*')
-            ->first();
+            ->join('matches','matches.id','=','payment_infos.match_id')
+            ->select('payment_infos.*','matches.*')
+            ->get();
         return view('registerMatch.index',['register'=>$register]);
     }
 }
