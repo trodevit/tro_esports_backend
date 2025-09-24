@@ -5,6 +5,7 @@
     @foreach($register as $registerd)
         Main Player: {{$registerd->game_username}}
         Partner Players: {{ implode(', ', array_filter($registerd->partners_name ?? [])) }}
+        Match Type: {{$registerd->match_type}}
     @endforeach
 
 @endsection
