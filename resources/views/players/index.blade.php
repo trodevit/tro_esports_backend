@@ -156,27 +156,26 @@
 @push('scripts')
     <script>
         (function(){
-        // Make sure Bootstrap JS is loaded from your layout:
-        // <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+            // Reusable Delete Player Modal wiring
+            const modalEl = document.getElementById('deletePlayerModal');
+            const nameEl  = document.getElementById('deletePlayerName');
+            const formEl  = document.getElementById('deletePlayerForm');
+            const bsModal = modalEl ? new bootstrap.Modal(modalEl) : null;
 
-    // Wire every [data-delete] button to open the modal and set the form action
-    const modalEl = document.getElementById('deletePlayerModal');
-    const nameEl  = document.getElementById('deletePlayerName');
-    const formEl  = document.getElementById('deletePlayerForm');
-    const bsModal = modalEl ? new bootstrap.Modal(modalEl) : null;
+            if (!modalEl || !formEl || !bsModal) return;
 
-    document.addEventListener('click', function(e){
-    const btn = e.target.closest('[data-delete]');
-    if(!btn || !bsModal) return;
+            document.addEventListener('click', function(e){
+                const btn = e.target.closest('[data-delete]');
+                if(!btn) return;
 
-    const id   = btn.getAttribute('data-player-id');
-    const name = btn.getAttribute('data-player-name') || 'this player';
+                const id   = btn.getAttribute('data-player-id');
+                const name = btn.getAttribute('data-player-name') || 'this player';
 
-    nameEl.textContent = name;
-    formEl.setAttribute('action', `{{ url('/players') }}/${id}`);
+                if (nameEl) nameEl.textContent = name;
+                formEl.setAttribute('action', `{{ url('/players') }}/${id}`);
 
-    bsModal.show();
-    }, true); // use capture to avoid dropdown/parent interference (robust)
-    })();
+                bsModal.show();
+            }, true); // capture phase to avoid dropdown interference
+        })();
     </script>
 @endpush
