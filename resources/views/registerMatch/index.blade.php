@@ -3,7 +3,8 @@
 @section('content')
 
     @foreach($register as $registerd)
-        {{$registerd->match_id}}, {{$registerd->match_name}}
+        Main Player: {{$registerd->game_username}}
+        Partner Players: {{$registerd->partners_name}}
     @endforeach
 
 @endsection
