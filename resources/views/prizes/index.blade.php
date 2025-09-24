@@ -64,11 +64,11 @@
                             <td class="text-muted">#{{ $prize->match_id }}</td>
                             <td class="text-nowrap">{{ $prize->match_name ?? '—' }}</td>
 
-                            <td class="text-nowrap"><span class="badge bg-success-subtle text-success">{{ $prize->mvp }}</span></td>
-                            <td class="text-nowrap">{{ $prize->second_winner }}</td>
-                            <td class="text-nowrap">{{ $prize->third_winner }}</td>
-                            <td class="text-nowrap">{{ $prize->fourth_winner }}</td>
-                            <td class="text-nowrap">{{ $prize->fifth_winner }}</td>
+                            <td class="text-nowrap"><span class="badge bg-success-subtle text-success">{{ $fmt($prize->mvp) }}</span></td>
+                            <td class="text-nowrap">{{ $fmt($prize->second_winner) }}</td>
+                            <td class="text-nowrap">{{ $fmt($prize->third_winner) }}</td>
+                            <td class="text-nowrap">{{ $fmt($prize->fourth_winner) }}</td>
+                            <td class="text-nowrap">{{ $fmt($prize->fifth_winner) }}</td>
 
                             <td class="text-end fw-semibold">{{ $fmt($prize->total_grand_prize) }}</td>
 
