@@ -43,6 +43,10 @@
 
                                 <ul class="list-group list-group-flush nice-list">
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span class="text-muted"><i class="bi bi-person-fill me-2"></i>Main Player Name</span>
+                                        <span class="fw-semibold">{{ $registerd->name ?? '—' }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
                                         <span class="text-muted"><i class="bi bi-person-fill me-2"></i>Main Player</span>
                                         <span class="fw-semibold">{{ $registerd->game_username ?? '—' }}</span>
                                     </li>
