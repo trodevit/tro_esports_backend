@@ -8,7 +8,11 @@
         <div class="p-3 p-md-4 bg-body-tertiary border-bottom d-flex flex-wrap align-items-center justify-content-between gap-2">
             <div>
                 <h4 class="mb-1 fw-semibold">Prize Tool Details</h4>
-                <div class="small text-muted">ID: #{{ $prize->id }}</div>
+                <div class="small text-muted d-flex align-items-center gap-2 flex-wrap">
+                    <span>Prize ID: #{{ $prize->id }}</span>
+                    <span class="badge bg-primary-subtle text-primary">Match ID: #{{ $prize->match_id ?? '—' }}</span>
+                    <span class="badge bg-info-subtle text-info">Match Name: {{ $prize->match_name ?? '—' }}</span>
+                </div>
             </div>
             <div class="d-flex flex-wrap gap-2">
                 <a href="{{ route('prizes.index') }}" class="btn btn-light rounded-pill">
@@ -36,25 +40,25 @@
                 <div class="col-12 col-lg-7">
                     <div class="card border-0 shadow-sm rounded-4 mb-3">
                         <div class="card-body">
-                            <h6 class="fw-semibold mb-3">Winners</h6>
-                            <ul class="list-group list-group-flush small" id="detailsList">
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <h6 class="fw-semibold mb-3 fs-5">Winners</h6> {{-- fs-5 = Bootstrap font-size utility --}}
+                            <ul class="list-group list-group-flush" id="detailsList">
+                                <li class="list-group-item d-flex justify-content-between align-items-center fs-6">
                                     <span class="text-muted">MVP</span>
-                                    <span class="badge bg-primary-subtle text-primary rounded-pill">{{ $prize->mvp ?: '—' }}</span>
+                                    <span class="badge bg-primary-subtle text-primary rounded-pill fs-6">{{ $prize->mvp ?: '—' }}</span>
                                 </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <li class="list-group-item d-flex justify-content-between align-items-center fs-6">
                                     <span class="text-muted">2nd Winner</span>
                                     <span>{{ $prize->second_winner ?: '—' }}</span>
                                 </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <li class="list-group-item d-flex justify-content-between align-items-center fs-6">
                                     <span class="text-muted">3rd Winner</span>
                                     <span>{{ $prize->third_winner ?: '—' }}</span>
                                 </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <li class="list-group-item d-flex justify-content-between align-items-center fs-6">
                                     <span class="text-muted">4th Winner</span>
                                     <span>{{ $prize->fourth_winner ?: '—' }}</span>
                                 </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <li class="list-group-item d-flex justify-content-between align-items-center fs-6">
                                     <span class="text-muted">5th Winner</span>
                                     <span>{{ $prize->fifth_winner ?: '—' }}</span>
                                 </li>
@@ -64,8 +68,8 @@
 
                     <div class="card border-0 shadow-sm rounded-4">
                         <div class="card-body">
-                            <h6 class="fw-semibold mb-3">Total</h6>
-                            <div class="d-flex align-items-center justify-content-between">
+                            <h6 class="fw-semibold mb-3 fs-5">Total</h6>
+                            <div class="d-flex align-items-center justify-content-between fs-6">
                                 <span class="text-muted">Total Grand Prize</span>
                                 <span class="fw-semibold">{{ $prize->total_grand_prize ?: '—' }}</span>
                             </div>
@@ -73,19 +77,38 @@
                     </div>
                 </div>
 
-                {{-- Right: meta / timestamps --}}
+
+                {{-- Right: match + timestamps --}}
                 <div class="col-12 col-lg-5">
+                    {{-- Match info --}}
+                    <div class="card border-0 shadow-sm rounded-4 mb-3">
+                        <div class="card-body">
+                            <h6 class="fw-semibold mb-3">Match</h6>
+                            <div class="d-flex flex-column gap-2 small">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted"><i class="bi bi-hash me-1"></i> Match ID</span>
+                                    <span>{{ $prize->match_id ?? '—' }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted"><i class="bi bi-123 me-1"></i> Match Name</span>
+                                    <span>{{ $prize->match_name ?? '—' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Timestamps --}}
                     <div class="card border-0 shadow-sm rounded-4">
                         <div class="card-body">
                             <h6 class="fw-semibold mb-3">Timestamps</h6>
                             <div class="d-flex flex-column gap-2 small">
                                 <div class="d-flex justify-content-between">
                                     <span class="text-muted"><i class="bi bi-calendar-plus me-1"></i> Created</span>
-                                    <span>{{ $prize->created_at?->format('d M Y, h:i A') }}</span>
+                                    <span>{{ optional($prize->created_at)->format('d M Y, h:i A') }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between">
                                     <span class="text-muted"><i class="bi bi-calendar-check me-1"></i> Updated</span>
-                                    <span>{{ $prize->updated_at?->format('d M Y, h:i A') }}</span>
+                                    <span>{{ optional($prize->updated_at)->format('d M Y, h:i A') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -99,7 +122,7 @@
         </div>
     </div>
 
-    {{-- Delete Modal (reusable, replaces inline confirm) --}}
+    {{-- Delete Modal --}}
     <div class="modal fade" id="deletePrizeModal" tabindex="-1" aria-labelledby="deletePrizeLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content rounded-3">
@@ -135,21 +158,24 @@
 
 @push('scripts')
     <script>
-        // Copy all details as plain text
+        // Copy all details as plain text (includes match id & number)
         (function(){
             const btn = document.getElementById('copyAllBtn');
             btn?.addEventListener('click', async () => {
                 const lines = [
                     'Prize Tool Details',
                     '-------------------',
+                    'Prize ID: {{ $prize->id ?? '' }}',
+                    'Match ID: {{ $prize->match_id ?? '' }}',
+                    'Match Number: {{ $prize->match_number ?? '' }}',
                     'MVP: {{ $prize->mvp ?? '' }}',
                     '2nd Winner: {{ $prize->second_winner ?? '' }}',
                     '3rd Winner: {{ $prize->third_winner ?? '' }}',
                     '4th Winner: {{ $prize->fourth_winner ?? '' }}',
                     '5th Winner: {{ $prize->fifth_winner ?? '' }}',
                     'Total Grand Prize: {{ $prize->total_grand_prize ?? '' }}',
-                    'Created: {{ $prize->created_at?->format('d M Y, h:i A') }}',
-                    'Updated: {{ $prize->updated_at?->format('d M Y, h:i A') }}',
+                    'Created: {{ optional($prize->created_at)->format('d M Y, h:i A') }}',
+                    'Updated: {{ optional($prize->updated_at)->format('d M Y, h:i A') }}',
                 ].join('\n');
                 try{
                     await navigator.clipboard.writeText(lines);

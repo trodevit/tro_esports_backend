@@ -9,6 +9,7 @@ class Prizes extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'match_id',
         'mvp',
         'second_winner',
         'third_winner',

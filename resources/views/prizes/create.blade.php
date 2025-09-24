@@ -3,10 +3,11 @@
 @section('page_title','Create Prize Tool')
 
 @section('content')
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card border-0 shadow-sm rounded-4">
         {{-- Header --}}
         <div class="p-3 p-md-4 bg-body-tertiary border-bottom d-flex align-items-center justify-content-between">
             <h4 class="mb-0 fw-semibold">Create Prize Tool</h4>
+
             <a href="{{ route('prizes.index') }}" class="btn btn-light rounded-pill">
                 <i class="bi bi-arrow-left me-1"></i> Back
             </a>
@@ -15,6 +16,52 @@
         <div class="card-body p-3 p-md-4">
             <form action="{{ route('prizes.store') }}" method="POST" novalidate>
                 @csrf
+
+                {{-- Match pick (dropdown lives in the form) --}}
+                <div class="mb-4">
+                    <div class="section-title mb-2">
+                        <span class="badge rounded-pill bg-soft-primary text-primary me-2">0</span> Match
+                    </div>
+
+                    {{-- Hidden field to submit match_id --}}
+                    <input type="hidden" name="match_id" id="match_id" value="{{ old('match_id') }}">
+
+                    <div class="dropdown">
+                        @php
+                            $selectedId = old('match_id');
+                            $selectedMatch = collect($match ?? [])->firstWhere('id', (int)$selectedId);
+                            $buttonLabel = $selectedMatch
+                                ? ('Match #'.$selectedMatch->id.' - '.($selectedMatch->match_name ?? 'Unnamed'))
+                                : 'Select a Match';
+                        @endphp
+
+                        <button class="btn btn-outline-primary rounded-pill dropdown-toggle"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                id="matchDropdownBtn">
+                            {{ $buttonLabel }}
+                        </button>
+
+                        <ul class="dropdown-menu shadow" style="max-height: 320px; overflow:auto;">
+                            @forelse($match as $m)
+                                <li>
+                                    <a class="dropdown-item js-match" href="#"
+                                       data-id="{{ $m->id }}"
+                                       data-label="Match #{{ $m->id }} - {{ $m->match_name ?? 'Unnamed' }}">
+                                        <div class="d-flex flex-column">
+                                            <strong>Match #{{ $m->id }}</strong>
+                                            <small class="text-muted">{{ $m->match_name ?? 'Unnamed' }}</small>
+                                        </div>
+                                    </a>
+                                </li>
+                            @empty
+                                <li><span class="dropdown-item-text text-muted">No matches available</span></li>
+                            @endforelse
+                        </ul>
+                    </div>
+                    <div class="form-text mt-1">Pick the match this prize belongs to.</div>
+                </div>
 
                 <div class="row g-4">
                     {{-- Left column --}}
@@ -65,6 +112,23 @@
                             </div>
                         </div>
 
+                        {{-- (Optional) quick-fill templates inside the form --}}
+                        <div class="mt-3">
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary rounded-pill dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Apply Winner Template
+                                </button>
+                                <ul class="dropdown-menu shadow">
+                                    <li class="dropdown-header small text-muted">Prize templates</li>
+                                    <li><a class="dropdown-item js-template" href="#" data-template="top5">Top 5 (MVP→5th)</a></li>
+                                    <li><a class="dropdown-item js-template" href="#" data-template="top3">Top 3 (MVP→3rd)</a></li>
+                                    <li><a class="dropdown-item js-template" href="#" data-template="mvpOnly">MVP Only</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item js-clear" href="#">Clear all fields</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
                         <div class="section-title mt-4 mb-2">
                             <span class="badge rounded-pill bg-soft-primary text-primary me-2">2</span> Total
                         </div>
@@ -80,7 +144,7 @@
                         </div>
                     </div>
 
-                    {{-- Right column (optional summary display only, no money logic) --}}
+                    {{-- Right column (preview) --}}
                     <div class="col-12 col-lg-5">
                         <div class="card border-0 shadow-sm rounded-4">
                             <div class="card-body">
@@ -134,7 +198,7 @@
 
 @push('scripts')
     <script>
-        // Live preview (no calculations—just mirrors text)
+        // Live preview (mirrors text)
         (function(){
             const map = [
                 ['#mvp', '#p_mvp'],
@@ -152,6 +216,82 @@
                 s.addEventListener('input', update);
                 s.addEventListener('change', update);
             });
+        })();
+
+        // Match dropdown: save to hidden input + update button label
+        (function(){
+            const matchBtn = document.getElementById('matchDropdownBtn');
+            const hidden = document.getElementById('match_id');
+            document.querySelectorAll('.js-match').forEach(item=>{
+                item.addEventListener('click', (e)=>{
+                    e.preventDefault();
+                    const id = item.dataset.id;
+                    const label = item.dataset.label || ('Match #'+id);
+                    hidden.value = id;
+                    if (matchBtn) matchBtn.textContent = label;
+                });
+            });
+
+            // If page loaded with old('match_id'), keep button label (already set server-side).
+            // Otherwise no-op.
+        })();
+
+        // Winner templates & clear
+        (function(){
+            const $ = (sel)=>document.querySelector(sel);
+            const setValues = (vals) => {
+                Object.entries(vals).forEach(([id, val])=>{
+                    const el = $('#'+id);
+                    if (el) { el.value = val; el.dispatchEvent(new Event('input')); }
+                });
+            };
+
+            document.querySelectorAll('.js-template').forEach(a=>{
+                a.addEventListener('click', (e)=>{
+                    e.preventDefault();
+                    const t = a.dataset.template;
+                    if (t === 'top5') {
+                        setValues({
+                            mvp: 'Player A',
+                            second_winner: 'Player B',
+                            third_winner: 'Player C',
+                            fourth_winner: 'Player D',
+                            fifth_winner: 'Player E',
+                            total_grand_prize: '5000'
+                        });
+                    } else if (t === 'top3') {
+                        setValues({
+                            mvp: 'Player A',
+                            second_winner: 'Player B',
+                            third_winner: 'Player C',
+                            fourth_winner: '',
+                            fifth_winner: '',
+                            total_grand_prize: '3000'
+                        });
+                    } else if (t === 'mvpOnly') {
+                        setValues({
+                            mvp: 'Player A',
+                            second_winner: '',
+                            third_winner: '',
+                            fourth_winner: '',
+                            fifth_winner: '',
+                            total_grand_prize: '1000'
+                        });
+                    }
+                });
+            });
+
+            const clearItem = document.querySelector('.js-clear');
+            if (clearItem) {
+                clearItem.addEventListener('click', (e)=>{
+                    e.preventDefault();
+                    ['mvp','second_winner','third_winner','fourth_winner','fifth_winner','total_grand_prize']
+                        .forEach(id=>{
+                            const el = document.getElementById(id);
+                            if (el) { el.value = ''; el.dispatchEvent(new Event('input')); }
+                        });
+                });
+            }
         })();
     </script>
 @endpush

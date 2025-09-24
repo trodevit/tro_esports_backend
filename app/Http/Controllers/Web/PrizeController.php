@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Matches;
 use App\Models\Prizes;
 use Illuminate\Http\Request;
 
@@ -13,7 +14,12 @@ class PrizeController extends Controller
      */
     public function index()
     {
-        $prize = Prizes::all();
+        $prize = Prizes::join('matches', 'prizes.match_id', '=', 'matches.id')
+            ->select(
+                'prizes.*',
+                'matches.id as match_id',
+                'matches.match_name as match_name'
+            )->get();
         return view('prizes.index',['prizes'=>$prize]);
     }
 
@@ -22,7 +28,8 @@ class PrizeController extends Controller
      */
     public function create()
     {
-        return view('prizes.create');
+        $match = Matches::all();
+        return view('prizes.create',['match'=>$match]);
     }
 
     /**
@@ -31,6 +38,7 @@ class PrizeController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
+            'match_id' => 'required',
             'mvp' => 'nullable|string',
             'second_winner' => 'nullable|string',
             'third_winner' => 'nullable|string',
@@ -49,7 +57,9 @@ class PrizeController extends Controller
      */
     public function show(string $id)
     {
-        $prize = Prizes::find($id);
+        $prize = Prizes::where('prizes.id',$id)
+            ->join('matches','matches.id','=','prizes.match_id')
+        ->select('prizes.*','matches.match_name')->first();
 
         return view('prizes.show',['prize'=>$prize]);
     }
@@ -60,8 +70,8 @@ class PrizeController extends Controller
     public function edit(string $id)
     {
         $prize = Prizes::find($id);
-
-        return view('prizes.edit',['prize'=>$prize]);
+        $match = Matches::all();
+        return view('prizes.edit',['prize'=>$prize,'match'=>$match]);
     }
 
     /**
@@ -72,6 +82,7 @@ class PrizeController extends Controller
         $prize = Prizes::find($id);
 
         $data = $request->validate([
+            'match_id'=>'nullable|required',
             'mvp' => 'nullable|string',
             'second_winner' => 'nullable|string',
             'third_winner' => 'nullable|string',
