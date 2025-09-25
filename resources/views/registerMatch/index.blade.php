@@ -132,13 +132,30 @@
                             <div class="col-12 col-lg-4">
                                 <div class="p-3 bg-body-tertiary rounded-3 border">
                                     <h6 class="fw-semibold mb-3">Quick Update</h6>
-                                    <form action="#" method="POST" class="row g-3">
+
+                                    {{-- Balance Form --}}
+                                    <form action="#" method="POST" class="row g-3 mb-3">
                                         @csrf
                                         @method('PUT')
                                         <div class="col-12">
                                             <label for="balance-{{ $registerd->id }}" class="form-label small text-muted">Add Money</label>
                                             <input type="number" class="form-control" id="balance-{{ $registerd->id }}" name="balance" placeholder="Amount">
                                         </div>
+                                        <div class="col-12 d-flex gap-2">
+                                            <button type="submit" class="btn btn-success rounded-pill px-3">
+                                                <i class="bi bi-check2 me-1"></i> Save
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary rounded-pill px-3"
+                                                    onclick="this.closest('form').reset()">
+                                                Reset
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    {{-- Position Form --}}
+                                    <form action="#" method="POST" class="row g-3">
+                                        @csrf
+                                        @method('PUT')
                                         <div class="col-12">
                                             <label for="position-{{ $registerd->id }}" class="form-label small text-muted">Add Position</label>
                                             <input type="text" class="form-control" id="position-{{ $registerd->id }}" name="position" placeholder="e.g., #1, #2">
@@ -153,9 +170,11 @@
                                             </button>
                                         </div>
                                     </form>
-                                    <div class="small text-muted mt-2">Changes here won’t submit anywhere until you wire the form action.</div>
+
+                                    <div class="small text-muted mt-2">Each form works separately, you can wire different actions if needed.</div>
                                 </div>
                             </div>
+
                         </div> {{-- row --}}
                     </div>
                 </div>

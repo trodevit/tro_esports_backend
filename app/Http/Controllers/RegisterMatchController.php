@@ -16,4 +16,9 @@ class RegisterMatchController extends Controller
             ->get();
         return view('registerMatch.index',['register'=>$register]);
     }
+
+    public function addBalance(Request $request)
+    {
+
+    }
 }
