@@ -20,6 +20,7 @@ class RegisterMatchController extends Controller
 
     public function addBalance(Request $request,$id)
     {
+        dd($request,$id);
         $data = $request->validate([
             'balance' => 'required|integer',
         ]);
