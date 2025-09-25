@@ -24,7 +24,8 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'phone',
         'game_username',
-        'blocked'
+        'blocked',
+        'balance'
     ];
 
     /**
