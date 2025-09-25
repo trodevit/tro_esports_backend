@@ -10,8 +10,9 @@ use Illuminate\Support\Facades\Auth;
 class WithdrawMoneyController extends Controller
 {
     public function index(){
-        $money = WithdrawMoney::where('payment_status','pending')->get();
-        return view('withdrawMoney.index',['money'=>$money]);
+        $pending = WithdrawMoney::where('payment_status', 'pending')->get();
+        $approved = WithdrawMoney::where('payment_status', 'approved')->get();
+        return view('withdrawMoney.index',['pending'=>$pending,'approved'=>$approved]);
     }
 
     public function store(Request $request)
