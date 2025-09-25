@@ -20,13 +20,14 @@ class RegisterMatchController extends Controller
 
     public function addBalance(Request $request,$id)
     {
-        dd($request,$id);
+
         $data = $request->validate([
             'balance' => 'required|integer',
         ]);
 
         $user = User::find($id);
 
+        dd($user);
         $user->update($data);
 
         return redirect()->back()->with('success','Balance added successfully');
