@@ -155,10 +155,10 @@
 
                     {{-- Devices (placeholder route -> replace "#") --}}
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center px-3 py-2 {{ request()->routeIs('devices.*') ? 'active' : '' }}"
-                           href="#">
+                        <a class="nav-link d-flex align-items-center px-3 py-2 {{ request()->routeIs('withdraw.money.*') ? 'active' : '' }}"
+                           href="{{route('withdraw.money')}}">
                             <i class="iconoir-calendar menu-icon me-2"></i>
-                            <span class="flex-grow-1">Devices</span>
+                            <span class="flex-grow-1">Withdraw Money</span>
                         </a>
                     </li>
                 </ul>

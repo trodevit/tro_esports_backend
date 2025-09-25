@@ -8,6 +8,7 @@ use App\Http\Controllers\WebsiteController;
 use App\Http\Controllers\Web\PrizeController;
 use App\Http\Controllers\Web\PlayerController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\WithdrawMoneyController;
 use App\Http\Controllers\RegisterMatchController;
 
 Route::get('/',[WebsiteController::class,'index'])->name('home');
@@ -32,6 +33,9 @@ Route::middleware(AdminAuth::class)->group(function () {
     Route::get('payments',[PaymentController::class,'index'])->name('payments');
     Route::get('register/match/{id}',[RegisterMatchController::class,'show'])->name('register.match');
     Route::put('add/balance/{id}',[RegisterMatchController::class,'addBalance'])->name('add.balance');
+
+    Route::get('/withdraw/money',[WithdrawMoneyController::class,'index'])->name('withdraw.money');
+    Route::put('/withdraw/money/{id}',[WithdrawMoneyController::class,'update'])->name('withdraw.money.update');
 
     Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 });
