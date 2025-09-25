@@ -31,4 +31,6 @@ class RegisterMatchController extends Controller
 
         return redirect()->back()->with('success','Balance added successfully');
     }
+
+
 }
