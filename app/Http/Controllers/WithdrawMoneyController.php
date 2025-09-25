@@ -47,7 +47,6 @@ class WithdrawMoneyController extends Controller
 
         $data = $request->validate([
             'transaction_id' => 'required',
-            'payment_status'=>'required',
         ]);
 
         $data['payment_status'] = 'approved';
