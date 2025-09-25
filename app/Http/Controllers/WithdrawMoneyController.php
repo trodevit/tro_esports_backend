@@ -56,6 +56,6 @@ class WithdrawMoneyController extends Controller
         $user->balance = $user->balance - $money->amount;
         $user->save();
 
-        return $this->successResponse($money,'Request Approved',200);
+        return redirect()->back();
     }
 }
