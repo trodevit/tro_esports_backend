@@ -31,7 +31,7 @@ Route::middleware(AdminAuth::class)->group(function () {
     Route::resource('players',PlayerController::class);
     Route::get('payments',[PaymentController::class,'index'])->name('payments');
     Route::get('register/match/{id}',[RegisterMatchController::class,'show'])->name('register.match');
-    Route::put('add/balance/{id}',[RegisterMatchController::class,'update'])->name('add.balance');
+    Route::put('add/balance/{id}',[RegisterMatchController::class,'addBalance'])->name('add.balance');
 
     Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 });
