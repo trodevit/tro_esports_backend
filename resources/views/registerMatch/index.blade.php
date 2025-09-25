@@ -134,7 +134,7 @@
                                     <h6 class="fw-semibold mb-3">Quick Update</h6>
 
                                     {{-- Balance Form --}}
-                                    <form action="#" method="POST" class="row g-3 mb-3">
+                                    <form action="{{ route('add.balance',$registerd->user_id) }}" method="POST" class="row g-3 mb-3">
                                         @csrf
                                         @method('PUT')
                                         <div class="col-12">

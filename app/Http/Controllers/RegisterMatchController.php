@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PaymentInfo;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class RegisterMatchController extends Controller
@@ -17,8 +18,16 @@ class RegisterMatchController extends Controller
         return view('registerMatch.index',['register'=>$register]);
     }
 
-    public function addBalance(Request $request)
+    public function addBalance(Request $request,$id)
     {
+        $data = $request->validate([
+            'balance' => 'required|integer',
+        ]);
 
+        $user = User::find($id);
+
+        $user->update($data);
+
+        return redirect()->back()->with('success','Balance added successfully');
     }
 }
