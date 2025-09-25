@@ -24,6 +24,15 @@
             <div class="tab-pane fade show active" id="pending" role="tabpanel">
                 <div class="row g-3">
                     @forelse ($pending as $withdraw)
+                        @php
+                            $methodColor = match(strtolower($withdraw->payment_method)) {
+                                'bkash' => 'danger',  // red
+                                'nagad' => 'warning', // orange
+                                'rocket' => 'info',   // blue
+                                default => 'secondary',
+                            };
+                        @endphp
+
                         <div class="col-12">
                             <div class="card border-0 shadow-sm rounded-4 h-100">
                                 <div class="card-body">
@@ -32,7 +41,11 @@
                                             <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
                                                 <div class="d-flex align-items-center gap-2">
                                                     <span class="badge text-bg-secondary">ID: {{ $withdraw->user_id }}</span>
-                                                    <span class="badge text-bg-light text-muted">Method: {{ $withdraw->payment_method }}</span>
+
+                                                    {{-- Highlight Payment Method --}}
+                                                    <span class="badge text-bg-{{ $methodColor }}">
+                                                        {{ strtoupper($withdraw->payment_method) }}
+                                                    </span>
                                                 </div>
                                                 <span class="badge text-bg-warning">Pending</span>
                                             </div>
@@ -90,6 +103,15 @@
             <div class="tab-pane fade" id="approved" role="tabpanel">
                 <div class="row g-3">
                     @forelse ($approved as $withdraw)
+                        @php
+                            $methodColor = match(strtolower($withdraw->payment_method)) {
+                                'bkash' => 'danger',  // red
+                                'nagad' => 'warning', // orange
+                                'rocket' => 'info',   // blue
+                                default => 'secondary',
+                            };
+                        @endphp
+
                         <div class="col-12">
                             <div class="card border-0 shadow-sm rounded-4 h-100">
                                 <div class="card-body">
@@ -98,7 +120,11 @@
                                             <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
                                                 <div class="d-flex align-items-center gap-2">
                                                     <span class="badge text-bg-secondary">ID: {{ $withdraw->user_id }}</span>
-                                                    <span class="badge text-bg-light text-muted">Method: {{ $withdraw->payment_method }}</span>
+
+                                                    {{-- Highlight Payment Method --}}
+                                                    <span class="badge text-bg-{{ $methodColor }}">
+                                                        {{ strtoupper($withdraw->payment_method) }}
+                                                    </span>
                                                 </div>
                                                 <span class="badge text-bg-success">Approved</span>
                                             </div>
