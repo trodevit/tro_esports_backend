@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\WithdrawMoney;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -43,7 +44,12 @@ class AuthController extends Controller
 
     public function dashboard()
     {
-        return view('dashboard');
+        $pending = WithdrawMoney::where('payment_status', 'pending')
+            ->latest()
+            ->take(10) // limit to latest 10 if you don’t want to show all
+            ->get();
+
+        return view('dashboard',['pending'=>$pending]);
     }
 
     public function logout(){
