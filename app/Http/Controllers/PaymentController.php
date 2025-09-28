@@ -36,6 +36,8 @@ class PaymentController extends Controller
             $data['match_name'] = Matches::where('id', $data['match_id'])->value('match_name');
             $data['user_id']   = Auth::id();
             $data['email'] = Auth::user()->email;
+            $data['date'] = Carbon::now()->format('Y-m-d');
+            $data['time'] = Carbon::now()->format('H:i:s');
 
             $data['amount'] = Matches::where('id', $data['match_id'])->value('entry_fee');
 
