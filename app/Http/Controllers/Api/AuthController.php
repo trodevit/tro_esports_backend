@@ -102,6 +102,33 @@ class AuthController extends Controller
         return $this->successResponse(['user'=>$user], 'Password reset successfully', 200);
     }
 
+    public function changePassword(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'current_password' => 'required|string',
+                'new_password' => 'required|string|confirmed',
+            ]);
+
+            if (Hash::check($data['current_password'], Auth::user()->getAuthPassword())){
+                $user = Auth::user();
+                $user->password  = Hash::make($data['new_password']);
+                $user->save();
+
+                Auth::logout();
+
+                return $this->successResponse($user,'Password Changed successfully', 200);
+            }
+            else{
+                return $this->errorResponse(null, 'Current password is incorrect', 400);
+            }
+        }
+        catch (\Exception $e) {
+            return $this->errorResponse(null,'Something went wrong: '.$e->getMessage(), 500);
+        }
+
+    }
+
     public function logout(){
         Auth::logout();
 

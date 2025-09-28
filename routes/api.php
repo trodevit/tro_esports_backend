@@ -17,6 +17,7 @@ Route::post('forgotPassword',[AuthController::class,'forgotPassword']);
 Route::group(['middleware' => 'auth:api'], function() {
     Route::get('profile',[AuthController::class,'profile']);
 
+    Route::post('changePassword',[AuthController::class,'changePassword']);
     Route::get('match',[ApiController::class,'matches']);
     Route::get('match/{id}',[ApiController::class,'matchbyID']);
     Route::get('prize',[ApiController::class,'prizeTools']);
