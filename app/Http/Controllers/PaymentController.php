@@ -88,7 +88,7 @@ class PaymentController extends Controller
                 'cancel_url' => route('uddoktapay.cancel')
             ];
 
-            dd($body);
+//            dd($body);
 
             $response = Http::withHeaders([
                 'Content-Type'  => 'application/json',
