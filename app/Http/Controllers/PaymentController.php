@@ -78,7 +78,7 @@ class PaymentController extends Controller
 
             $baseURL = 'https://payment.trodevit.com/trodevit/api/checkout-v2';
             $apiKey = 'MHvZvqX6UY7Vw4AcrWjwGALF1VKlOQxJgaK2uuo6';
-            $email = 'rubayetislam16@gmail.com';
+            $email = Auth::user()->email;
             $body = [
                 'full_name' => Auth::user()->name,
                 'email' => $email,
@@ -94,7 +94,7 @@ class PaymentController extends Controller
                 'Content-Type'  => 'application/json',
                 'Accept'        => 'application/json',
                 'RT-UDDOKTAPAY-API-KEY'      => $apiKey,
-            ])->post($baseURL,[$body]);
+            ])->post($baseURL,$body);
 
             if ($response->successful()){
                 dd($response->json());
