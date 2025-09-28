@@ -83,7 +83,7 @@ class PaymentController extends Controller
                 'full_name' => Auth::user()->name,
                 'email' => $email,
                 'amount' => $data['amount'],
-                'metadata' => json_encode($data['orderId']),
+                'metadata' => ['orderId' => $order_id,'user_id'=>Auth::id()],
                 'redirect_url' => route('uddoktapay.verify'),
                 'cancel_url' => route('uddoktapay.cancel')
             ];
