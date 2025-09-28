@@ -42,6 +42,12 @@ class ApiController extends Controller
             $count = PaymentInfo::where('match_id',$match->id)->count();
             $playerLimit = $match->player_limit - $count;
             $match->slot_free = $playerLimit;
+
+            $progress = 0;
+            if ($match->player_limit > 0) {
+                $progress = round(($count / $match->player_limit) * 100, 2);
+            }
+            $match->progress = $progress;
         }
         else{
             return response()->json([
@@ -50,7 +56,7 @@ class ApiController extends Controller
             ], 400);
         }
 
-        return $this->successResponse([$match,$playerLimit],$match->match_name.' Match Details',200);
+        return $this->successResponse($match,$match->match_name.' Match Details',200);
     }
 
     public function prizeTools()
