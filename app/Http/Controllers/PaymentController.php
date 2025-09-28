@@ -76,7 +76,7 @@ class PaymentController extends Controller
 
 //        dd($data);
 
-            $baseURL = 'https://payment.trodevit.com/trodevit/api/checkout';
+            $baseURL = 'https://payment.trodevit.com/troesports/api/checkout';
             $apiKey = 'jYX9XBfxSxeAmRQZh3PqjvNFxm1quLqnyi7athqe';
             $email = Auth::user()->email;
             $body = [
