@@ -30,51 +30,39 @@ class PaymentController extends Controller
             $order_id = Str::random(16);
             $data = $request->validate([
                 'match_id' => 'required|exists:matches,id',
-
-
-                'partners_name'=>'nullable|array',
+                'partners_name' => 'nullable|array',
             ]);
-            $data['game_username'] = Auth::user()->game_username;
-            $data['match_name'] = Matches::where('id', $data['match_id'])->value('match_name');
-            $data['user_id']   = Auth::id();
-            $data['email'] = Auth::user()->email;
-            $data['date'] = Carbon::now()->format('Y-m-d');
-            $data['time'] = Carbon::now()->format('H:i:s');
 
             $data['amount'] = Matches::where('id', $data['match_id'])->value('entry_fee');
 
-            $data['orderId'] = $order_id;
+            Session::put('order_id', $order_id);
+            Session::put('user_id',Auth::id());
 
-            Session::put('order_id',$order_id);
+            $matchDate = date('Y-m-d', strtotime(Matches::where('id', $data['match_id'])->value('match_date')));
+            $matchTime = date('H:i:s', strtotime(Matches::where('id', $data['match_id'])->value('match_time')));
 
-            $matchDate = date('Y-m-d',strtotime(Matches::where('id', $data['match_id'])->value('match_date')));
-            $matchTime = date('H:i:s',strtotime(Matches::where('id', $data['match_id'])->value('match_time')));
-
-            $currentDate = date('Y-m-d',strtotime(Carbon::now()->format('Y-m-d')));
-            $currentTime = date('H:i:s',strtotime(Carbon::now()->format('H:i:s')));
+            $currentDate = date('Y-m-d', strtotime(Carbon::now()->format('Y-m-d')));
+            $currentTime = date('H:i:s', strtotime(Carbon::now()->format('H:i:s')));
 
             $matchDateTime = Carbon::parse("$matchDate $matchTime");
-            $userDateTime  = Carbon::parse("$currentDate $currentTime");
+            $userDateTime = Carbon::parse("$currentDate $currentTime");
 
             if ($userDateTime->gte($matchDateTime)) {
                 return response()->json([
                     'status' => false,
                     'message' => 'You cannot register after the match has started!'
                 ], 400);
-            }
-            else{
-                $count = PaymentInfo::where('match_id',$data['match_id'])->count();
+            } else {
+                $count = PaymentInfo::where('match_id', $data['match_id'])->count();
                 $playerLimit = Matches::find($data['match_id']);
 
-                if ($count>$playerLimit->player_limit) {
+                if ($count > $playerLimit->player_limit) {
                     return response()->json([
                         'status' => false,
                         'message' => 'Room is full you cannot register'
                     ], 400);
                 }
             }
-
-//        dd($data);
 
             $baseURL = 'https://payment.trodevit.com/troesports/api/checkout';
             $apiKey = 'jYX9XBfxSxeAmRQZh3PqjvNFxm1quLqnyi7athqe';
@@ -83,7 +71,7 @@ class PaymentController extends Controller
                 'full_name' => Auth::user()->name,
                 'email' => $email,
                 'amount' => $data['amount'],
-                'metadata' => ['orderId' => $order_id,'user_id'=>Auth::id()],
+                'metadata' => ['orderId' => $order_id, 'user_id' => Auth::id()],
                 'redirect_url' => route('uddoktapay.verify'),
                 'cancel_url' => route('uddoktapay.cancel')
             ];
@@ -91,82 +79,51 @@ class PaymentController extends Controller
 //            dd($body);
 
             $response = Http::withHeaders([
-                'Content-Type'  => 'application/json',
-                'Accept'        => 'application/json',
-                'RT-UDDOKTAPAY-API-KEY'      => $apiKey,
-            ])->post($baseURL,$body);
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+                'RT-UDDOKTAPAY-API-KEY' => $apiKey,
+            ])->post($baseURL, $body);
 
-            if ($response->successful()){
-                dd($response->json());
+            if ($response->successful()) {
+                $url = $response->json('payment_url');
+                return $this->successResponse($url, 'Checking Out', 200);
+            } else {
+                return $this->errorResponse($response->json('message'), 'Something went wrong', 400);
             }
-            else{
-                dd($response->json());
-            }
-//            $checkoutRequest = CheckoutRequest::make()
-//                ->setFullName(Auth::user()->name)
-//                ->setEmail(Auth::user()->email)
-//                ->setAmount(Matches::where('id', $data['match_id'])->value('entry_fee'))
-//                ->addMetadata('order_id', $order_id)
-//                ->setRedirectUrl(route('uddoktapay.verify'))
-//                ->setCancelUrl(route('uddoktapay.cancel'))
-//                ->setWebhookUrl(route('uddoktapay.ipn'));
-//
-//            $response = $this->uddoktapay()->checkout($checkoutRequest);
-//
-//
-//            if ($response->failed()) {
-//                dd($response->message());
-//            }
-            $data['status']='pending';
 
-            $payment = PaymentInfo::create($data);
-//            dd($payment);
-            return response()->json([
-                'status'=>true,
-                'message'=>'Checking Out',
-                'url'=>$response->paymentURL()
-            ]);
-        } catch (\UddoktaPay\LaravelSDK\Exceptions\UddoktaPayException $e) {
-            dd("Initialization Error: " . $e->getMessage());
         }
-        catch (\Exception $e) {
-            dd($e->getMessage());
+        catch (\Exception $exception){
+            return $this->errorResponse($exception->getMessage(), 'Something went wrong', 400);
         }
     }
 
     public function verify(Request $request)
     {
-        try {
-            $response = $this->uddoktapay()->verify($request);
+        $baseURL = 'https://payment.trodevit.com/troesports/api/verify-payment';
+        $apiKey = 'jYX9XBfxSxeAmRQZh3PqjvNFxm1quLqnyi7athqe';
+        $email = Auth::user()->email;
+        $body = [
+            'full_name' => Auth::user()->name,
+            'email' => $email,
+            'amount' => $data['amount'],
+            'metadata' => ['orderId' => $order_id, 'user_id' => Auth::id()],
+            'redirect_url' => route('uddoktapay.verify'),
+            'cancel_url' => route('uddoktapay.cancel')
+        ];
 
-            if ($response->success()) {
-                $order = $response->metadata('order_id');
+//            dd($body);
 
-               $payment = PaymentInfo::where('orderId',$order)->update([
-                    'payment_number'=>$response->senderNumber(),
-                    'method'=>$response->paymentMethod(),
-                    'transaction_id'=>$response->transactionId(),
-                    'status'=>$response->status(),
-                ]);
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+            'RT-UDDOKTAPAY-API-KEY' => $apiKey,
+        ])->post($baseURL, $body);
 
-               $match = PaymentInfo::where('orderId',$order)
-                   ->join('matches','matches.id','=','payment_infos.match_id')
-                   ->select('payment_infos.*','matches.room_details')
-                   ->get();
-
-                return response()->json([$match]);
-
-            } elseif ($response->pending()) {
-                $order = $response->metadata('order_id');
-
-                PaymentInfo::where('orderId',$order)->delete();;
-            } elseif ($response->failed()) {
-                $order = $response->metadata('order_id');
-
-                PaymentInfo::where('orderId',$order)->delete();
-            }
-        } catch (\UddoktaPay\LaravelSDK\Exceptions\UddoktaPayException $e) {
-            dd("Verification Error: " . $e->getMessage());
+        if ($response->successful()) {
+            $url = $response->json('payment_url');
+            return $this->successResponse($url, 'Checking Out', 200);
+        } else {
+            return $this->errorResponse($response->json('message'), 'Something went wrong', 400);
         }
     }
 
