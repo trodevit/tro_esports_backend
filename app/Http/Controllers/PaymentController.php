@@ -109,7 +109,7 @@ class PaymentController extends Controller
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
             'RT-UDDOKTAPAY-API-KEY' => $apiKey,
-        ])->get($baseURL, $body);
+        ])->post($baseURL, $body);
 
         if ($response->successful()) {
             $url = $response->json('payment_url');
