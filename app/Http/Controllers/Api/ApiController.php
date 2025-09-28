@@ -34,7 +34,7 @@ class ApiController extends Controller
 
         if ($userDateTime->lte($matchDateTime)) {
             $count = PaymentInfo::where('match_id',$match->id)->count();
-            $playerLimit = $count - $match->player_limit;
+            $playerLimit = $match->player_limit - $count;
         }
         else{
             return response()->json([
@@ -43,7 +43,7 @@ class ApiController extends Controller
             ], 400);
         }
 
-        return $this->successResponse(['match:',$match,'player limits',$playerLimit],$match->match_name.' Match Details',200);
+        return $this->successResponse(['match:',$match,'slot frees',$playerLimit],$match->match_name.' Match Details',200);
     }
 
     public function prizeTools()
