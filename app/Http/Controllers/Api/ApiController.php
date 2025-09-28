@@ -7,6 +7,7 @@ use App\Models\Matches;
 use App\Models\PaymentInfo;
 use App\Models\Prizes;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ApiController extends Controller
 {
@@ -32,7 +33,13 @@ class ApiController extends Controller
         $matchDateTime = Carbon::parse("$matchDate $matchTime");
         $userDateTime  = Carbon::parse("$currentDate $currentTime");
 
+
+
         if ($userDateTime->lte($matchDateTime)) {
+            $purchaced = PaymentInfo::where('match_id',$match->id)->where('user_id',Auth::id())->exists();
+            if (!$purchaced){
+                $match->room_details = null;
+            }
             $count = PaymentInfo::where('match_id',$match->id)->count();
             $playerLimit = $match->player_limit - $count;
         }
@@ -43,7 +50,7 @@ class ApiController extends Controller
             ], 400);
         }
 
-        return $this->successResponse(['match:',$match,'slot frees',$playerLimit],$match->match_name.' Match Details',200);
+        return $this->successResponse([$match,$playerLimit],$match->match_name.' Match Details',200);
     }
 
     public function prizeTools()
