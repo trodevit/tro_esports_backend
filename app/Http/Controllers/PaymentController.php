@@ -65,7 +65,9 @@ class PaymentController extends Controller
             }
 
             $baseURL = 'https://payment.trodevit.com/troesports/api/checkout';
+            $sandBoxURL = 'https://sandbox.uddoktapay.com/api/checkout-v2';
             $apiKey = 'jYX9XBfxSxeAmRQZh3PqjvNFxm1quLqnyi7athqe';
+            $sandBoxApi = '982d381360a69d419689740d9f2e26ce36fb7a50';
             $email = Auth::user()->email;
             $body = [
                 'full_name' => Auth::user()->name,
@@ -78,11 +80,19 @@ class PaymentController extends Controller
 
 //            dd($body);
 
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-                'RT-UDDOKTAPAY-API-KEY' => $apiKey,
-            ])->post($baseURL, $body);
+            if (env('APP_ENV') == 'production') {
+                $response = Http::withHeaders([
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                    'RT-UDDOKTAPAY-API-KEY' => $apiKey,
+                ])->post($baseURL, $body);
+            }else{
+                $response = Http::withoutVerifying()->withHeaders([
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                    'RT-UDDOKTAPAY-API-KEY' => $sandBoxApi,
+                ])->post($sandBoxURL, $body);
+            }
 
             if ($response->successful()) {
                 $url = $response->json('payment_url');
@@ -99,23 +109,36 @@ class PaymentController extends Controller
 
     public function verify(Request $request)
     {
-        $baseURL = 'https://payment.trodevit.com/troesports/api/verify-payment';
-        $apiKey = 'jYX9XBfxSxeAmRQZh3PqjvNFxm1quLqnyi7athqe';
-        $body=$request->query('invoice_id');
+        try {
+            $baseURL = 'https://payment.trodevit.com/troesports/api/verify-payment';
+            $apiKey = 'jYX9XBfxSxeAmRQZh3PqjvNFxm1quLqnyi7athqe';
+            $sandBoxURL = 'https://sandbox.uddoktapay.com/api/verify-payment';
+            $sandBoxApi = '982d381360a69d419689740d9f2e26ce36fb7a50';
+            $body = $request->query('invoice_id');
 
-//            dd($body);
+            if (env('APP_ENV') == 'production') {
+                $response = Http::withHeaders([
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                    'RT-UDDOKTAPAY-API-KEY' => $apiKey,
+                ])->post($baseURL, $body);
+            } else {
+                $response = Http::withoutVerifying()->withHeaders([
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                    'RT-UDDOKTAPAY-API-KEY' => $sandBoxApi,
+                ])->post($sandBoxURL, $body);
+            }
 
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json',
-            'RT-UDDOKTAPAY-API-KEY' => $apiKey,
-        ])->post($baseURL, $body);
-
-        if ($response->successful()) {
-            $url = $response->json('payment_url');
-            return $this->successResponse($url, 'Checking Out', 200);
-        } else {
-            return $this->errorResponse($response->json('message'), 'Something went wrong', 400);
+            if ($response->successful()) {
+                $url = $response->json();
+                return $this->successResponse($url, 'Checking Out', 200);
+            } else {
+                return $this->errorResponse($response->json('message'), 'Something went wrong', 400);
+            }
+        }
+        catch (\Exception $exception){
+            return $this->errorResponse($exception->getMessage(), 'Something went wrong', 400);
         }
     }
 
