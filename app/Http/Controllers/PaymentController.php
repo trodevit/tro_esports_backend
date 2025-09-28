@@ -156,5 +156,7 @@ class PaymentController extends Controller
         $order = Session::get('order_id');
 
         PaymentInfo::where('orderId',$order)->delete();
+
+        return $this->successResponse(null,'Payment Cancelled',200);
     }
 }
