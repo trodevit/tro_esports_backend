@@ -1,11 +1,12 @@
 {{--<div class="topbar d-print-none">--}}
 {{--    <div class="container-fluid">--}}
-{{--        <nav class="topbar-custom d-flex justify-content-between" id="topbar-custom">--}}
+{{--        <nav class="topbar-custom d-flex justify-content-between" id="topbar-custom">
+    <h4 class=\"mb-0 fw-semibold d-none d-sm-block\">Dashboard</h4>--}}
 
 
 {{--            <ul class="topbar-item list-unstyled d-inline-flex align-items-center mb-0">--}}
 {{--                <li>--}}
-{{--                    <button class="nav-link mobile-menu-btn nav-icon" id="togglemenu">--}}
+{{--                    <button class="nav-link mobile-menu-btn nav-icon" id="togglemenu" class="mobile-menu-btn btn btn-link p-0 d-inline-flex d-lg-none" aria-label="Toggle sidebar">--}}
 {{--                        <i class="iconoir-menu"></i>--}}
 {{--                    </button>--}}
 {{--                </li>--}}
@@ -250,7 +251,7 @@
             {{-- Left cluster --}}
             <ul class="topbar-item list-unstyled d-inline-flex align-items-center gap-1 mb-0">
                 <li>
-                    <button class="nav-link mobile-menu-btn nav-icon btn btn-link p-0" id="togglemenu"
+                    <button class="nav-link mobile-menu-btn nav-icon btn btn-link p-0" id="togglemenu" class="mobile-menu-btn btn btn-link p-0 d-inline-flex d-lg-none" aria-label="Toggle sidebar"
                             type="button" aria-label="Toggle sidebar" aria-controls="left-sidebar" aria-expanded="false">
                         <i class="iconoir-menu" aria-hidden="true"></i>
                     </button>

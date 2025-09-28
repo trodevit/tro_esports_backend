@@ -23,7 +23,71 @@
 {{--    <link href="{{asset('assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />--}}
 {{--    <link href="{{asset('assets/css/app.min.css')}}" rel="stylesheet" type="text/css" />--}}
 
-{{--</head>--}}
+{{--<!-- Responsive Enhancements (added) -->
+<style>
+/* Layout sizing */
+:root{
+  --sidebar-w: 260px;
+}
+
+/* Base structure assumptions */
+.leftbar{width:var(--sidebar-w); min-height:100vh;}
+.content-page{margin-left:var(--sidebar-w); transition: margin-left .25s ease;}
+/* Small screens: slide-in sidebar */
+@media (max-width: 991.98px){
+  .content-page{ margin-left:0 !important; }
+  .topbar .mobile-menu-btn{ display:inline-flex !important; }
+  .leftbar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    height: 100vh;
+    z-index: 1050;
+    background: #fff;
+    box-shadow: 0 0 30px rgba(0,0,0,.12);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  body.sidebar-open .leftbar{ transform: translateX(0); }
+  .sidebar-backdrop{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.35);
+    z-index: 1040;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease;
+  }
+  body.sidebar-open .sidebar-backdrop{ opacity: 1; pointer-events: auto; }
+}
+
+/* Tables: enable horizontal scrolling on small screens */
+.table-responsive{ overflow-x:auto; }
+.table{ width:100%; }
+
+/* Cards & grids spacing for small devices */
+@media (max-width: 575.98px){
+  .card .card-body{ padding: 1rem; }
+  .p-4{ padding:1.25rem !important; }
+  h1,h2,h3,h4{ line-height:1.2; word-break: break-word; }
+}
+
+/* Topbar responsiveness */
+.topbar-custom{ gap:.5rem; }
+@media (max-width: 575.98px){
+  .topbar .d-md-flex{ display:none !important; }
+}
+
+/* Footer: stack nicely on small screens */
+.site-footer{ font-size:.95rem; }
+@media (max-width: 575.98px){
+  .site-footer .row{ row-gap:.5rem; }
+  .site-footer .text-end{ text-align:left !important; }
+}
+</style>
+<!-- /Responsive Enhancements (added) -->
+</head>--}}
 
 {{--<body>--}}
 
@@ -63,7 +127,30 @@
 {{--<script src="{{asset('assets/js/DynamicSelect.js')}}"></script>--}}
 {{--<script src="{{asset('assets/js/app.js')}}"></script>--}}
 
-{{--</body>--}}
+{{--<!-- Mobile Sidebar Toggle (added) -->
+<div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+<script>
+(function(){
+  var btn = document.getElementById('togglemenu');
+  var backdrop = document.getElementById('sidebarBackdrop');
+  if(btn){
+    btn.setAttribute('aria-controls','leftSidebar');
+    btn.setAttribute('aria-expanded','false');
+    btn.addEventListener('click', function(){
+      var open = document.body.classList.toggle('sidebar-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+  if(backdrop){
+    backdrop.addEventListener('click', function(){
+      document.body.classList.remove('sidebar-open');
+      if(btn) btn.setAttribute('aria-expanded','false');
+    });
+  }
+})();
+</script>
+<!-- /Mobile Sidebar Toggle (added) -->
+</body>--}}
 {{--</html>--}}
 
     <!DOCTYPE html>
@@ -158,6 +245,70 @@
             background: var(--bs-body-bg);
         }
     </style>
+<!-- Responsive Enhancements (added) -->
+<style>
+/* Layout sizing */
+:root{
+  --sidebar-w: 260px;
+}
+
+/* Base structure assumptions */
+.leftbar{width:var(--sidebar-w); min-height:100vh;}
+.content-page{margin-left:var(--sidebar-w); transition: margin-left .25s ease;}
+/* Small screens: slide-in sidebar */
+@media (max-width: 991.98px){
+  .content-page{ margin-left:0 !important; }
+  .topbar .mobile-menu-btn{ display:inline-flex !important; }
+  .leftbar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    height: 100vh;
+    z-index: 1050;
+    background: #fff;
+    box-shadow: 0 0 30px rgba(0,0,0,.12);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  body.sidebar-open .leftbar{ transform: translateX(0); }
+  .sidebar-backdrop{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.35);
+    z-index: 1040;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease;
+  }
+  body.sidebar-open .sidebar-backdrop{ opacity: 1; pointer-events: auto; }
+}
+
+/* Tables: enable horizontal scrolling on small screens */
+.table-responsive{ overflow-x:auto; }
+.table{ width:100%; }
+
+/* Cards & grids spacing for small devices */
+@media (max-width: 575.98px){
+  .card .card-body{ padding: 1rem; }
+  .p-4{ padding:1.25rem !important; }
+  h1,h2,h3,h4{ line-height:1.2; word-break: break-word; }
+}
+
+/* Topbar responsiveness */
+.topbar-custom{ gap:.5rem; }
+@media (max-width: 575.98px){
+  .topbar .d-md-flex{ display:none !important; }
+}
+
+/* Footer: stack nicely on small screens */
+.site-footer{ font-size:.95rem; }
+@media (max-width: 575.98px){
+  .site-footer .row{ row-gap:.5rem; }
+  .site-footer .text-end{ text-align:left !important; }
+}
+</style>
+<!-- /Responsive Enhancements (added) -->
 </head>
 
 <body>
@@ -269,5 +420,28 @@
 
 {{-- Page-level scripts --}}
 @stack('scripts')
+<!-- Mobile Sidebar Toggle (added) -->
+<div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+<script>
+(function(){
+  var btn = document.getElementById('togglemenu');
+  var backdrop = document.getElementById('sidebarBackdrop');
+  if(btn){
+    btn.setAttribute('aria-controls','leftSidebar');
+    btn.setAttribute('aria-expanded','false');
+    btn.addEventListener('click', function(){
+      var open = document.body.classList.toggle('sidebar-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+  if(backdrop){
+    backdrop.addEventListener('click', function(){
+      document.body.classList.remove('sidebar-open');
+      if(btn) btn.setAttribute('aria-expanded','false');
+    });
+  }
+})();
+</script>
+<!-- /Mobile Sidebar Toggle (added) -->
 </body>
 </html>

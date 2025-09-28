@@ -1,4 +1,4 @@
-<footer class="app-footer d-print-none" role="contentinfo" aria-label="Site footer">
+<footer\1 class=\"site-footer\">
     <div class="container-fluid">
         <div class="footer-card card mb-0">
             <div class="card-body py-2 py-sm-3">
