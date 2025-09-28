@@ -19,7 +19,7 @@ Route::get('/login',[AuthController::class,'loginPage'])->name('login');
 Route::post('/login',[AuthController::class,'login'])->name('loggedIn');
 
 
-Route::post('/verify', [PaymentController::class, 'verify'])->name('uddoktapay.verify');
+Route::get('/verify', [PaymentController::class, 'verify'])->name('uddoktapay.verify');
 Route::get('/cancel', [PaymentController::class, 'cancel'])->name('uddoktapay.cancel');
 Route::post('/ipn', [PaymentController::class, 'ipn'])->name('uddoktapay.ipn');
 Route::post('/refund', [PaymentController::class, 'refund'])->name('uddoktapay.refund');
