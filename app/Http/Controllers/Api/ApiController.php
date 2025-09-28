@@ -74,7 +74,7 @@ class ApiController extends Controller
     }
 
     public function withdrawList(){
-        $money = WithdrawMoney::where('user_id',Auth::id())->get();
+        $money = WithdrawMoney::where('user_id',Auth::id())->latest()->get();
 
         return $this->successResponse($money,'Your Withdraw List',200);
     }
