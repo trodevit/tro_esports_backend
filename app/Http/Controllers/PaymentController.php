@@ -101,15 +101,7 @@ class PaymentController extends Controller
     {
         $baseURL = 'https://payment.trodevit.com/troesports/api/verify-payment';
         $apiKey = 'jYX9XBfxSxeAmRQZh3PqjvNFxm1quLqnyi7athqe';
-        $email = Auth::user()->email;
-        $body = [
-            'full_name' => Auth::user()->name,
-            'email' => $email,
-            'amount' => $data['amount'],
-            'metadata' => ['orderId' => $order_id, 'user_id' => Auth::id()],
-            'redirect_url' => route('uddoktapay.verify'),
-            'cancel_url' => route('uddoktapay.cancel')
-        ];
+        $body=$request->query('invoice_id');
 
 //            dd($body);
 
@@ -117,7 +109,7 @@ class PaymentController extends Controller
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
             'RT-UDDOKTAPAY-API-KEY' => $apiKey,
-        ])->post($baseURL, $body);
+        ])->get($baseURL, $body);
 
         if ($response->successful()) {
             $url = $response->json('payment_url');
