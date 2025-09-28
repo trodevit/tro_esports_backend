@@ -28,12 +28,11 @@ class PaymentController extends Controller
             $order_id = Str::random(16);
             $data = $request->validate([
                 'match_id' => 'required|exists:matches,id',
-                'game_username' => 'required',
-                'date'=> 'required',
-                'time'=> 'required',
+
+
                 'partners_name'=>'nullable|array',
             ]);
-
+            $data['game_username'] = Auth::user()->game_username;
             $data['match_name'] = Matches::where('id', $data['match_id'])->value('match_name');
             $data['user_id']   = Auth::id();
             $data['email'] = Auth::user()->email;
@@ -45,8 +44,8 @@ class PaymentController extends Controller
             $matchDate = date('Y-m-d',strtotime(Matches::where('id', $data['match_id'])->value('match_date')));
             $matchTime = date('H:i:s',strtotime(Matches::where('id', $data['match_id'])->value('match_time')));
 
-            $currentDate = date('Y-m-d',strtotime($data['date']));
-            $currentTime = date('H:i:s',strtotime($data['time']));
+            $currentDate = date('Y-m-d',strtotime(Carbon::now()->format('Y-m-d')));
+            $currentTime = date('H:i:s',strtotime(Carbon::now()->format('H:i:s')));
 
             $matchDateTime = Carbon::parse("$matchDate $matchTime");
             $userDateTime  = Carbon::parse("$currentDate $currentTime");
