@@ -7,6 +7,7 @@ use App\Models\PaymentInfo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use UddoktaPay\LaravelSDK\Requests\CheckoutRequest;
 use UddoktaPay\LaravelSDK\UddoktaPay;
@@ -42,6 +43,8 @@ class PaymentController extends Controller
             $data['amount'] = Matches::where('id', $data['match_id'])->value('entry_fee');
 
             $data['orderId'] = $order_id;
+
+            Session::put('order_id',$order_id);
 
             $matchDate = date('Y-m-d',strtotime(Matches::where('id', $data['match_id'])->value('match_date')));
             $matchTime = date('H:i:s',strtotime(Matches::where('id', $data['match_id'])->value('match_time')));
@@ -130,15 +133,11 @@ class PaymentController extends Controller
             } elseif ($response->pending()) {
                 $order = $response->metadata('order_id');
 
-                PaymentInfo::where('orderId',$order)->update([
-                    'status'=>$response->status(),
-                ]);
+                PaymentInfo::where('orderId',$order)->delete();;
             } elseif ($response->failed()) {
                 $order = $response->metadata('order_id');
 
-                PaymentInfo::where('orderId',$order)->update([
-                    'status'=>$response->status(),
-                ]);
+                PaymentInfo::where('orderId',$order)->delete();
             }
         } catch (\UddoktaPay\LaravelSDK\Exceptions\UddoktaPayException $e) {
             dd("Verification Error: " . $e->getMessage());
@@ -150,5 +149,12 @@ class PaymentController extends Controller
         $payment = PaymentInfo::where('user_id',Auth::id())->get();
 
         return $this->successResponse($payment,'Your Payment History',200);
+    }
+
+    public function cancel( Request $request)
+    {
+        $order = Session::get('order_id');
+
+        PaymentInfo::where('orderId',$order)->delete();
     }
 }
