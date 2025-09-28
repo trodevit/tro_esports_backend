@@ -34,7 +34,6 @@ class ApiController extends Controller
         $userDateTime  = Carbon::parse("$currentDate $currentTime");
 
 
-
         if ($userDateTime->lte($matchDateTime)) {
             $purchaced = PaymentInfo::where('match_id',$match->id)->where('user_id',Auth::id())->exists();
             if (!$purchaced){
@@ -42,6 +41,7 @@ class ApiController extends Controller
             }
             $count = PaymentInfo::where('match_id',$match->id)->count();
             $playerLimit = $match->player_limit - $count;
+            $match->slot_free = $playerLimit;
         }
         else{
             return response()->json([
