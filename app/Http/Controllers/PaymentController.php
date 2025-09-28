@@ -7,6 +7,7 @@ use App\Models\PaymentInfo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use UddoktaPay\LaravelSDK\Requests\CheckoutRequest;
@@ -75,22 +76,45 @@ class PaymentController extends Controller
 
 //        dd($data);
 
+            $baseURL = 'https://payment.trodevit.com/trodevit/api/checkout-v2';
+            $apiKey = 'MHvZvqX6UY7Vw4AcrWjwGALF1VKlOQxJgaK2uuo6';
 
-            $checkoutRequest = CheckoutRequest::make()
-                ->setFullName(Auth::user()->name)
-                ->setEmail(Auth::user()->email)
-                ->setAmount(Matches::where('id', $data['match_id'])->value('entry_fee'))
-                ->addMetadata('order_id', $order_id)
-                ->setRedirectUrl(route('uddoktapay.verify'))
-                ->setCancelUrl(route('uddoktapay.cancel'))
-                ->setWebhookUrl(route('uddoktapay.ipn'));
+            $body = [
+                'full_name' => Auth::user()->name,
+                'email' => Auth::user()->email,
+                'amount' => $data['amount'],
+                'metadata' => json_encode($data['orderId']),
+                'redirect_url' => route('uddoktapay.verify'),
+                'cancel_url' => route('uddoktapay.cancel')
+            ];
 
-            $response = $this->uddoktapay()->checkout($checkoutRequest);
+            $response = Http::withHeaders([
+                'Content-Type'  => 'application/json',
+                'Accept'        => 'application/json',
+                'RT-UDDOKTAPAY-API-KEY'      => $apiKey,
+            ])->post($baseURL,[$body]);
 
-
-            if ($response->failed()) {
-                dd($response->message());
+            if ($response->successful()){
+                dd($response->json());
             }
+            else{
+                dd($response->json());
+            }
+//            $checkoutRequest = CheckoutRequest::make()
+//                ->setFullName(Auth::user()->name)
+//                ->setEmail(Auth::user()->email)
+//                ->setAmount(Matches::where('id', $data['match_id'])->value('entry_fee'))
+//                ->addMetadata('order_id', $order_id)
+//                ->setRedirectUrl(route('uddoktapay.verify'))
+//                ->setCancelUrl(route('uddoktapay.cancel'))
+//                ->setWebhookUrl(route('uddoktapay.ipn'));
+//
+//            $response = $this->uddoktapay()->checkout($checkoutRequest);
+//
+//
+//            if ($response->failed()) {
+//                dd($response->message());
+//            }
             $data['status']='pending';
 
             $payment = PaymentInfo::create($data);
