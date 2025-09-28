@@ -28,5 +28,7 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     Route::get('payment/history',[PaymentController::class, 'paymentHistory']);
 
+    Route::get('withdraw/history',[ApiController::class,'withdrawList']);
+
     Route::post('logout',[AuthController::class,'logout']);
 });
