@@ -78,7 +78,7 @@ class PaymentController extends Controller
 
             $baseURL = 'https://payment.trodevit.com/trodevit/api/checkout-v2';
             $apiKey = 'MHvZvqX6UY7Vw4AcrWjwGALF1VKlOQxJgaK2uuo6';
-            $email = Auth::user()->email;
+            $email = 'rubayetislam16@gmail.com';
             $body = [
                 'full_name' => Auth::user()->name,
                 'email' => $email,
