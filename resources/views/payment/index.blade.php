@@ -9,28 +9,25 @@
             border: 1px solid #e9eef5;
             border-radius: 1rem;
         }
-        .table thead th.sticky {
-            position: sticky; top: 0; z-index: 5;
-            background: #fff; /* for backdrop */
-            border-top: 0;
-        }
-        .table-hover tbody tr:hover {
-            background-color: #f8fbff !important;
-        }
-        .chip {
-            display: inline-block; padding: .25rem .5rem; border-radius: 999px;
-            font-size: .75rem; background: #eef5ff; border: 1px solid #e0e9ff;
-            margin: 0 .25rem .25rem 0;
-        }
+        .table thead th.sticky { position: sticky; top: 0; z-index: 5; background: #fff; border-top: 0; }
+        .table-hover tbody tr:hover { background-color: #f8fbff !important; }
+        .chip { display: inline-block; padding: .25rem .5rem; border-radius: 999px; font-size: .75rem; background: #eef5ff; border: 1px solid #e0e9ff; margin: 0 .25rem .25rem 0; }
         .muted { color: #6c757d; }
-        .truncate {
-            max-width: 220px; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            vertical-align: bottom;
-        }
-        .copy-btn {
-            border: 1px dashed #d0d7e1; background: #fff; font-size: .7rem; padding: .1rem .35rem; line-height: 1;
-        }
+        .truncate { max-width: 220px; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; }
+        .copy-btn { border: 1px dashed #d0d7e1; background: #fff; font-size: .7rem; padding: .1rem .35rem; line-height: 1; }
         .card-rounded { border-radius: 1rem; }
+
+        /* Refund modal tweaks */
+        .refund-modal .modal-content { border-radius: 1rem; overflow: hidden; }
+        .refund-modal .modal-header { background: linear-gradient(135deg,#f7fbff,#f8fffb); border-bottom: 1px solid #e9eef5; }
+        .refund-modal .summary-list dt { color:#6c757d; font-weight:600; }
+        .refund-modal .summary-list dd { margin-bottom:.5rem; }
+        .refund-modal .badge-method { background:#eaf3ff; color:#0b5ed7; border:1px solid #d9e8ff; }
+        .refund-modal .captured-box { background:#f8fafc; border:1px solid #eef2f7; border-radius:.75rem; padding:.75rem 1rem; }
+        .refund-modal .form-label { font-weight:600; }
+        @media (max-width: 575.98px){
+            .refund-modal .modal-dialog { margin: .75rem; }
+        }
     </style>
 
     <div class="container py-4">
@@ -112,13 +109,15 @@
                             <th class="sticky">Email</th>
                             <th class="sticky">Amount</th>
                             <th class="sticky">Status</th>
+                            {{-- NEW --}}
+                            <th class="sticky">Refunded Amount</th>
+                            <th class="sticky">Refund Reason</th>
                             <th class="sticky">Transaction</th>
                             <th class="sticky">Date & Time</th>
                             <th class="sticky">Match</th>
                             <th class="sticky">Order</th>
                             <th class="sticky">Partners</th>
                             <th class="sticky">Created</th>
-                            {{-- NEW --}}
                             <th class="sticky">Actions</th>
                         </tr>
                         </thead>
@@ -132,8 +131,10 @@
                                     'failed','cancelled'         => 'text-bg-danger',
                                     default                      => 'text-bg-secondary',
                                 };
-                                $partners = is_array($p->partners_name) ? array_filter($p->partners_name) : [];
+                                $partners   = is_array($p->partners_name) ? array_filter($p->partners_name) : [];
                                 $refundable = $p->transaction_id && in_array($status, ['paid','success','completed']);
+                                $refundedAmount = (float)($p->refund_amount ?? 0);
+                                $refundReason   = $p->refund_reason ?? $p->refunded_reason ?? null; // support either field name
                             @endphp
                             <tr>
                                 <td class="text-muted">{{ $payments->firstItem() + $index }}</td>
@@ -144,6 +145,20 @@
                                 <td><span class="truncate" title="{{ $p->email }}">{{ $p->email }}</span></td>
                                 <td class="fw-semibold">{{ number_format((float)$p->amount, 2) }}</td>
                                 <td><span class="badge {{ $badge }}">{{ strtoupper($p->status) }}</span></td>
+
+                                {{-- NEW: Refunded Amount --}}
+                                <td class="{{ $refundedAmount > 0 ? 'text-success fw-semibold' : 'muted' }}">
+                                    {{ $refundedAmount > 0 ? number_format($refundedAmount, 2) : '—' }}
+                                </td>
+
+                                {{-- NEW: Refund Reason --}}
+                                <td>
+                                    @if($refundReason)
+                                        <span class="truncate" title="{{ $refundReason }}">{{ $refundReason }}</span>
+                                    @else
+                                        <span class="muted">—</span>
+                                    @endif
+                                </td>
 
                                 {{-- Transaction with copy --}}
                                 <td>
@@ -190,7 +205,7 @@
 
                                 <td class="muted">{{ optional($p->created_at)->format('Y-m-d H:i') }}</td>
 
-                                {{-- NEW: Actions --}}
+                                {{-- Actions --}}
                                 <td>
                                     @if($refundable)
                                         <button
@@ -203,7 +218,7 @@
                                             data-method="{{ strtoupper($p->method) }}"
                                             data-amount="{{ number_format((float)$p->amount, 2) }}"
                                             data-amount-raw="{{ (float)$p->amount }}"
-                                            data-refunded-raw="{{ (float)($p->refunded_amount ?? 0) }}"  {{-- NEW --}}
+                                            data-refunded-raw="{{ (float)($p->refund_amount ?? 0) }}"
                                             data-match="{{ $p->match_name }}"
                                         >
                                             Refund
@@ -215,8 +230,8 @@
                             </tr>
                         @empty
                             <tr>
-                                {{-- colspan updated (14 + 1 new = 15) --}}
-                                <td colspan="15" class="text-center py-5">
+                                {{-- colspan updated: 17 columns --}}
+                                <td colspan="17" class="text-center py-5">
                                     <div class="fs-5">No payments found</div>
                                     <div class="muted">Try refreshing the page.</div>
                                 </td>
@@ -235,75 +250,111 @@
         </div>
     </div>
 
-    {{-- NEW: Refund Modal --}}
-    <div class="modal fade" id="refundModal" tabindex="-1" aria-labelledby="refundModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <form method="POST" action="{{ route('uddoktapay.refund') }}" class="modal-content">
+    {{-- Refund Modal --}}
+    <div class="modal fade refund-modal" id="refundModal" tabindex="-1" aria-labelledby="refundModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <form method="POST" action="{{ route('uddoktapay.refund') }}" class="modal-content needs-validation" novalidate>
                 @csrf
 
-                {{-- HIDDEN INPUTS THAT WILL BE SUBMITTED --}}
-                {{-- inside the modal form --}}
-                {{-- HIDDEN inputs (keep) --}}
+                {{-- Hidden inputs --}}
                 <input type="hidden" name="payment_id" id="refundPaymentId">
                 <input type="hidden" name="transaction_id" id="refundTransactionId">
                 <input type="hidden" name="method" id="refundMethodInput">
+                {{-- If you also want a separate key --}}
+                <input type="hidden" name="payment_method" id="refundPaymentMethod">
                 <input type="hidden" name="match_name" id="refundMatchInput">
 
-                <div class="mb-3">
-                    <div class="muted mb-1">Summary</div>
-                    <dl class="row mb-2">
-                        <dt class="col-5">Transaction ID</dt>
-                        <dd class="col-7" id="refundTx">—</dd>
-
-                        <dt class="col-5">Payment Method</dt>
-                        <dd class="col-7" id="refundMethod">—</dd>
-
-                        <dt class="col-5">Captured Amount</dt>
-                        <dd class="col-7" id="refundAmountCaptured">—</dd>
-
-                        <dt class="col-5">Match</dt>
-                        <dd class="col-7" id="refundMatch">—</dd>
-                    </dl>
+                <div class="modal-header">
+                    <div>
+                        <h5 class="modal-title mb-0" id="refundModalLabel">Issue Refund</h5>
+                        <small class="text-muted d-block">Review the details, then confirm the refund amount.</small>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                {{-- NEW: editable refund amount --}}
-                <div class="mb-3">
-                    <label for="refundAmountInput" class="form-label">Refund amount</label>
-                    <input
-                        type="number"
-                        class="form-control"
-                        name="amount"
-                        id="refundAmountInput"
-                        step="0.01"
-                        min="0.01"
-                        required
-                    >
-                    <div class="form-text">
-                        Max refundable: <span id="refundAmountMax">0.00</span>
+                <div class="modal-body">
+                    <div class="row g-3 align-items-stretch">
+                        <div class="col-12 col-md-6">
+                            <div class="captured-box h-100">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="text-muted">Transaction</div>
+                                        <div class="fw-semibold" id="refundTx">—</div>
+                                    </div>
+                                    <span class="badge badge-method" id="refundMethod">—</span>
+                                </div>
+                                <hr class="my-3">
+                                <div class="summary-list">
+                                    <dl class="row mb-0">
+                                        <dt class="col-6">Captured Amount</dt>
+                                        <dd class="col-6" id="refundAmountCaptured">—</dd>
+
+                                        <dt class="col-6">Match</dt>
+                                        <dd class="col-6" id="refundMatch">—</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="mb-3">
+                                <label for="refundAmountInput" class="form-label">Refund amount</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">৳</span>
+                                    <input
+                                        type="number"
+                                        class="form-control"
+                                        name="amount"
+                                        id="refundAmountInput"
+                                        step="0.01"
+                                        min="0.01"
+                                        required
+                                        placeholder="0.00"
+                                    >
+                                    <div class="invalid-feedback">Enter a valid amount (min 0.01, not exceeding the max refundable).</div>
+                                </div>
+                                <div class="mt-1 muted">
+                                    Max refundable: <strong><span id="refundAmountMax">0.00</span></strong>
+                                </div>
+                            </div>
+
+                            <div class="mb-0">
+                                <label for="refundReason" class="form-label">Reason</label>
+                                <textarea
+                                    class="form-control"
+                                    name="reason"
+                                    id="refundReason"
+                                    rows="4"
+                                    placeholder="Reason for refund…"
+                                    required minlength="5" maxlength="500"
+                                ></textarea>
+                                <div class="form-text">Be specific. This will be stored with the refund.</div>
+                                <div class="invalid-feedback">Please provide a reason (5–500 characters).</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="refundReason" class="form-label">Reason</label>
-                    <textarea class="form-control" name="reason" id="refundReason" rows="3"
-                              placeholder="Reason for refund…" required minlength="5" maxlength="500"></textarea>
-                    <div class="form-text">Be specific. This will be stored with the refund.</div>
-                </div>
-
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-danger">Submit Refund</button>
+                <div class="modal-footer justify-content-between">
+                    <div class="text-muted small">
+                        Refunds may take a moment to process. Don’t close the window until you see a confirmation.
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger" id="refundSubmitBtn">
+                            <span class="submit-text">Submit Refund</span>
+                            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        </button>
+                    </div>
                 </div>
             </form>
-
         </div>
     </div>
 
     {{-- copy + refund handlers --}}
     <script>
         document.addEventListener('click', function(e) {
-            // existing copy handler...
+            // Copy buttons
             if (e.target && e.target.matches('.copy-btn')) {
                 const val = e.target.getAttribute('data-copy') || '';
                 if (!val) return;
@@ -333,6 +384,7 @@
             document.getElementById('refundPaymentId').value       = btn.dataset.paymentId || '';
             document.getElementById('refundTransactionId').value   = btn.dataset.transactionId || '';
             document.getElementById('refundMethodInput').value     = btn.dataset.method || '';
+            document.getElementById('refundPaymentMethod').value   = btn.dataset.method || '';
             document.getElementById('refundMatchInput').value      = btn.dataset.match || '';
 
             // Editable amount
@@ -357,6 +409,38 @@
             const reason = document.getElementById('refundReason');
             if (reason) reason.value = '';
         });
-    </script>
 
+        // Basic Bootstrap validation + submit UX
+        (function () {
+            const form = document.querySelector('#refundModal form');
+            const submitBtn = document.getElementById('refundSubmitBtn');
+            if (!form || !submitBtn) return;
+
+            form.addEventListener('submit', function (e) {
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                } else {
+                    submitBtn.disabled = true;
+                    submitBtn.querySelector('.submit-text').classList.add('d-none');
+                    submitBtn.querySelector('.spinner-border').classList.remove('d-none');
+                }
+                form.classList.add('was-validated');
+            });
+
+            // Reset state when modal hides
+            const modalEl = document.getElementById('refundModal');
+            modalEl.addEventListener('hidden.bs.modal', function () {
+                form.classList.remove('was-validated');
+                submitBtn.disabled = false;
+                submitBtn.querySelector('.spinner-border').classList.add('d-none');
+                submitBtn.querySelector('.submit-text').classList.remove('d-none');
+            });
+
+            // Focus amount field when shown
+            modalEl.addEventListener('shown.bs.modal', function(){
+                document.getElementById('refundAmountInput')?.focus();
+            });
+        })();
+    </script>
 @endsection
