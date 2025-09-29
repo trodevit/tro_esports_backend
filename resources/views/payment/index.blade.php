@@ -22,9 +22,7 @@
             font-size: .75rem; background: #eef5ff; border: 1px solid #e0e9ff;
             margin: 0 .25rem .25rem 0;
         }
-        .muted {
-            color: #6c757d;
-        }
+        .muted { color: #6c757d; }
         .truncate {
             max-width: 220px; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
             vertical-align: bottom;
@@ -46,6 +44,25 @@
                 <a href="{{ request()->url() }}" class="btn btn-sm btn-outline-primary">Refresh</a>
             </div>
         </div>
+
+        {{-- Flash --}}
+        @if (session('status'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('status') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>There were validation errors.</strong>
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $err)
+                        <li>{{ $err }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
 
         {{-- Quick stats (current page only; optional) --}}
         @php
@@ -101,6 +118,8 @@
                             <th class="sticky">Order</th>
                             <th class="sticky">Partners</th>
                             <th class="sticky">Created</th>
+                            {{-- NEW --}}
+                            <th class="sticky">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -114,6 +133,7 @@
                                     default                      => 'text-bg-secondary',
                                 };
                                 $partners = is_array($p->partners_name) ? array_filter($p->partners_name) : [];
+                                $refundable = $p->transaction_id && in_array($status, ['paid','success','completed']);
                             @endphp
                             <tr>
                                 <td class="text-muted">{{ $payments->firstItem() + $index }}</td>
@@ -169,10 +189,34 @@
                                 </td>
 
                                 <td class="muted">{{ optional($p->created_at)->format('Y-m-d H:i') }}</td>
+
+                                {{-- NEW: Actions --}}
+                                <td>
+                                    @if($refundable)
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm btn-outline-danger refund-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#refundModal"
+                                            data-payment-id="{{ $p->id }}"
+                                            data-transaction-id="{{ $p->transaction_id }}"
+                                            data-method="{{ strtoupper($p->method) }}"
+                                            data-amount="{{ number_format((float)$p->amount, 2) }}"
+                                            data-amount-raw="{{ (float)$p->amount }}"
+                                            data-refunded-raw="{{ (float)($p->refunded_amount ?? 0) }}"  {{-- NEW --}}
+                                            data-match="{{ $p->match_name }}"
+                                        >
+                                            Refund
+                                        </button>
+                                    @else
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" disabled>Refund</button>
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="14" class="text-center py-5">
+                                {{-- colspan updated (14 + 1 new = 15) --}}
+                                <td colspan="15" class="text-center py-5">
                                     <div class="fs-5">No payments found</div>
                                     <div class="muted">Try refreshing the page.</div>
                                 </td>
@@ -191,9 +235,75 @@
         </div>
     </div>
 
-    {{-- tiny copy-to-clipboard helper --}}
+    {{-- NEW: Refund Modal --}}
+    <div class="modal fade" id="refundModal" tabindex="-1" aria-labelledby="refundModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="POST" action="{{ route('uddoktapay.refund') }}" class="modal-content">
+                @csrf
+
+                {{-- HIDDEN INPUTS THAT WILL BE SUBMITTED --}}
+                {{-- inside the modal form --}}
+                {{-- HIDDEN inputs (keep) --}}
+                <input type="hidden" name="payment_id" id="refundPaymentId">
+                <input type="hidden" name="transaction_id" id="refundTransactionId">
+                <input type="hidden" name="method" id="refundMethodInput">
+                <input type="hidden" name="match_name" id="refundMatchInput">
+
+                <div class="mb-3">
+                    <div class="muted mb-1">Summary</div>
+                    <dl class="row mb-2">
+                        <dt class="col-5">Transaction ID</dt>
+                        <dd class="col-7" id="refundTx">—</dd>
+
+                        <dt class="col-5">Payment Method</dt>
+                        <dd class="col-7" id="refundMethod">—</dd>
+
+                        <dt class="col-5">Captured Amount</dt>
+                        <dd class="col-7" id="refundAmountCaptured">—</dd>
+
+                        <dt class="col-5">Match</dt>
+                        <dd class="col-7" id="refundMatch">—</dd>
+                    </dl>
+                </div>
+
+                {{-- NEW: editable refund amount --}}
+                <div class="mb-3">
+                    <label for="refundAmountInput" class="form-label">Refund amount</label>
+                    <input
+                        type="number"
+                        class="form-control"
+                        name="amount"
+                        id="refundAmountInput"
+                        step="0.01"
+                        min="0.01"
+                        required
+                    >
+                    <div class="form-text">
+                        Max refundable: <span id="refundAmountMax">0.00</span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="refundReason" class="form-label">Reason</label>
+                    <textarea class="form-control" name="reason" id="refundReason" rows="3"
+                              placeholder="Reason for refund…" required minlength="5" maxlength="500"></textarea>
+                    <div class="form-text">Be specific. This will be stored with the refund.</div>
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Submit Refund</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    {{-- copy + refund handlers --}}
     <script>
         document.addEventListener('click', function(e) {
+            // existing copy handler...
             if (e.target && e.target.matches('.copy-btn')) {
                 const val = e.target.getAttribute('data-copy') || '';
                 if (!val) return;
@@ -202,7 +312,51 @@
                     e.target.textContent = 'copied';
                     setTimeout(()=>{ e.target.textContent = old; }, 800);
                 });
+                return;
             }
+
+            const btn = e.target.closest('.refund-btn');
+            if (!btn) return;
+
+            // Numbers (raw) for computing max refundable
+            const amountRaw   = parseFloat(btn.dataset.amountRaw || '0');
+            const refundedRaw = parseFloat(btn.dataset.refundedRaw || '0');
+            const maxRefund   = Math.max(0, amountRaw - refundedRaw);
+
+            // Fill visible summary
+            document.getElementById('refundTx').textContent        = btn.dataset.transactionId || '—';
+            document.getElementById('refundMethod').textContent    = btn.dataset.method || '—';
+            document.getElementById('refundAmountCaptured').textContent = btn.dataset.amount || '—';
+            document.getElementById('refundMatch').textContent     = btn.dataset.match || '—';
+
+            // Fill hidden inputs
+            document.getElementById('refundPaymentId').value       = btn.dataset.paymentId || '';
+            document.getElementById('refundTransactionId').value   = btn.dataset.transactionId || '';
+            document.getElementById('refundMethodInput').value     = btn.dataset.method || '';
+            document.getElementById('refundMatchInput').value      = btn.dataset.match || '';
+
+            // Editable amount
+            const amountInput = document.getElementById('refundAmountInput');
+            const maxSpan     = document.getElementById('refundAmountMax');
+
+            if (maxSpan)   maxSpan.textContent = maxRefund.toFixed(2);
+            if (amountInput) {
+                amountInput.max   = maxRefund.toFixed(2);
+                amountInput.min   = '0.01';
+                amountInput.value = maxRefund.toFixed(2); // default to full remaining; user can lower it
+
+                amountInput.addEventListener('input', function() {
+                    let v = parseFloat(this.value || '0');
+                    if (isNaN(v)) return;
+                    if (v > maxRefund) this.value = maxRefund.toFixed(2);
+                    if (v < 0.01 && this.value !== '') this.value = '0.01';
+                }, { once: true });
+            }
+
+            // Clear previous reason
+            const reason = document.getElementById('refundReason');
+            if (reason) reason.value = '';
         });
     </script>
+
 @endsection

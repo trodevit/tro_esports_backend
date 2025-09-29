@@ -179,11 +179,11 @@ class PaymentController extends Controller
         $sandBoxURL = 'https://sandbox.uddoktapay.com/api/refund-payment';
         $sandBoxApi = '982d381360a69d419689740d9f2e26ce36fb7a50';
         $body = [
-            'transaction_id'=>'CBDGYTRDEY',
-            'payment_method'=>'bkash',
-            'amount'=>10,
-            'product_name'=>'abc123',
-            'reason'=>'hudai mon chailo'
+            'transaction_id'=>$request->input('transaction_id'),
+            'payment_method'=>$request->input('method'),
+            'amount'=>$request->input('amount'),
+            'product_name'=>$request->input('match_name'),
+            'reason'=>$request->input('reason')
         ];
 
 
