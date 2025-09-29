@@ -39,6 +39,10 @@ class ApiController extends Controller
             $purchaced = PaymentInfo::where('match_id',$match->id)->where('user_id',Auth::id())->exists();
             if (!$purchaced){
                 $match->room_details = null;
+                $match->isPayment = false;
+            }
+            else{
+                $match->isPayment = true;
             }
             $count = PaymentInfo::where('match_id',$match->id)->count();
             $playerLimit = $match->player_limit - $count;

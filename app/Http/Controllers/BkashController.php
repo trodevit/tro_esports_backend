@@ -114,8 +114,8 @@ class BkashController extends Controller
             $url   = $sandBoxURL . '/checkout/payment/organizationBalance';
             $appId = $sandBoxAppKey;
             $credential = [
-                'username' => $sandBoxAppKey,
-                'password' => $sandBoxAppPassword,
+                'username' => $sandBoxUsername,
+                'password' => $sandBoxPassword,
             ];
 
             $response = Http::withoutVerifying()->withHeaders([
@@ -123,9 +123,9 @@ class BkashController extends Controller
                 'Accept'        => 'application/json',
                 'Authorization' => $token,
                 'X-App-Key'     => $appId,
-                'X-Amz-Date' => Carbon::now('Asia/Dhaka')->format('H:i:s'),
-                'Credential'=>json_encode($credential),
-            ])->post($url);
+//                'Date' => Carbon::now('Asia/Dhaka')->format('H:i:s'),
+//                'Credential'=>$credential
+            ])->get($url);
         }
 
         // Make request
