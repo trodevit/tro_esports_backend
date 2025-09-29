@@ -216,7 +216,7 @@ class PaymentController extends Controller
                     'refund_amount' => $body['amount'],
                     'refund_reason'=>$body['reason']
                 ]);
-            return $this->successResponse($body, 'Refund Successfully', 200);
+            return redirect()->back()->with('success','Refund Successfully');
         }
         else {
             dd($response->json());
