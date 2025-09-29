@@ -16,10 +16,16 @@ Route::post('forgotPassword',[AuthController::class,'forgotPassword']);
 
 //Route::post('/refund', [PaymentController::class, 'refund'])->name('uddoktapay.refund');
 
-Route::post('query/balance',[BkashController::class,'queryBalance']);
+
+
+//Route::post('query/balance',[BkashController::class,'queryBalance']);
 
 Route::group(['middleware' => 'auth:api'], function() {
     Route::get('profile',[AuthController::class,'profile']);
+
+    Route::post('profile/update',[AuthController::class,'profileUpdate']);
+
+    Route::post('profile/delete',[AuthController::class,'delete']);
 
     Route::post('changePassword',[AuthController::class,'changePassword']);
     Route::get('match',[ApiController::class,'matches']);

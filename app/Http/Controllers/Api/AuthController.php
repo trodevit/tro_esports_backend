@@ -74,6 +74,30 @@ class AuthController extends Controller
         return $this->successResponse($user,'User logged in successfully',200);
     }
 
+    public function profileUpdate(Request $request)
+    {
+        try {
+            $user = User::find(Auth::id());
+
+                $data = $request->validate([
+                    'name' => 'sometimes|nullable',
+                    'email' => 'sometimes|nullable|email',
+                    'phone' => 'sometimes|nullable',
+                    'game_username' => 'sometimes|nullable',
+                ]);
+
+                    $user->update($data);
+
+                return $this->successResponse($user, 'User updated successfully', 200);
+            }
+            catch (\Exception $e) {
+                return $this->errorResponse(null,'Something went wrong: '.$e->getMessage(), 500);
+        }
+        catch (\Exception $e) {
+            dd($e->getMessage());
+            return $this->errorResponse(null,'Something went wrong: '.$e->getMessage(), 500);
+        }
+    }
     public function phoneCheck(Request $request)
     {
         $data = $request->validate([
@@ -133,5 +157,12 @@ class AuthController extends Controller
         Auth::logout();
 
         return $this->successResponse(null,'User logged out successfully',200);
+    }
+
+    public function delete()
+    {
+        $user = User::find(Auth::id())->delete();
+
+        return $this->successResponse(null,'User deleted successfully',200);
     }
 }
