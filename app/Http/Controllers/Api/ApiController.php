@@ -50,7 +50,7 @@ class ApiController extends Controller
 
             $progress = 0;
             if ($match->player_limit > 0) {
-                $progress = ($count / $match->player_limit) * 100;
+                $progress = (($count / $match->player_limit) * 100);
             }
             $match->progress = $progress;
         }

@@ -147,7 +147,7 @@
                                                 <option value="" disabled selected>Select Match Type</option>
                                                 <option value="Solo">Solo</option>
                                                 <option value="Duo">Duo</option>
-                                                <option value="4v4 Team">4v4 Team</option>
+                                                <option value="4v4">4v4 Team</option>
                                                 <option value="1v3">1v3</option>
                                                 <option value="2v3">2v3</option>
                                                 <option value="1v2">1v2</option>

@@ -34,7 +34,15 @@ class PaymentController extends Controller
                 'partners_name' => 'nullable|array',
             ]);
 
-            $data['amount'] = Matches::where('id', $data['match_id'])->value('entry_fee');
+            $check = Matches::where('id', $data['match_id'])->first();
+
+            if ($check->match_type == 'Duo') {
+                $data['amount'] = Matches::where('id', $data['match_id'])->value('entry_fee') * 2;
+            }elseif ($check->match_type == '4v4'){
+                $data['amount'] = Matches::where('id', $data['match_id'])->value('entry_fee') * 4;
+            }else{
+                $data['amount'] = Matches::where('id', $data['match_id'])->value('entry_fee');
+            }
 
             Session::put('order_id', $order_id);
             Session::put('user_id',Auth::id());
