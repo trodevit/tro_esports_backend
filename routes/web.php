@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\PlayerController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\WithdrawMoneyController;
 use App\Http\Controllers\RegisterMatchController;
+use App\Http\Controllers\BkashController;
 
 Route::get('/',[WebsiteController::class,'index'])->name('home');
 
@@ -18,6 +19,8 @@ Route::get('/matches',[WebsiteController::class,'matchList'])->name('matches');
 Route::get('/login',[AuthController::class,'loginPage'])->name('login');
 Route::post('/login',[AuthController::class,'login'])->name('loggedIn');
 
+Route::get('getToken',[BkashController::class,'getToken']);
+Route::get('query/balance',[BkashController::class,'queryBalance']);
 
 Route::get('/verify', [PaymentController::class, 'verify'])->name('uddoktapay.verify');
 Route::get('/cancel', [PaymentController::class, 'cancel'])->name('uddoktapay.cancel');

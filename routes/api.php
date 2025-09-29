@@ -7,12 +7,15 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\WithdrawMoneyController;
 
+
 Route::post('register',[AuthController::class,'register']);
 Route::post('login',[AuthController::class,'login']);
 Route::post('phoneCheck',[AuthController::class,'phoneCheck']);
 Route::post('forgotPassword',[AuthController::class,'forgotPassword']);
 
 //Route::post('/refund', [PaymentController::class, 'refund'])->name('uddoktapay.refund');
+
+
 
 Route::group(['middleware' => 'auth:api'], function() {
     Route::get('profile',[AuthController::class,'profile']);
