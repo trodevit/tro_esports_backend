@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Matches;
 use App\Models\PaymentInfo;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -73,13 +74,15 @@ class PaymentController extends Controller
                 'full_name' => Auth::user()->name,
                 'email' => $email,
                 'amount' => $data['amount'],
-                'metadata' => ['orderId' => $order_id, 'user_id' => Auth::id()],
+                'metadata' => [
+                    'match_id' =>$data['match_id'],
+                    'partners_name'=>$data['partners_name'],
+                    'user_id' => Auth::id()
+                ],
                 'redirect_url' => route('uddoktapay.verify',[],true),
                 'return_type' => 'GET',
-                'cancel_url' => route('uddoktapay.cancel')
+                'cancel_url' => route('uddoktapay.cancel',[],true)
             ];
-
-//            dd($body);
 
             if (env('APP_ENV') == 'production') {
                 $response = Http::withHeaders([
@@ -110,14 +113,12 @@ class PaymentController extends Controller
 
     public function verify(Request $request)
     {
-//        dd($request->query('invoice_id'));
         try {
             $baseURL = 'https://payment.trodevit.com/troesports/api/verify-payment';
             $apiKey = 'jYX9XBfxSxeAmRQZh3PqjvNFxm1quLqnyi7athqe';
             $sandBoxURL = 'https://sandbox.uddoktapay.com/api/verify-payment';
             $sandBoxApi = '982d381360a69d419689740d9f2e26ce36fb7a50';
             $body = ['invoice_id'=>$request->query('invoice_id')];
-//            dd($body);
 
             if (env('APP_ENV') == 'production') {
                 $response = Http::withHeaders([
@@ -130,16 +131,31 @@ class PaymentController extends Controller
                     'Content-Type' => 'application/json',
                     'Accept' => 'application/json',
                     'RT-UDDOKTAPAY-API-KEY' => $sandBoxApi,
-                ])->get($sandBoxURL, $body);
+                ])->post($sandBoxURL, $body);
             }
 
             if ($response->successful()) {
+                $userID = $response->json(['metadata','user_id']);
+                $user_id = User::where('id',$userID)->first();
                 $data = $response->json();
-
-                dd($data);
-                $fullName = $data['full_name'];
-                dd($fullName);
-                return $this->successResponse($url, 'Checking Out', 200);
+                $match = Matches::where('id',$response->json(['metadata','match_id']))->first();
+                $payment = PaymentInfo::create([
+                    'user_id'=>$userID,
+                    'game_username'=>$user_id->game_username,
+                    'payment_number'=>$data['sender_number'],
+                    'method'=>$data['payment_method'],
+                    'email'=>$data['email'],
+                    'amount'=>$data['amount'],
+                    'status'=>$data['status'],
+                    'transaction_id'=>$data['transaction_id'],
+                    'date'=>Carbon::now('Asia/Dhaka')->format('Y-m-d'),
+                    'time'=>Carbon::now('Asia/Dhaka')->format('H:i:s'),
+                    'match_id'=>$response->json(['metadata','match_id']),
+                    'match_name'=>$match->match_name,
+                    'orderId'=>$data['invoice_id'],
+                    'partners_name'=>$response->json(['metadata','partners_name'])
+                ]);
+                return $this->successResponse($payment, 'Payment Successfully', 201);
             } else {
                 return $this->errorResponse($response->json('message'), 'Something went wrong', 400);
             }
@@ -158,10 +174,6 @@ class PaymentController extends Controller
 
     public function cancel( Request $request)
     {
-        $order = Session::get('order_id');
-
-        PaymentInfo::where('orderId',$order)->delete();
-
-        return $this->successResponse(null,'Payment Cancelled',200);
+        return $this->successResponse($request->query('invoice_id'),'Payment Cancel',200);
     }
 }
