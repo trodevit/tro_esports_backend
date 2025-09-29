@@ -172,6 +172,49 @@ class PaymentController extends Controller
         return $this->successResponse($payment,'Your Payment History',200);
     }
 
+    public function refund(Request $request)
+    {
+        $baseURL = 'https://payment.trodevit.com/troesports/api/refund-payment';
+        $apiKey = 'jYX9XBfxSxeAmRQZh3PqjvNFxm1quLqnyi7athqe';
+        $sandBoxURL = 'https://sandbox.uddoktapay.com/api/refund-payment';
+        $sandBoxApi = '982d381360a69d419689740d9f2e26ce36fb7a50';
+        $body = [
+            'transaction_id'=>'CBDGYTRDEY',
+            'payment_method'=>'bkash',
+            'amount'=>10,
+            'product_name'=>'abc123',
+            'reason'=>'hudai mon chailo'
+        ];
+
+
+        if (env('APP_ENV') == 'production') {
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+                'RT-UDDOKTAPAY-API-KEY' => $apiKey,
+            ])->post($baseURL, $body);
+        } else {
+            $response = Http::withoutVerifying()->withHeaders([
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+                'RT-UDDOKTAPAY-API-KEY' => $sandBoxApi,
+            ])->post($sandBoxURL, $body);
+        }
+
+        if ($response->successful()) {
+            PaymentInfo::where('transaction_id',$body['transaction_id'])
+                ->update([
+                    'status'=>'refunded',
+                    'refund_amount' => $body['amount'],
+                    'refund_reason'=>$body['reason']
+                ]);
+            return $this->successResponse($body, 'Refund Successfully', 200);
+        }
+        else {
+            dd($response->json());
+        }
+    }
+
     public function cancel( Request $request)
     {
         return $this->successResponse($request->query('invoice_id'),'Payment Cancel',200);

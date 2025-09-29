@@ -20,7 +20,9 @@ class PaymentInfo extends Model
         'match_id',
         'match_name',
         'orderId',
-        'partners_name'
+        'partners_name',
+        'refund_amount',
+        'refund_reason',
     ];
 
     protected $casts = [
