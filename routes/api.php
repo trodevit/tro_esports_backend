@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\WithdrawMoneyController;
+use App\Http\Controllers\BkashController;
 
 
 Route::post('register',[AuthController::class,'register']);
@@ -15,7 +16,7 @@ Route::post('forgotPassword',[AuthController::class,'forgotPassword']);
 
 //Route::post('/refund', [PaymentController::class, 'refund'])->name('uddoktapay.refund');
 
-
+Route::post('query/balance',[BkashController::class,'queryBalance']);
 
 Route::group(['middleware' => 'auth:api'], function() {
     Route::get('profile',[AuthController::class,'profile']);

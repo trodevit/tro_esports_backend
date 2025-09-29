@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Session;
 class BkashController extends Controller
 {
     protected $token;
+
     public function getToken(Request $request)
     {
         $baseURL = 'https://tokenized.pay.bka.sh/v1.2.0-beta';
@@ -39,14 +41,14 @@ class BkashController extends Controller
                     'Accept' => 'application/json',
                     'username' => $username,
                     'password' => $password,
-                ])->post($baseURL . '/checkout/token/grant', $body);
+                ])->post($baseURL . '/tokenized/checkout/token/grant', $body);
             } else {
                 $response = Http::withoutVerifying()->withHeaders([
                     'Content-Type' => 'application/json',
                     'Accept' => 'application/json',
                     'username' => $sandBoxUsername,
                     'password' => $sandBoxPassword,
-                ])->post($sandBoxURL . '/checkout/token/grant', $sandBoxBody);
+                ])->post($sandBoxURL . '/tokenized/checkout/token/grant', $sandBoxBody);
             }
 
 
@@ -72,14 +74,20 @@ class BkashController extends Controller
         }
     }
 
-    public function queryBalance(Request $request){
-        $token = Session::get('token');
-        if (!$token){
+    public function queryBalance(Request $request)
+    {
+        $token = Session::get('token'); // saved id_token
+        if (!$token) {
             return response()->json([
                 'success' => false,
                 'message' => 'Token not provided',
-            ],400);
+            ], 400);
         }
+        if (stripos($token, 'Bearer ') === 0) { // must be raw token
+            $token = substr($token, 7);
+        }
+
+//        dd($token);
 
         $baseURL = 'https://tokenized.pay.bka.sh/v1.2.0-beta';
         $username = '01777614837';
@@ -93,34 +101,37 @@ class BkashController extends Controller
         $sandBoxAppKey = '4f6o0cjiki2rfm34kfdadl1eqq';
         $sandBoxAppPassword = '2is7hdktrekvrbljjh44ll3d9l1dtjo4pasmjvs5vl5qr3fug4b';
 
-        $body = [
-            'app_key' => $appKey,
-            'app_secret' => $appPassword,
-        ];
-        $sandBoxBody = [
-            'app_key' => $sandBoxAppKey,
-            'app_secret' => $sandBoxAppPassword,
-        ];
-
-       $refresh = Session::get('refresh_token');
-
         if (env('APP_ENV') === 'production') {
+            $url   = $baseURL . '/checkout/payment/organizationBalance';
+            $appId = $appKey;
             $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-                'authorization' => $token,
-                'x-app-key' => $appKey
-            ])->post($baseURL . '/checkout/payment/organizationBalance');
+                'Content-Type'  => 'application/json',
+                'Accept'        => 'application/json',
+                'Authorization' => $token,
+                'X-App-Key'     => $appId,
+            ])->get($url);
         } else {
+            $url   = $sandBoxURL . '/checkout/payment/organizationBalance';
+            $appId = $sandBoxAppKey;
+            $credential = [
+                'username' => $sandBoxAppKey,
+                'password' => $sandBoxAppPassword,
+            ];
+
             $response = Http::withoutVerifying()->withHeaders([
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
-                'authorization' => $token,
-                'x-app-key' =>$sandBoxAppKey
-            ])->post($sandBoxURL . '/checkout/payment/organizationBalance');
+                'Content-Type'  => 'application/json',
+                'Accept'        => 'application/json',
+                'Authorization' => $token,
+                'X-App-Key'     => $appId,
+                'X-Amz-Date' => Carbon::now('Asia/Dhaka')->format('H:i:s'),
+                'Credential'=>json_encode($credential),
+            ])->post($url);
         }
 
-        dd($response->json());
+        // Make request
 
+
+        return $response->json();
     }
+
 }

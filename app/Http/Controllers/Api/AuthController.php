@@ -115,7 +115,7 @@ class AuthController extends Controller
                 $user->password  = Hash::make($data['new_password']);
                 $user->save();
 
-                Auth::logout();
+//                Auth::logout();
 
                 return $this->successResponse($user,'Password Changed successfully', 200);
             }
