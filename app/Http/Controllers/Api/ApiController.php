@@ -87,7 +87,9 @@ class ApiController extends Controller
     public function matchHistory()
     {
         $history = MatchHistory::join('users', 'users.game_username', '=', 'match_histories.username')
-            ->select('match_histories.*', 'users.*')->get();
+            ->join('matches','matches.id','=','match_histories.match_id')
+            ->select('match_histories.*', 'users.*')
+            ->get();
 
         return $this->successResponse($history,'Match History',200);
     }
