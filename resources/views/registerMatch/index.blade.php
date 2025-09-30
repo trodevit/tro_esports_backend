@@ -170,13 +170,13 @@
                                         @csrf
 
                                         {{-- Hidden fields (your requested fields) --}}
-                                        <input type="text" name="match_id"   value="{{ $matchId }}">
-                                        <input type="text" name="user_id"    value="{{ $userId }}">
-                                        <input type="text" name="name"       value="{{ $playerName }}">
-                                        <input type="text" name="email"      value="{{ $playerEmail }}">
-                                        <input type="text" name="mobile"     value="{{ $playerPhone }}">
-                                        <input type="text" name="username"   value="{{ $username }}">
-                                        <input type="text" name="per_kill" value="{{ $totalKill }}">
+                                        <input type="hidden" name="match_id"   value="{{ $matchId }}">
+                                        <input type="hidden" name="user_id"    value="{{ $userId }}">
+                                        <input type="hidden" name="name"       value="{{ $playerName }}">
+                                        <input type="hidden" name="email"      value="{{ $playerEmail }}">
+                                        <input type="hidden" name="mobile"     value="{{ $playerPhone }}">
+                                        <input type="hidden" name="username"   value="{{ $username }}">
+                                        <input type="hidden" name="per_kill" value="{{ $totalKill }}">
 
                                         {{-- Visible: Position --}}
                                         <div class="col-12">
