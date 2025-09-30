@@ -45,8 +45,8 @@
                                 <div class="col-md-6">
                                     <div class="form-floating">
                                         <select name="category" id="category" class="form-select" required>
-                                            <option value="BR Match" {{ old('category', $match->category) == 'BR Match' ? 'selected' : '' }}>BR Match</option>
-                                            <option value="Class Squad" {{ old('category', $match->category) == 'Class Squad' ? 'selected' : '' }}>Class Squad</option>
+                                            <option value="br" {{ old('category', $match->category) == 'br' ? 'selected' : '' }}>BR Match</option>
+                                            <option value="class" {{ old('category', $match->category) == 'class' ? 'selected' : '' }}>Class Squad</option>
                                         </select>
                                         <label for="category">Category *</label>
                                         <div class="invalid-feedback">Please choose a category.</div>

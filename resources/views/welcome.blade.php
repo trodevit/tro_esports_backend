@@ -8,7 +8,7 @@
     <!-- SEO Meta -->
     <meta name="description" content="Tro ESports - Competitive gaming, tournaments, and esports community. Join us for the best BR and Class Squad matches.">
     <meta name="keywords" content="Tro ESports, esports, gaming, tournaments, BR Match, Class Squad, competitive gaming, Bangladesh esports">
-    <meta name="author" content="Tro ESports">
+    <meta name="author" content="Sheikh Md. Rubayet Islam Ifti">
     <link rel="canonical" href="https://troesports.zobayerdev.top" />
     <meta http-equiv="Content-Language" content="en">
     <meta name="revisit-after" content="7 days">
@@ -249,18 +249,19 @@
                 <h2 class="section-title" data-i18n="contact.title">Contact Us</h2>
                 <p class="section-lead" data-i18n="contact.lead">যেকোনো তথ্য বা পার্টনারশিপের জন্য আমাদেরকে লিখুন।</p>
                 <div class="glass-card p-4">
-                    <form onsubmit="event.preventDefault(); this.reset(); alert(activeLang==='bn' ? 'ধন্যবাদ! শীঘ্রই যোগাযোগ করবো।' : 'Thanks! We\'ll reach out soon.');">
+                    <form action="{{route('contact')}}" method="post">
+                        @csrf
                         <div class="mb-3">
                             <label class="form-label" data-i18n="contact.name">আপনার নাম</label>
-                            <input type="text" class="form-control bg-transparent text-white border-light" placeholder="e.g. Alex Ahmed" required>
+                            <input type="text" class="form-control bg-transparent text-white border-light" name="name" placeholder="e.g. Alex Ahmed" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label" data-i18n="contact.email">ইমেইল</label>
-                            <input type="email" class="form-control bg-transparent text-white border-light" placeholder="you@example.com" required>
+                            <input type="email" class="form-control bg-transparent text-white border-light" name="email" placeholder="you@example.com" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label" data-i18n="contact.message">মেসেজ</label>
-                            <textarea class="form-control bg-transparent text-white border-light" rows="4" placeholder="Tell us how we can help" required></textarea>
+                            <textarea class="form-control bg-transparent text-white border-light" rows="4" name="msg" placeholder="Tell us how we can help" required></textarea>
                         </div>
                         <button class="btn btn-accent btn-pill" type="submit"><i class="bi bi-send me-2"></i><span data-i18n="contact.send">বার্তা পাঠান</span></button>
                     </form>

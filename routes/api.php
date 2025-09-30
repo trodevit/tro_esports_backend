@@ -18,6 +18,7 @@ Route::post('forgotPassword',[AuthController::class,'forgotPassword']);
 
 Route::get('match/history',[ApiController::class,'matchHistory']);
 
+
 //Route::post('query/balance',[BkashController::class,'queryBalance']);
 
 Route::group(['middleware' => 'auth:api'], function() {
@@ -30,6 +31,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('changePassword',[AuthController::class,'changePassword']);
     Route::get('match',[ApiController::class,'matches']);
     Route::get('match/{id}',[ApiController::class,'matchbyID']);
+    Route::get('category/{category}',[ApiController::class,'categoryWiseMatch']);
     Route::get('prize',[ApiController::class,'prizeTools']);
     Route::get('prize/{id}',[ApiController::class,'prizebyID']);
 

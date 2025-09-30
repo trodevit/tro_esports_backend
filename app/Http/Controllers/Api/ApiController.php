@@ -91,4 +91,11 @@ class ApiController extends Controller
 
         return $this->successResponse($history,'Match History',200);
     }
+
+    public function categoryWiseMatch($category)
+    {
+        $category = Matches::where('category',$category)->get();
+
+        return $this->successResponse($category,'Category wise match list',200);
+    }
 }

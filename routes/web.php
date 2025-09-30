@@ -14,6 +14,8 @@ use App\Http\Controllers\BkashController;
 use App\Http\Controllers\MatchHistoryController;
 Route::get('/',[WebsiteController::class,'index'])->name('home');
 
+Route::post('contact',[WebsiteController::class,'contactUs'])->name('contact');
+
 Route::get('/matches',[WebsiteController::class,'matchList'])->name('matches');
 
 Route::get('/login',[AuthController::class,'loginPage'])->name('login');

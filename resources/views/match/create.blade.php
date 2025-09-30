@@ -53,8 +53,8 @@
                                         <div class="form-floating">
                                             <select name="category" id="category" class="form-select" required>
                                                 <option value="" disabled selected>Select Category</option>
-                                                <option value="BR Match">BR Match</option>
-                                                <option value="Class Squad">Class Squad</option>
+                                                <option value="br">BR Match</option>
+                                                <option value="class">Class Squad</option>
                                             </select>
                                             <label for="category">Category *</label>
                                             <div class="invalid-feedback">Please select a category.</div>

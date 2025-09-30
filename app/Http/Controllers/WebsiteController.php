@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ContactUs;
 use App\Models\Matches;
 use Illuminate\Http\Request;
 
@@ -34,5 +35,19 @@ class WebsiteController extends Controller
         $matches = $category ? Matches::where('category', $category)->get() : Matches::all();
 
         return response()->json($matches);
+    }
+
+
+    public function contactUs(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required',
+            'email' => 'required',
+            'msg' => 'required',
+        ]);
+
+        ContactUs::create($data);
+
+        return redirect()->back();
     }
 }
