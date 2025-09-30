@@ -16,7 +16,7 @@ class AdminAuth
     public function handle(Request $request, Closure $next): Response
     {
         if (!session('is_admin')) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return redirect()->route('login')->withErrors(['Session end. Need to login again.']);
         }
         return $next($request);
     }
