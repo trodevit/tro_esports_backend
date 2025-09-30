@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MatchHistoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -18,6 +19,7 @@ Route::post('forgotPassword',[AuthController::class,'forgotPassword']);
 
 Route::get('match/history',[ApiController::class,'matchHistory']);
 
+Route::get('time',[MatchHistoryController::class,'checktime']);
 
 //Route::post('query/balance',[BkashController::class,'queryBalance']);
 

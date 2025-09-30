@@ -387,52 +387,83 @@
 @php
     use Carbon\Carbon;
 
-    // Use the exact strings from your <select> as the mode keys
+    /**
+     * Exact mode keys (match your <option value="...">)
+     * Keep labels (bn/en) for UI chips and pick an icon name from Bootstrap Icons
+     */
     $modeMeta = [
-        'BR Match'   => ['labelBn' => 'BR Match',   'labelEn' => 'BR Match',   'icon' => 'controller'],
-        'Class Squad'=> ['labelBn' => 'Class Squad','labelEn' => 'Class Squad','icon' => 'people'],
+        'br_match'     => ['labelBn' => 'BR Match',      'labelEn' => 'BR Match',      'icon' => 'joystick'],
+        'br_servival'  => ['labelBn' => 'BR Survival',   'labelEn' => 'BR Survival',   'icon' => 'heart-pulse'],
+        'clash_squad'  => ['labelBn' => 'Clash Squad',   'labelEn' => 'Clash Squad',   'icon' => 'people'],
+        'csv2'         => ['labelBn' => 'CS V2',         'labelEn' => 'CS V2',         'icon' => 'grid-3x3-gap'],
+        'lone_wolf'    => ['labelBn' => 'Lone Wolf',     'labelEn' => 'Lone Wolf',     'icon' => 'person-walking'],
+        'free_match'   => ['labelBn' => 'Free Match',    'labelEn' => 'Free Match',    'icon' => 'ticket'],
     ];
 
-    // Group by the exact category values; never include room_details
-    $grouped = $matches->groupBy('category')->map(function($items) {
-        return $items->map(function($m) {
+    /**
+     * Normalize DB categories (old/new) -> the new slug keys above.
+     * Add mappings here if you have more legacy strings in DB.
+     */
+    $legacyMap = [
+        'BR Match'      => 'br_match',
+        'BR Servival'   => 'br_servival',   // legacy typo
+        'BR Survival'   => 'br_servival',
+        'Class Squad'   => 'clash_squad',
+        'Clash Squad'   => 'clash_squad',
+        'CS V2'         => 'csv2',
+        'Lone Wolf'     => 'lone_wolf',
+        'Free Match'    => 'free_match',
+    ];
+
+    $norm = function ($cat) use ($legacyMap, $modeMeta) {
+        // if it's already one of the slug keys:
+        if (isset($modeMeta[$cat])) return $cat;
+        // map legacy -> slug if known:
+        if (isset($legacyMap[$cat])) return $legacyMap[$cat];
+        // fallback: default to BR Match bucket
+        return 'br_match';
+    };
+
+    /**
+     * Group matches by normalized category slug.
+     * DO NOT include sensitive fields (e.g., room_details).
+     */
+    $grouped = $matches->groupBy(function ($m) use ($norm) {
+        return $norm($m->category);
+    })->map(function ($items) {
+        return $items->map(function ($m) {
             $dt = Carbon::parse("{$m->match_date} {$m->match_time}", 'Asia/Dhaka');
 
-            // Try nice BN; fallback if intl not available
             try { $timeBn = $dt->locale('bn')->isoFormat('LL, h:mm A'); }
             catch (\Throwable $e) { $timeBn = $dt->format('d-m-Y, h:i A'); }
 
             $timeEn = $dt->locale('en')->translatedFormat('M d, Y g:i A');
 
             return [
-                'id'     => (string)$m->id,
+                'id'     => (string) $m->id,
                 'title'  => $m->match_name,
                 'timeBn' => $timeBn,
                 'timeEn' => $timeEn,
                 'map'    => $m->map_type,
                 'type'   => $m->match_type,
-                'slots'  => "0/{$m->player_limit}",   // replace 0 with joined count if you have it
-                'entry'  => '৳'.(int)$m->entry_fee,
-                'prize'  => '৳'.(int)$m->grand_prize,
+                'slots'  => "0/{$m->player_limit}", // replace 0 with joined count if available
+                'entry'  => '৳' . (int) $m->entry_fee,
+                'prize'  => '৳' . (int) $m->grand_prize,
             ];
         })->values();
     });
 
-    // Build modes array for JS (keys are the same display strings)
-    $modesForJs = collect($modeMeta)->map(function($v, $k){
+    /** Build modes array for JS */
+    $modesForJs = collect($modeMeta)->map(function ($v, $k) {
         return array_merge(['key' => $k], $v);
     })->values();
 @endphp
+
 <script>
     const modes = {!! $modesForJs->toJson(JSON_UNESCAPED_UNICODE) !!};
     const matchesByMode = {!! $grouped->toJson(JSON_UNESCAPED_UNICODE) !!};
 </script>
 
-<script>
-    // From server (DB)
-    const modes = {!! $modesForJs->toJson(JSON_UNESCAPED_UNICODE) !!};
-    const matchesByMode = {!! $grouped->toJson(JSON_UNESCAPED_UNICODE) !!};
-</script>
 
 <!-- App JS: uses the injected "modes" and "matchesByMode" -->
 <script>
@@ -501,7 +532,7 @@
     }
 
     // App State + Renderers ----------------------------------
-    let activeModeKey = 'BR Match';
+    let activeModeKey = 'br_match';
 
     function renderModes(){
         const grid = document.getElementById('modesGrid');

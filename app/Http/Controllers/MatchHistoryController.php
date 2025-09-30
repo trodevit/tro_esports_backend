@@ -57,6 +57,14 @@ class MatchHistoryController extends Controller
         return redirect()->back()->with('success', 'Match History Created Successfully');
     }
 
+    public function checktime()
+    {
+        $match = Matches::all();
+
+        foreach ($match as $m) {
+            return $m->match_time;
+        }
+    }
     /**
      * Display the specified resource.
      */
