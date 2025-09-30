@@ -44,5 +44,7 @@ Route::middleware(AdminAuth::class)->group(function () {
     Route::get('/withdraw/money',[WithdrawMoneyController::class,'index'])->name('withdraw.money');
     Route::put('/withdraw/money/{id}',[WithdrawMoneyController::class,'update'])->name('withdraw.money.update');
 
+    Route::get('contact/us',[WebsiteController::class,'contact_us'])->name('contact.us');
+
     Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 });

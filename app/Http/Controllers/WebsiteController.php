@@ -50,4 +50,11 @@ class WebsiteController extends Controller
 
         return redirect()->back();
     }
+
+    public function contact_us()
+    {
+        $contact = ContactUs::all();
+
+        return view('contact_us',['contacts'=>$contact]);
+    }
 }

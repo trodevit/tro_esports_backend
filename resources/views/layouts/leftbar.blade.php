@@ -90,6 +90,13 @@
                             <span class="flex-grow-1">Match History</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center px-3 py-2 {{ request()->routeIs('match.history.*') ? 'active' : '' }}"
+                           href="{{ route('contact.us') }}">
+                            <i class="iconoir-calendar menu-icon me-2"></i>
+                            <span class="flex-grow-1">Contact Us</span>
+                        </a>
+                    </li>
                 </ul>
 
                 {{-- Footer --}}
