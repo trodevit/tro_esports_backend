@@ -3,13 +3,47 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{config('app.name')}}</title>
+    <title>Tro ESports</title>
+
+    <!-- SEO Meta -->
+    <meta name="description" content="Tro ESports - Competitive gaming, tournaments, and esports community. Join us for the best BR and Class Squad matches.">
+    <meta name="keywords" content="Tro ESports, esports, gaming, tournaments, BR Match, Class Squad, competitive gaming, Bangladesh esports">
+    <meta name="author" content="Tro ESports">
+    <link rel="canonical" href="https://troesports.zobayerdev.top" />
+    <meta http-equiv="Content-Language" content="en">
+    <meta name="revisit-after" content="7 days">
+    <meta name="theme-color" content="#0b0f1a" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="Tro ESports" />
+    <meta property="og:description" content="Join Tro ESports for exciting esports tournaments and competitive gaming." />
+    <meta property="og:image" content="https://troesports.zobayerdev.top/TroSports.jpg" />
+    <meta property="og:url" content="https://troesports.zobayerdev.top" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Meta -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Tro ESports" />
+    <meta name="twitter:description" content="Tro ESports - The hub for esports tournaments and competitive gamers." />
+    <meta name="twitter:image" content="https://troesports.zobayerdev.top/TroSports.jpg" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
     <!-- Google Fonts: Hind Siliguri for Bangla, Poppins for English -->
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
         :root{
             --bg-dark:#0b0f1a;
@@ -62,30 +96,34 @@
         .divider{ height:1px; background:#ffffff2a; margin:2rem 0; }
 
         .fab-settings{ position:fixed; right:16px; bottom:16px; z-index:1030; }
+
+        /* Match list styling */
+        .mode-chip{ cursor:pointer; }
+        .list-hover .list-group-item{ background:#12182a; color:#fff; border-color:#1d2540; }
+        .list-hover .list-group-item:hover{ background:#17213a; }
+        .list-hover .active{ background: var(--accent); border-color: var(--accent); }
     </style>
 </head>
+
 <body class="bn">
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg sticky-top border-bottom border-secondary-subtle">
     <div class="container">
-        <a class="navbar-brand fw-bold text-white" href="#home"><i class="bi bi-controller me-2"></i><span data-i18n="brand">{{config('app.name')}}</span></a>
+        <a class="navbar-brand fw-bold text-white" href="#home">
+            <img src="{{ asset('favicon-32x32.png') }}" alt="Tro ESports Logo" width="28" height="28" class="me-2">
+            <span data-i18n="brand">Tro ESports</span>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navMain">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" href="#home" data-i18n="nav.home">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="#about" data-i18n="nav.about">About Us</a></li>
-                <li class="nav-item"><a class="nav-link" href="#matches" data-i18n="nav.matches">Match</a></li>
-                <li class="nav-item"><a class="nav-link" href="#download" data-i18n="nav.download">Download</a></li>
-                <li class="nav-item"><a class="nav-link" href="#contact" data-i18n="nav.contact">Contact Us</a></li>
-                <li class="nav-item"><a
-                    href="{{ route('login') }}"
-                    class="nav-link"
-                >
-                    Log in
-                </a>
-                </li>
+                <li class="nav-item"><a class="nav-link" href="#home" data-i18n="nav.home">হোম</a></li>
+                <li class="nav-item"><a class="nav-link" href="#about" data-i18n="nav.about">আমাদের সম্পর্কে</a></li>
+                <li class="nav-item"><a class="nav-link" href="#matches" data-i18n="nav.matches">ম্যাচ সমূহ</a></li>
+                <li class="nav-item"><a class="nav-link" href="#download" data-i18n="nav.download">ডাউনলোড করুন</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contact" data-i18n="nav.contact">যোগাযোগ</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('login') }}" data-i18n="nav.login">লগইন</a></li>
             </ul>
         </div>
     </div>
@@ -99,9 +137,9 @@
     <div class="container position-relative">
         <div class="row align-items-center g-4">
             <div class="col-lg-7">
-                <span class="badge rounded-pill badge-pill px-3 py-2 mb-3"><small data-i18n="badge">{{config('app.name')}} রিওয়ার্ডস</small></span>
-                <h1 class="display-5" data-i18n="hero.title">আপনি কি একজন {{config('app.name')}} প্লেয়ার?</h1>
-                <p class="hero-sub fs-5" data-i18n="hero.sub">গেম খেলে আপনি জিতলে নিতে পারবেন প্রতিদিন ১০০০‑২০০০ টাকা পর্যন্ত রিওয়ার্ড। আজই শুরু করুন!</p>
+                <span class="badge rounded-pill badge-pill px-3 py-2 mb-3"><small data-i18n="badge">Tro ESports রিওয়ার্ডস</small></span>
+                <h1 class="display-5" data-i18n="hero.title">আপনি কি একজন Tro ESports প্লেয়ার?</h1>
+                <p class="hero-sub fs-5" data-i18n="hero.sub">গেম খেলে আপনি জিতলে নিতে পারবেন প্রতিদিন ১০০০-২০০০ টাকা পর্যন্ত রিওয়ার্ড। আজই শুরু করুন!</p>
                 <div class="d-flex flex-wrap gap-3 pt-2">
                     <a href="#video" class="btn btn-ghost btn-pill" data-i18n="hero.watch"><i class="bi bi-play-circle me-2"></i>ভিডিও দেখুন</a>
                     <a href="#download" class="btn btn-accent btn-pill" data-i18n="hero.download"><i class="bi bi-download me-2"></i>অ্যাপটি ডাউনলোড করুন</a>
@@ -110,7 +148,7 @@
             <div class="col-lg-5">
                 <div class="glass-card p-4 p-lg-5 text-center">
                     <div class="display-6 mb-2">🎮</div>
-                    <h5 class="mb-2" data-i18n="hero.card.title">দ্রুত সাইন‑আপ</h5>
+                    <h5 class="mb-2" data-i18n="hero.card.title">দ্রুত সাইন-আপ</h5>
                     <p class="mb-3" data-i18n="hero.card.text">২ মিনিটে অ্যাকাউন্ট তৈরি করুন, ম্যাচে যোগ দিন এবং পুরস্কার জিতুন।</p>
                     <a href="#download" class="btn btn-accent w-100 btn-pill" data-i18n="hero.card.cta">এখনই শুরু করুন</a>
                 </div>
@@ -124,30 +162,56 @@
     <div class="container">
         <div class="row align-items-center g-4">
             <div class="col-lg-6">
-                <img class="img-fluid rounded-4 border border-1 border-secondary-subtle" alt="About" src="https://images.unsplash.com/photo-1603484477859-abe6a73f9365?q=80&w=1400&auto=format&fit=crop"/>
+                <img class="img-fluid rounded-4 border border-1 border-secondary-subtle" alt="About" src="{{asset('TroSports.jpg')}}"/>
             </div>
             <div class="col-lg-6">
                 <h2 class="section-title" data-i18n="about.title">আমাদের সম্পর্কে</h2>
-                <p class="section-lead" data-i18n="about.lead">আমরা বাংলাদেশে কমিউনিটি‑ড্রিভেন ই‑স্পোর্টস টুর্নামেন্ট আয়োজন করি যেখানে প্রতিদিনের ম্যাচ থেকে উইকেন্ড চ্যাম্পিয়নশিপ পর্যন্ত সবই রয়েছে। নিরাপদ পেমেন্ট ও ২৪/৭ সাপোর্ট আমাদের বৈশিষ্ট্য।</p>
+                <p class="section-lead" data-i18n="about.lead">আমরা বাংলাদেশে কমিউনিটি-ড্রিভেন ই-স্পোর্টস টুর্নামেন্ট আয়োজন করি যেখানে প্রতিদিনের ম্যাচ থেকে উইকেন্ড চ্যাম্পিয়নশিপ পর্যন্ত সবই রয়েছে। নিরাপদ পেমেন্ট ও ২৪/৭ সাপোর্ট আমাদের বৈশিষ্ট্য।</p>
                 <div class="row g-3 pt-2">
                     <div class="col-6 col-md-4"><div class="glass-card p-3 h-100 text-center"><div class="fs-3">🏆</div><div class="fw-semibold" data-i18n="about.i1">ডেইলি উইনস</div></div></div>
                     <div class="col-6 col-md-4"><div class="glass-card p-3 h-100 text-center"><div class="fs-3">💳</div><div class="fw-semibold" data-i18n="about.i2">ইনস্ট্যান্ট পেআউটস</div></div></div>
-                    <div class="col-6 col-md-4"><div class="glass-card p-3 h-100 text-center"><div class="fs-3">🛡</div><div class="fw-semibold" data-i18n="about.i3">ফেয়ার প্লে</div></div></div>
+                    <div class="col-6 col-md-4"><div class="glass-card p-3 h-100 text-center"><div class="fs-3">🛡️</div><div class="fw-semibold" data-i18n="about.i3">ফেয়ার প্লে</div></div></div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- MATCHES: simple labels only -->
+<!-- MATCHES -->
 <section id="matches">
     <div class="container">
         <div class="text-center mb-4">
-            <h2 class="section-title">Match</h2>
-            <p class="section-lead mx-auto">শুধু মোড অনুযায়ী ব্রাউজ করুন—সময়/তারিখ ছাড়া।</p>
+            <h2 class="section-title" data-i18n="matches.title">Match</h2>
+            <p class="section-lead mx-auto" data-i18n="matches.lead">যে মোডে খেলবেন সেটিতে ক্লিক করুন—নিচে ম্যাচ লিস্ট ও সময় দেখাবে। যে কোনো ম্যাচে ক্লিক করলে বিস্তারিত আসবে।</p>
         </div>
-        <div id="matchesGrid" class="row g-4"></div>
-        <div id="categoryMatches" class="row mt-4"></div>
+
+        <!-- Mode chips -->
+        <div id="modesGrid" class="row g-3 mb-4">
+            <!-- injected by JS -->
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="glass-card p-3 h-100">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i><span id="listTitle">Match List</span></h5>
+                        <span class="badge bg-danger-subtle text-white" id="activeModeLabel">BR Match</span>
+                    </div>
+                    <div class="list-hover">
+                        <ul class="list-group list-group-flush" id="matchList">
+                            <!-- list populated via JS -->
+                        </ul>
+                    </div>
+                    <div class="small text-white-50 mt-2" id="emptyNotice" style="display:none;">এই মোডে এখনো কোনো ম্যাচ নেই।</div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="glass-card p-3 h-100">
+                    <h5 class="mb-2"><i class="bi bi-info-circle me-2"></i>Details</h5>
+                    <div id="matchDetails" class="small text-white-50">একটি ম্যাচ সিলেক্ট করুন।</div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -157,7 +221,7 @@
         <div class="row align-items-center g-4">
             <div class="col-lg-6">
                 <h2 class="section-title" data-i18n="download.title">Download</h2>
-                <p class="section-lead" data-i18n="download.lead">Android ও iOS‑এ অ্যাপ ডাউনলোড করে ম্যাচ ব্রাউজ, রেজিস্টার ও রিওয়ার্ড ট্র্যাক করুন।</p>
+                <p class="section-lead" data-i18n="download.lead">Android ও iOS-এ অ্যাপ ডাউনলোড করে ম্যাচ ব্রাউজ, রেজিস্টার ও রিওয়ার্ড ট্র্যাক করুন।</p>
                 <div class="d-flex flex-wrap gap-3 pt-2">
                     <a class="btn btn-accent btn-pill" href="#"><i class="bi bi-android2 me-2"></i><span data-i18n="download.android">অ্যান্ড্রয়েড অ্যাপ</span></a>
                     <a class="btn btn-ghost btn-pill" href="#"><i class="bi bi-apple me-2"></i><span data-i18n="download.ios">iOS অ্যাপ</span></a>
@@ -167,9 +231,9 @@
                 <div class="glass-card p-4 p-lg-5">
                     <h5 class="mb-2" data-i18n="download.why">কেন অ্যাপ?</h5>
                     <ul class="mb-0">
-                        <li class="mb-2" data-i18n="download.li1">রিয়েল‑টাইম নোটিফিকেশন</li>
-                        <li class="mb-2" data-i18n="download.li2">সিকিউর ইন‑অ্যাপ পেমেন্ট</li>
-                        <li data-i18n="download.li3">ওয়ান‑ট্যাপ রেজিস্ট্রেশন</li>
+                        <li class="mb-2" data-i18n="download.li1">রিয়েল-টাইম নোটিফিকেশন</li>
+                        <li class="mb-2" data-i18n="download.li2">সিকিউর ইন-অ্যাপ পেমেন্ট</li>
+                        <li data-i18n="download.li3">ওয়ান-ট্যাপ রেজিস্ট্রেশন</li>
                     </ul>
                 </div>
             </div>
@@ -183,7 +247,7 @@
         <div class="row g-4">
             <div class="col-lg-6">
                 <h2 class="section-title" data-i18n="contact.title">Contact Us</h2>
-                <p class="section-lead" data-i18n="contact.lead">যেকোনো প্রশ্ন বা পার্টনারশিপের জন্য আমাদেরকে লিখুন।</p>
+                <p class="section-lead" data-i18n="contact.lead">যেকোনো তথ্য বা পার্টনারশিপের জন্য আমাদেরকে লিখুন।</p>
                 <div class="glass-card p-4">
                     <form onsubmit="event.preventDefault(); this.reset(); alert(activeLang==='bn' ? 'ধন্যবাদ! শীঘ্রই যোগাযোগ করবো।' : 'Thanks! We\'ll reach out soon.');">
                         <div class="mb-3">
@@ -224,10 +288,20 @@
 <!-- FOOTER -->
 <footer class="py-4 mt-4">
     <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
-        <div class="small">© <span id="y"></span> <span data-i18n="brand">{{config('app.name')}}</span>. <span data-i18n="footer.rights">সর্বস্বত্ব সংরক্ষিত।</span></div>
+        <div class="small">© <span id="y"></span> <span data-i18n="brand">Tro ESports</span>.
+            <span data-i18n="footer.rights">সর্বস্বত্ব সংরক্ষিত।</span>
+        </div>
         <div class="d-flex gap-3">
-            <a class="link-muted small" href="#" data-bs-toggle="modal" data-bs-target="#privacyModal" data-i18n="footer.privacy">প্রাইভেসি পলিসি</a>
-            <a class="link-muted small" href="#" data-bs-toggle="modal" data-bs-target="#termsModal" data-i18n="footer.terms">টার্মস ও কন্ডিশনস</a>
+            <a class="link-muted small"
+               href="privacy.html"
+               target="_blank"
+               rel="noopener noreferrer"
+               data-i18n="footer.privacy">প্রাইভেসি পলিসি</a>
+            <a class="link-muted small"
+               href="terms.html"
+               target="_blank"
+               rel="noopener noreferrer"
+               data-i18n="footer.terms">টার্মস ও কন্ডিশনস</a>
         </div>
     </div>
 </footer>
@@ -305,50 +379,104 @@
     </div>
 </div>
 
+<!-- Vendor JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+{{-- ========= SERVER → JS: Inject modes & matches from DB (no room_details) ========= --}}
+@php
+    use Carbon\Carbon;
+
+    // Use the exact strings from your <select> as the mode keys
+    $modeMeta = [
+        'BR Match'   => ['labelBn' => 'BR Match',   'labelEn' => 'BR Match',   'icon' => 'controller'],
+        'Class Squad'=> ['labelBn' => 'Class Squad','labelEn' => 'Class Squad','icon' => 'people'],
+    ];
+
+    // Group by the exact category values; never include room_details
+    $grouped = $matches->groupBy('category')->map(function($items) {
+        return $items->map(function($m) {
+            $dt = Carbon::parse("{$m->match_date} {$m->match_time}", 'Asia/Dhaka');
+
+            // Try nice BN; fallback if intl not available
+            try { $timeBn = $dt->locale('bn')->isoFormat('LL, h:mm A'); }
+            catch (\Throwable $e) { $timeBn = $dt->format('d-m-Y, h:i A'); }
+
+            $timeEn = $dt->locale('en')->translatedFormat('M d, Y g:i A');
+
+            return [
+                'id'     => (string)$m->id,
+                'title'  => $m->match_name,
+                'timeBn' => $timeBn,
+                'timeEn' => $timeEn,
+                'map'    => $m->map_type,
+                'type'   => $m->match_type,
+                'slots'  => "0/{$m->player_limit}",   // replace 0 with joined count if you have it
+                'entry'  => '৳'.(int)$m->entry_fee,
+                'prize'  => '৳'.(int)$m->grand_prize,
+            ];
+        })->values();
+    });
+
+    // Build modes array for JS (keys are the same display strings)
+    $modesForJs = collect($modeMeta)->map(function($v, $k){
+        return array_merge(['key' => $k], $v);
+    })->values();
+@endphp
+<script>
+    const modes = {!! $modesForJs->toJson(JSON_UNESCAPED_UNICODE) !!};
+    const matchesByMode = {!! $grouped->toJson(JSON_UNESCAPED_UNICODE) !!};
+</script>
+
+<script>
+    // From server (DB)
+    const modes = {!! $modesForJs->toJson(JSON_UNESCAPED_UNICODE) !!};
+    const matchesByMode = {!! $grouped->toJson(JSON_UNESCAPED_UNICODE) !!};
+</script>
+
+<!-- App JS: uses the injected "modes" and "matchesByMode" -->
 <script>
     // Year
     document.getElementById('y').textContent = new Date().getFullYear();
 
     // Active link on scroll
     const sections = ['home','about','matches','download','contact'];
-    const links = sections.map(id => [id, document.querySelector(.nav-link[href="#${id}"])]);
+    const links = sections.map(id => [id, document.querySelector(`.nav-link[href="#${id}"]`)]);
     const opts = {root:null, rootMargin:'-50% 0px -50% 0px', threshold:0};
     const io = new IntersectionObserver(entries => {
         entries.forEach(e => {
             if(e.isIntersecting){
-                links.forEach(([id, el]) => el.classList.toggle('active', #${id} === #${e.target.id}));
+                links.forEach(([id, el]) => el.classList.toggle('active', `#${id}` === `#${e.target.id}`));
             }
         });
     }, opts);
     sections.forEach(id => io.observe(document.getElementById(id)));
 
-    // i18n packs (keep both for future EN toggle)
+    // i18n packs
     const i18n = {
         bn: {
-            brand:'{{config('app.name')}}',
-            'nav.home':'Home','nav.about':'About Us','nav.matches':'Match','nav.contact':'Contact Us','nav.download':'Download',
-            badge:'{{config('app.name')}} রিওয়ার্ডস',
-            'hero.title':'আপনি কি একজন {{config('app.name')}} প্লেয়ার?','hero.sub':'গেম খেলে আপনি জিতলে নিতে পারবেন প্রতিদিন ১০০০‑২০০০ টাকা পর্যন্ত রিওয়ার্ড। আজই শুরু করুন!',
-            'hero.watch':'ভিডিও দেখুন','hero.download':'অ্যাপটি ডাউনলোড করুন','hero.card.title':'দ্রুত সাইন‑আপ','hero.card.text':'২ মিনিটে অ্যাকাউন্ট তৈরি করুন, ম্যাচে যোগ দিন এবং পুরস্কার জিতুন।','hero.card.cta':'এখনই শুরু করুন',
-            'about.title':'আমাদের সম্পর্কে','about.lead':'আমরা বাংলাদেশে কমিউনিটি‑ড্রিভেন ই‑স্পোর্টস টুর্নামেন্ট আয়োজন করি যেখানে প্রতিদিনের ম্যাচ থেকে উইকেন্ড চ্যাম্পিয়নশিপ পর্যন্ত সবই রয়েছে। নিরাপদ পেমেন্ট ও ২৪/৭ সাপোর্ট আমাদের বৈশিষ্ট্য।','about.i1':'ডেইলি উইনস','about.i2':'ইনস্ট্যান্ট পেআউটস','about.i3':'ফেয়ার প্লে',
-            'matches.title':'Match','matches.lead':'শুধু মোড অনুযায়ী ব্রাউজ করুন—সময়/তারিখ ছাড়া।',
-            'download.title':'Download','download.lead':'Android ও iOS‑এ অ্যাপ ডাউনলোড করে ম্যাচ ব্রাউজ, রেজিস্টার ও রিওয়ার্ড ট্র্যাক করুন।','download.android':'অ্যান্ড্রয়েড অ্যাপ','download.ios':'iOS অ্যাপ','download.why':'কেন অ্যাপ?','download.li1':'রিয়েল‑টাইম নোটিফিকেশন','download.li2':'সিকিউর ইন‑অ্যাপ পেমেন্ট','download.li3':'ওয়ান‑ট্যাপ রেজিস্ট্রেশন',
-            'contact.title':'Contact Us','contact.lead':'যেকোনো প্রশ্ন বা পার্টনারশিপের জন্য আমাদেরকে লিখুন।','contact.name':'আপনার নাম','contact.email':'ইমেইল','contact.message':'মেসেজ','contact.send':'বার্তা পাঠান','contact.reach':'Reach us','contact.follow':'Follow',
+            brand:'Tro ESports',
+            'nav.home':'হোম','nav.about':'আমাদের সম্পর্কে','nav.matches':'ম্যাচ সমূহ','nav.download':'ডাউনলোড করুন','nav.contact':'যোগাযোগ','nav.login':'লগইন',
+            badge:'Tro ESports রিওয়ার্ডস',
+            'hero.title':'আপনি কি একজন Tro ESports প্লেয়ার?','hero.sub':'গেম খেলে আপনি জিতলে নিতে পারবেন প্রতিদিন ১০০০-২০০০ টাকা পর্যন্ত রিওয়ার্ড। আজই শুরু করুন!',
+            'hero.watch':'ভিডিও দেখুন','hero.download':'অ্যাপটি ডাউনলোড করুন','hero.card.title':'দ্রুত সাইন-আপ','hero.card.text':'২ মিনিটে অ্যাকাউন্ট তৈরি করুন, ম্যাচে যোগ দিন এবং পুরস্কার জিতুন।','hero.card.cta':'এখনই শুরু করুন',
+            'about.title':'আমাদের সম্পর্কে','about.lead':'আমরা বাংলাদেশে কমিউনিটি-ড্রিভেন ই-স্পোর্টস টুর্নামেন্ট আয়োজন করি যেখানে প্রতিদিনের ম্যাচ থেকে উইকেন্ড চ্যাম্পিয়নশিপ পর্যন্ত সবই রয়েছে। নিরাপদ পেমেন্ট ও ২৪/৭ সাপোর্ট আমাদের বৈশিষ্ট্য।','about.i1':'ডেইলি উইনস','about.i2':'ইনস্ট্যান্ট পেআউটস','about.i3':'ফেয়ার প্লে',
+            'matches.title':'Match','matches.lead':'যে মোডে খেলবেন সেটিতে ক্লিক করুন—নিচে ম্যাচ লিস্ট ও সময় দেখাবে। যে কোনো ম্যাচে ক্লিক করলে বিস্তারিত আসবে।',
+            'download.title':'Download','download.lead':'Android ও iOS-এ অ্যাপ ডাউনলোড করে ম্যাচ ব্রাউজ, রেজিস্টার ও রিওয়ার্ড ট্র্যাক করুন।','download.android':'অ্যান্ড্রয়েড অ্যাপ','download.ios':'iOS অ্যাপ','download.why':'কেন অ্যাপ?','download.li1':'রিয়েল-টাইম নোটিফিকেশন','download.li2':'সিকিউর ইন-অ্যাপ পেমেন্ট','download.li3':'ওয়ান-ট্যাপ রেজিস্ট্রেশন',
+            'contact.title':'Contact Us','contact.lead':'যেকোনো তথ্য বা পার্টনারশিপের জন্য আমাদেরকে লিখুন।','contact.name':'আপনার নাম','contact.email':'ইমেইল','contact.message':'মেসেজ','contact.send':'বার্তা পাঠান','contact.reach':'Reach us','contact.follow':'Follow',
             'footer.rights':'সর্বস্বত্ব সংরক্ষিত।','footer.privacy':'প্রাইভেসি পলিসি','footer.terms':'টার্মস ও কন্ডিশনস',
             'policy.text':'এটি ডেমো প্রাইভেসি পলিসি। আপনার প্রকৃত নীতিমালা এখানে যুক্ত করুন।',
             'terms.text':'এগুলি ডেমো শর্তাবলী। খেলাসহ অংশগ্রহণ ও পেআউটের নিয়ম এখানে সংযোজন করুন।',
             'common.close':'বন্ধ করুন'
         },
         en: {
-            brand:'{{config('app.name')}}',
-            'nav.home':'Home','nav.about':'About Us','nav.matches':'Match','nav.contact':'Contact Us','nav.download':'Download',
-            badge:'{{config('app.name')}} Rewards',
-            'hero.title':'Are you a {{config('app.name')}} player?','hero.sub':'Win rewards worth ৳1000‑2000 daily by playing matches. Get started today!',
-            'hero.watch':'Watch Video','hero.download':'Download the App','hero.card.title':'Quick Sign‑Up','hero.card.text':'Create your account in 2 minutes, join matches and win rewards.','hero.card.cta':'Start Now',
-            'about.title':'About Us','about.lead':'We host community‑driven esports tournaments in Bangladesh — from daily matches to weekend championships — with secure payments and 24/7 support.','about.i1':'Daily Wins','about.i2':'Instant Payouts','about.i3':'Fair Play',
-            'matches.title':'Match','matches.lead':'Browse by mode only—no dates/times.',
-            'download.title':'Download','download.lead':'Get our official Android & iOS apps to browse matches, register, and track rewards.','download.android':'Get it on Android','download.ios':'Download on iOS','download.why':'Why the app?','download.li1':'Real‑time notifications','download.li2':'Secure in‑app payments','download.li3':'One‑tap registration',
+            brand:'Tro ESports',
+            'nav.home':'Home','nav.about':'About Us','nav.matches':'Match','nav.contact':'Contact Us','nav.login':'Login','nav.download':'Download',
+            badge:'Tro ESports Rewards',
+            'hero.title':'Are you a Tro ESports player?','hero.sub':'Win rewards worth ৳1000-2000 daily by playing matches. Get started today!',
+            'hero.watch':'Watch Video','hero.download':'Download the App','hero.card.title':'Quick Sign-Up','hero.card.text':'Create your account in 2 minutes, join matches and win rewards.','hero.card.cta':'Start Now',
+            'about.title':'About Us','about.lead':'We host community-driven esports tournaments in Bangladesh — from daily matches to weekend championships — with secure payments and 24/7 support.','about.i1':'Daily Wins','about.i2':'Instant Payouts','about.i3':'Fair Play',
+            'matches.title':'Match','matches.lead':'Click a mode to view the list with times below. Click a match to see details.',
+            'download.title':'Download','download.lead':'Get our official Android & iOS apps to browse matches, register, and track rewards.','download.android':'Get it on Android','download.ios':'Download on iOS','download.why':'Why the app?','download.li1':'Real-time notifications','download.li2':'Secure in-app payments','download.li3':'One-tap registration',
             'contact.title':'Contact Us','contact.lead':'For questions or partnerships, write to us.','contact.name':'Your Name','contact.email':'Email','contact.message':'Message','contact.send':'Send Message','contact.reach':'Reach us','contact.follow':'Follow',
             'footer.rights':'All rights reserved.','footer.privacy':'Privacy Policy','footer.terms':'Terms & Conditions',
             'policy.text':'This is a sample privacy policy. Replace with your actual policy describing how you collect and use data.',
@@ -367,62 +495,93 @@
             const key = node.getAttribute('data-i18n');
             if(i18n[lang] && i18n[lang][key]) node.textContent = i18n[lang][key];
         });
-        renderMatches();
+        renderModes();
+        renderMatchList(activeModeKey);
     }
 
-    // Simple match labels only
-    const matchLabels = [
-        {bn:'BR Match', en:'BR Match'},
-        {bn:'Rank Match', en:'Rank Match'},
-        {bn:'Clash Squad', en:'Clash Squad'},
-        {bn:'Deathmatch', en:'Deathmatch'},
-        {bn:'Knockout', en:'Knockout'}
-    ];
-    function renderMatches() {
-        const grid = document.getElementById('matchesGrid');
-        const t = activeLang === 'bn' ? 'bn' : 'en';
+    // App State + Renderers ----------------------------------
+    let activeModeKey = 'BR Match';
 
-        grid.innerHTML = matchLabels.map(m => `
+    function renderModes(){
+        const grid = document.getElementById('modesGrid');
+        const t = activeLang==='bn' ? 'labelBn' : 'labelEn';
+
+        grid.innerHTML = modes.map(m=>`
         <div class="col-6 col-md-4 col-lg-3">
-            <div class="card card-dark text-center p-4 h-100 category-card" data-key="${m.key}">
-                <div class="fw-bold">${m[t]}</div>
-            </div>
-        </div>
-    `).join('');
+          <div class="card card-dark text-center p-3 mode-chip ${activeModeKey===m.key?'border border-danger':''}" data-key="${m.key}">
+            <div class="fs-3 mb-1"><i class="bi bi-${m.icon}"></i></div>
+            <div class="fw-semibold">${m[t]}</div>
+          </div>
+        </div>`).join('');
 
-        // Add click events after rendering
-        document.querySelectorAll('.category-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const category = card.getAttribute('data-key');
-                fetchCategoryMatches(category);
-            });
+        grid.querySelectorAll('.mode-chip').forEach(el=>{
+            el.onclick = ()=>{
+                activeModeKey = el.getAttribute('data-key');
+                renderModes();
+                renderMatchList(activeModeKey);
+                document.getElementById('matchDetails').innerHTML = '<span class="text-white-50">একটি ম্যাচ সিলেক্ট করুন।</span>';
+                const tKey = activeLang==='bn' ? 'labelBn' : 'labelEn';
+                const found = modes.find(x=>x.key===activeModeKey);
+                document.getElementById('activeModeLabel').textContent = found ? found[tKey] : '';
+            }
         });
     }
 
-    // Fetch matches for the clicked category
-    function fetchCategoryMatches(category) {
-        fetch(`/matches?category=${category}`)
-            .then(res => res.json())
-            .then(data => {
-                renderCategoryMatches(data);
-            })
-            .catch(err => console.error('Error fetching matches:', err));
+    function renderMatchList(modeKey){
+        const list = document.getElementById('matchList');
+        const emptyNotice = document.getElementById('emptyNotice');
+        const tTime = activeLang==='bn' ? 'timeBn' : 'timeEn';
+        const data = matchesByMode[modeKey] || [];
+
+        if (!data.length) {
+            list.innerHTML = '';
+            emptyNotice.style.display = 'block';
+            document.getElementById('matchDetails').innerHTML = '<span class="text-white-50">এই মোডে এখনো কোনো ম্যাচ নেই।</span>';
+            return;
+        }
+
+        emptyNotice.style.display = 'none';
+        list.innerHTML = data.map((m)=>`
+        <li class="list-group-item d-flex align-items-center justify-content-between" data-id="${m.id}">
+          <div class="me-2">
+            <div class="fw-semibold">${m.title}</div>
+            <div class="small text-white-50"><i class="bi bi-clock me-1"></i>${m[tTime]}</div>
+          </div>
+          <button class="btn btn-outline-light btn-sm" aria-label="View details"><i class="bi bi-chevron-right"></i></button>
+        </li>`).join('');
+
+        list.querySelectorAll('.list-group-item').forEach((li)=>{
+            li.onclick = ()=>{
+                const id = li.getAttribute('data-id');
+                const m = (matchesByMode[modeKey]||[]).find(x=>x.id===id);
+                if(m) renderMatchDetails(m);
+                list.querySelectorAll('.list-group-item').forEach(x=>x.classList.remove('active'));
+                li.classList.add('active');
+            };
+        });
     }
 
-    // Render matches under the labels
-    function renderCategoryMatches(matches) {
-        const container = document.getElementById('categoryMatches');
-        container.innerHTML = matches.map(m => `
-        <div class="col-12 col-md-6">
-            <div class="card p-3 mb-3">
-                <h5>${m.title}</h5>
-                <p>${m.description || ''}</p>
+    function renderMatchDetails(m){
+        const details = document.getElementById('matchDetails');
+        details.innerHTML = `
+        <div class="card card-dark">
+          <div class="card-body">
+            <h6 class="card-title mb-2">${m.title}</h6>
+            <div class="row g-2 small">
+              <div class="col-6"><span class="text-white-50">Time:</span> ${activeLang==='bn'?m.timeBn:m.timeEn}</div>
+              <div class="col-6"><span class="text-white-50">Type:</span> ${m.type}</div>
+              <div class="col-6"><span class="text-white-50">Map:</span> ${m.map}</div>
+              <div class="col-6"><span class="text-white-50">Slots:</span> ${m.slots}</div>
+              <div class="col-6"><span class="text-white-50">Entry:</span> ${m.entry}</div>
+              <div class="col-6"><span class="text-white-50">Prize:</span> ${m.prize}</div>
             </div>
-        </div>
-    `).join('');
+            <div class="mt-3 d-flex gap-2">
+              <a href="#contact" class="btn btn-accent btn-pill"><i class="bi bi-rocket-takeoff me-2"></i>Join</a>
+              <button class="btn btn-ghost btn-pill" onclick="navigator.clipboard.writeText('${m.title} — ${m.type}');"><i class="bi bi-share me-2"></i>Share</button>
+            </div>
+          </div>
+        </div>`;
     }
-
-    document.addEventListener('DOMContentLoaded', renderMatches);
 
     // Settings controls
     const primaryEl = document.getElementById('primaryColor');
@@ -439,11 +598,13 @@
         document.body.classList.toggle('bn', fontSel.value==='bn');
         const hero = document.getElementById('home');
         const url = bgInput.value.trim();
-        hero.style.backgroundImage = url ? url('${url}') : '';
+        hero.style.backgroundImage = url ? `url('${url}')` : '';
     };
 
     // Init
     applyLang('bn');
+    renderModes();
+    renderMatchList(activeModeKey);
 </script>
 </body>
 </html>

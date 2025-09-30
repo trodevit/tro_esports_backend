@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_title','Create Match')
+
 @section('content')
     <div class="container my-4">
         <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
@@ -148,9 +150,6 @@
                                                 <option value="Solo">Solo</option>
                                                 <option value="Duo">Duo</option>
                                                 <option value="4v4">4v4 Team</option>
-                                                <option value="1v3">1v3</option>
-                                                <option value="2v3">2v3</option>
-                                                <option value="1v2">1v2</option>
                                             </select>
                                             <label for="match_type">Match Type *</label>
                                             <div class="invalid-feedback">Select a match type.</div>

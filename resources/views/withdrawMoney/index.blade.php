@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('page_title','Withdraw Request')
+
 @section('content')
     <div class="container py-4">
         <h4 class="mb-4">Withdraw Requests</h4>

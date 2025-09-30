@@ -1,40 +1,40 @@
 <footer\1 class=\"site-footer\">
-    <div class="container-fluid">
-        <div class="footer-card card mb-0">
-            <div class="card-body py-2 py-sm-3">
-                <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2">
-                    <p class="mb-0 text-muted small">
-                        © <span id="year">{{ date('Y') }}</span> {{ config('app.name') }}
-                        <span class="d-none d-sm-inline-block ms-2">
+<div class="container-fluid">
+    <div class="footer-card card mb-0">
+        <div class="card-body py-2 py-sm-3">
+            <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2">
+                <p class="mb-0 text-muted small">
+                    © <span id="year">{{ date('Y') }}</span> {{ config('app.name') }}
+                    <span class="d-none d-sm-inline-block ms-2">
                             • Built with
                             <i class="iconoir-heart-solid text-danger align-middle"></i>
                             by <a class="link-muted" href="https://trodev.com" target="_blank" rel="noopener">Trodev IT</a>
                         </span>
-                    </p>
+                </p>
 
-                    <ul class="nav small gap-2">
-                        <li class="nav-item"><a class="nav-link px-2 link-muted" href="#">Help</a></li>
-                        <li class="nav-item"><a class="nav-link px-2 link-muted" href="#">Settings</a></li>
-                        <li class="nav-item"><a class="nav-link px-2 link-muted" href="#">Privacy</a></li>
-                        <li class="nav-item"><a class="nav-link px-2 link-muted" href="#">Terms</a></li>
-                    </ul>
-                </div>
+                <ul class="nav small gap-2">
+                    <li class="nav-item"><a class="nav-link px-2 link-muted" href="#">Help</a></li>
+                    <li class="nav-item"><a class="nav-link px-2 link-muted" href="#">Settings</a></li>
+                    <li class="nav-item"><a class="nav-link px-2 link-muted" href="#">Privacy</a></li>
+                    <li class="nav-item"><a class="nav-link px-2 link-muted" href="#">Terms</a></li>
+                </ul>
+            </div>
 
-                {{-- Optional: socials (show on md+) --}}
-                <div class="d-none d-md-flex align-items-center justify-content-end mt-2 gap-2">
-                    <a class="btn btn-light-subtle btn-sm rounded-circle footer-icon" aria-label="Twitter" href="#" target="_blank" rel="noopener">
-                        <i class="iconoir-twitter"></i>
-                    </a>
-                    <a class="btn btn-light-subtle btn-sm rounded-circle footer-icon" aria-label="Facebook" href="#" target="_blank" rel="noopener">
-                        <i class="iconoir-facebook"></i>
-                    </a>
-                    <a class="btn btn-light-subtle btn-sm rounded-circle footer-icon" aria-label="GitHub" href="#" target="_blank" rel="noopener">
-                        <i class="iconoir-github"></i>
-                    </a>
-                </div>
+            {{-- Optional: socials (show on md+) --}}
+            <div class="d-none d-md-flex align-items-center justify-content-end mt-2 gap-2">
+                <a class="btn btn-light-subtle btn-sm rounded-circle footer-icon" aria-label="Twitter" href="#" target="_blank" rel="noopener">
+                    <i class="iconoir-twitter"></i>
+                </a>
+                <a class="btn btn-light-subtle btn-sm rounded-circle footer-icon" aria-label="Facebook" href="#" target="_blank" rel="noopener">
+                    <i class="iconoir-facebook"></i>
+                </a>
+                <a class="btn btn-light-subtle btn-sm rounded-circle footer-icon" aria-label="GitHub" href="#" target="_blank" rel="noopener">
+                    <i class="iconoir-github"></i>
+                </a>
             </div>
         </div>
     </div>
+</div>
 </footer>
 
 @push('styles')
