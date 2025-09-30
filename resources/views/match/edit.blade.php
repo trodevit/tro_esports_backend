@@ -45,8 +45,12 @@
                                 <div class="col-md-6">
                                     <div class="form-floating">
                                         <select name="category" id="category" class="form-select" required>
-                                            <option value="br" {{ old('category', $match->category) == 'br' ? 'selected' : '' }}>BR Match</option>
-                                            <option value="class" {{ old('category', $match->category) == 'class' ? 'selected' : '' }}>Class Squad</option>
+                                            <option value="br_match" {{ old('category', $match->category) == 'br_match' ? 'selected' : '' }}>BR Match</option>
+                                            <option value="br_servival" {{ old('category', $match->category) == 'br_servival' ? 'selected' : '' }}>BR Servival</option>
+                                            <option value="clash_squad" {{ old('category', $match->category) == 'clash_squad' ? 'selected' : '' }}>Clash Squad</option>
+                                            <option value="csv2" {{ old('category', $match->category) == 'csv2' ? 'selected' : '' }}>CSV2</option>
+                                            <option value="lone_wolf" {{ old('category', $match->category) == 'lone_wolf' ? 'selected' : '' }}>Lone Wolf</option>
+                                            <option value="free_match" {{ old('category', $match->category) == 'free_match' ? 'selected' : '' }}>Free Match</option>
                                         </select>
                                         <label for="category">Category *</label>
                                         <div class="invalid-feedback">Please choose a category.</div>
