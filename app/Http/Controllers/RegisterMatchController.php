@@ -26,7 +26,8 @@ class RegisterMatchController extends Controller
         ]);
 
         $user = User::find($id);
-
+        $balance = $user->balance+$data['balance'];
+        $data['balance'] = $balance;
         $user->update($data);
 
         return redirect()->back()->with('success','Balance added successfully');

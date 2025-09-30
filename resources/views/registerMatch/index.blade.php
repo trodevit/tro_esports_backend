@@ -9,8 +9,8 @@
             <div class="d-flex align-items-center gap-2">
                 <h4 class="mb-0 fw-semibold">Registered Players</h4>
                 <span class="badge bg-primary-subtle text-primary">
-                {{ is_countable($register) ? count($register) : 0 }}
-            </span>
+                    {{ is_countable($register) ? count($register) : 0 }}
+                </span>
             </div>
             <div class="d-flex gap-2">
                 <a href="{{ url()->previous() }}" class="btn btn-light rounded-pill">
@@ -35,14 +35,22 @@
                     // Currency format
                     $amount = is_numeric($registerd->amount ?? null) ? number_format((float)$registerd->amount) : ($registerd->amount ?? '—');
 
-                    // Avatar initials from game_username or name
+                    // Avatar initials
                     $baseName = trim(($registerd->game_username ?? '') ?: ($registerd->name ?? ''));
                     $initials = collect(explode(' ', $baseName))
                         ->filter()->map(fn($p) => mb_strtoupper(mb_substr($p,0,1)))->take(2)->implode('');
 
-                    // Optional match meta if exists on item (won't break if missing)
+                    // Optional match meta
                     $matchId   = $registerd->match_id ?? null;
                     $matchName = $registerd->match_name ?? null;
+
+                    // Hidden field fallbacks
+                    $playerName   = $registerd->name ?? '';
+                    $playerEmail  = $registerd->email ?? '';
+                    $playerMobile = $registerd->phone ?? '';
+                    $username     = $registerd->game_username ?? '';
+                    $position     = $registerd->position ?? '';
+                    $totalKill    = $registerd->total_kill ?? 0;
                 @endphp
 
                 <div class="card border-0 rounded-4 mb-3 reg-card">
@@ -115,65 +123,101 @@
                                                     <i class="bi bi-whatsapp"></i>
                                                 </a>
                                             @endif
-                                            @if(!empty($registerd->game_username))
-                                                <button class="btn btn-xs btn-outline-secondary copy-btn"
-                                                        type="button"
-                                                        data-copy="{{ $registerd->game_username }}"
-                                                        title="Copy username">
-                                                    <i class="bi bi-clipboard"></i>
-                                                </button>
-                                            @endif
                                         </div>
                                     </li>
                                 </ul>
                             </div>
 
-                            {{-- Right: quick update --}}
+                            {{-- Right: quick update (keep Add Money & Add Position; add Per Kill + Total Prize form) --}}
+                            {{-- Right: quick update (Add Money stays; second form updates position + per_kill + prize_money together) --}}
                             <div class="col-12 col-lg-4">
                                 <div class="p-3 bg-body-tertiary rounded-3 border">
                                     <h6 class="fw-semibold mb-3">Quick Update</h6>
 
-                                    {{-- Balance Form --}}
-                                    <form action="{{ route('add.balance',$registerd->user_id) }}" method="POST" class="row g-3 mb-3">
+                                    {{-- 1) Add Money (UNCHANGED) --}}
+{{--                                    <form action="{{ route('add.balance',$registerd->user_id) }}" method="POST" class="row g-3 mb-3">--}}
+{{--                                        @csrf--}}
+{{--                                        @method('PUT')--}}
+{{--                                        <div class="col-12">--}}
+{{--                                            <label for="balance-{{ $registerd->id }}" class="form-label small text-muted">Add Money</label>--}}
+{{--                                            <input type="number" class="form-control" id="balance-{{ $registerd->id }}" name="balance" placeholder="Amount">--}}
+{{--                                        </div>--}}
+{{--                                        <div class="col-12 d-flex gap-2">--}}
+{{--                                            <button type="submit" class="btn btn-success rounded-pill px-3">--}}
+{{--                                                <i class="bi bi-check2 me-1"></i> Save--}}
+{{--                                            </button>--}}
+{{--                                            <button type="button" class="btn btn-outline-secondary rounded-pill px-3"--}}
+{{--                                                    onclick="this.closest('form').reset()">--}}
+{{--                                                Reset--}}
+{{--                                            </button>--}}
+{{--                                        </div>--}}
+{{--                                    </form>--}}
+
+                                    @php
+                                        // safe defaults for hidden fields
+                                        $matchId     = $registerd->match_id ?? '';
+                                         $userId      = $registerd->user_id ?? '';
+                                        $playerName  = $registerd->name ?? '';
+                                        $playerEmail = $registerd->email ?? '';
+                                        $playerPhone = $registerd->phone ?? '';
+                                        $username    = $registerd->game_username ?? '';
+                                        $positionVal = $registerd->position ?? '';     // may be blank if not set
+                                        $totalKill   = $registerd->per_kill_price ?? 0;    // used for calc if you want
+                                    @endphp
+
+                                    {{-- 2) Combined form: Position + Per Kill + Total Prize (one submit) --}}
+                                    <form action="{{ route('match.history.store') }}" method="POST" class="row g-3">
                                         @csrf
-                                        @method('PUT')
+
+                                        {{-- Hidden fields (your requested fields) --}}
+                                        <input type="text" name="match_id"   value="{{ $matchId }}">
+                                        <input type="text" name="user_id"    value="{{ $userId }}">
+                                        <input type="text" name="name"       value="{{ $playerName }}">
+                                        <input type="text" name="email"      value="{{ $playerEmail }}">
+                                        <input type="text" name="mobile"     value="{{ $playerPhone }}">
+                                        <input type="text" name="username"   value="{{ $username }}">
+                                        <input type="text" name="per_kill" value="{{ $totalKill }}">
+
+                                        {{-- Visible: Position --}}
                                         <div class="col-12">
-                                            <label for="balance-{{ $registerd->id }}" class="form-label small text-muted">Add Money</label>
-                                            <input type="number" class="form-control" id="balance-{{ $registerd->id }}" name="balance" placeholder="Amount">
+                                            <label for="position-{{ $registerd->id }}" class="form-label small text-muted">Position</label>
+                                            <input type="number" min="1" class="form-control" id="position-{{ $registerd->id }}"
+                                                   name="position" value="{{ old('position', $positionVal) }}" placeholder="e.g., 1, 2, 3" required>
                                         </div>
+
+                                        {{-- Visible: Per Kill --}}
+                                        <div class="col-12">
+                                            <label for="per_kill-{{ $registerd->id }}" class="form-label small text-muted">Total Kill</label>
+                                            <input type="number" min="0" class="form-control" id="per_kill-{{ $registerd->id }}"
+                                                   name="match_kill" value="{{ old('match_kill') }}" placeholder="Enter per kill amount" required>
+                                        </div>
+
+                                        {{-- Visible: Total Prize --}}
+                                        <div class="col-12">
+                                            <label for="prize_money-{{ $registerd->id }}" class="form-label small text-muted">Total Prize</label>
+                                            <input type="number" min="0" class="form-control" id="prize_money-{{ $registerd->id }}"
+                                                   name="prize_money" value="{{ old('prize_money') }}" placeholder="Enter total prize" required>
+                                            {{-- Optional helper: uncomment this hint if useful --}}
+                                            {{-- <div class="form-text">Tip: total prize can be total_kill ({{ $totalKill }}) × per_kill.</div> --}}
+                                        </div>
+
                                         <div class="col-12 d-flex gap-2">
-                                            <button type="submit" class="btn btn-success rounded-pill px-3">
-                                                <i class="bi bi-check2 me-1"></i> Save
+                                            <button type="submit" class="btn btn-primary rounded-pill px-3">
+                                                <i class="bi bi-save2 me-1"></i> Save Position, Per Kill & Prize
                                             </button>
                                             <button type="button" class="btn btn-outline-secondary rounded-pill px-3"
                                                     onclick="this.closest('form').reset()">
                                                 Reset
                                             </button>
                                         </div>
-                                    </form>
 
-                                    {{-- Position Form --}}
-                                    <form action="#" method="POST" class="row g-3">
-                                        @csrf
-                                        @method('PUT')
-                                        <div class="col-12">
-                                            <label for="position-{{ $registerd->id }}" class="form-label small text-muted">Add Position</label>
-                                            <input type="text" class="form-control" id="position-{{ $registerd->id }}" name="position" placeholder="e.g., #1, #2">
-                                        </div>
-                                        <div class="col-12 d-flex gap-2">
-                                            <button type="submit" class="btn btn-success rounded-pill px-3">
-                                                <i class="bi bi-check2 me-1"></i> Save
-                                            </button>
-                                            <button type="button" class="btn btn-outline-secondary rounded-pill px-3"
-                                                    onclick="this.closest('form').reset()">
-                                                Reset
-                                            </button>
+                                        <div class="small text-muted">
+                                            Hidden with this submit: match_id, name, email, mobile, username, total_kill
                                         </div>
                                     </form>
-
-                                    <div class="small text-muted mt-2">Each form works separately, you can wire different actions if needed.</div>
                                 </div>
                             </div>
+
 
                         </div> {{-- row --}}
                     </div>
@@ -213,7 +257,6 @@
         .nice-list .list-group-item{ padding:.8rem 0; }
         .muted-label{ color:#6c757d; }
 
-        /* xs-sized buttons */
         .btn-xs{
             --bs-btn-padding-y: .15rem;
             --bs-btn-padding-x: .45rem;
@@ -226,7 +269,7 @@
 @push('scripts')
     <script>
         (function(){
-            // Copy buttons for phone/payment/username
+            // Copy buttons UX
             const toast = (btn, ok=true) => {
                 const icon = ok ? 'bi-clipboard-check' : 'bi-clipboard-x';
                 const prev = btn.innerHTML;
@@ -242,10 +285,12 @@
                     await navigator.clipboard.writeText(text);
                     toast(btn, true);
                 }catch(_){
-                    // Fallback
                     const ta = document.createElement('textarea');
                     ta.value = text;
-                    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    ta.remove();
                     toast(btn, true);
                 }
             });

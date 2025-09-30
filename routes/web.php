@@ -11,7 +11,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\WithdrawMoneyController;
 use App\Http\Controllers\RegisterMatchController;
 use App\Http\Controllers\BkashController;
-
+use App\Http\Controllers\MatchHistoryController;
 Route::get('/',[WebsiteController::class,'index'])->name('home');
 
 Route::get('/matches',[WebsiteController::class,'matchList'])->name('matches');
@@ -33,6 +33,8 @@ Route::middleware(AdminAuth::class)->group(function () {
     Route::resource('matches',MatchController::class);
     Route::resource('prizes',PrizeController::class);
     Route::resource('players',PlayerController::class);
+    Route::resource('match/history',MatchHistoryController::class)->names('match.history');
+
     Route::get('payments',[PaymentController::class,'index'])->name('payments');
     Route::get('register/match/{id}',[RegisterMatchController::class,'show'])->name('register.match');
     Route::put('add/balance/{id}',[RegisterMatchController::class,'addBalance'])->name('add.balance');

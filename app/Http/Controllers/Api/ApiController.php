@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Matches;
+use App\Models\MatchHistory;
 use App\Models\PaymentInfo;
 use App\Models\Prizes;
 use App\Models\WithdrawMoney;
@@ -81,5 +82,13 @@ class ApiController extends Controller
         $money = WithdrawMoney::where('user_id',Auth::id())->latest()->get();
 
         return $this->successResponse($money,'Your Withdraw List',200);
+    }
+
+    public function matchHistory()
+    {
+        $history = MatchHistory::join('users', 'users.game_username', '=', 'match_histories.username')
+            ->select('match_histories.*', 'users.*')->get();
+
+        return $this->successResponse($history,'Match History',200);
     }
 }

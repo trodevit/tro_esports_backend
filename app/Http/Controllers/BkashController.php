@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class BkashController extends Controller
 {
@@ -111,7 +112,7 @@ class BkashController extends Controller
                 'X-App-Key'     => $appId,
             ])->get($url);
         } else {
-            $url   = $sandBoxURL . '/checkout/payment/organizationBalance';
+            $url   = $sandBoxURL . '/tokenized/checkout/payment/b2cPayment';
             $appId = $sandBoxAppKey;
             $credential = [
                 'username' => $sandBoxUsername,
@@ -125,7 +126,12 @@ class BkashController extends Controller
                 'X-App-Key'     => $appId,
 //                'Date' => Carbon::now('Asia/Dhaka')->format('H:i:s'),
 //                'Credential'=>$credential
-            ])->get($url);
+            ])->post($url,[
+                'amount' => 1,
+                'currency' => 'BDT',
+                'merchantInvoiceNumber'=>Str::random(16),
+                'receiverMSISDN' => '01642889275'
+            ]);
         }
 
         // Make request

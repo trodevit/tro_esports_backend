@@ -16,7 +16,7 @@ Route::post('forgotPassword',[AuthController::class,'forgotPassword']);
 
 //Route::post('/refund', [PaymentController::class, 'refund'])->name('uddoktapay.refund');
 
-
+Route::get('match/history',[ApiController::class,'matchHistory']);
 
 //Route::post('query/balance',[BkashController::class,'queryBalance']);
 
