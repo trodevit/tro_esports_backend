@@ -133,7 +133,12 @@ class PaymentController extends Controller
                     'partners_name'=>$data['partners_name']
                 ]);
 
-              return $this->successResponse($free,'Register Done',201);
+              return response()->json([
+                  'status' => true,
+                  'message'=> 'Registration Done',
+                  'data'=>$free,
+                  'payment_url'=> 'https://troesports.zobayerdev.top/'
+              ]);
             }
         }
         catch (\Exception $exception){
