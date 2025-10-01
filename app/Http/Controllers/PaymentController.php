@@ -36,6 +36,12 @@ class PaymentController extends Controller
 
             $check = Matches::where('id', $data['match_id'])->first();
 
+            $payment  = PaymentInfo::where('match_id',$data['match_id'])->where('user_id',Auth::id())->exists();
+
+            if ($payment){
+                return $this->errorResponse(null,'You already register for this match',400);
+            }
+
             if ($check->match_type == 'Duo') {
                 $data['amount'] = Matches::where('id', $data['match_id'])->value('entry_fee') * 2;
             } elseif ($check->match_type == '4v4') {
@@ -116,34 +122,38 @@ class PaymentController extends Controller
 
             }
             else{
-              $free =  PaymentInfo::create([
-                    'user_id'=>Auth::id(),
-                    'game_username'=>Auth::user()->game_username,
-                    'payment_number'=>null,
-                    'method'=>null,
-                    'email'=>Auth::user()->email,
-                    'amount'=>0,
-                    'status'=>'free',
-                    'transaction_id'=>null,
-                    'date'=>Carbon::now('Asia/Dhaka')->format('Y-m-d'),
-                    'time'=>Carbon::now('Asia/Dhaka')->format('H:i:s'),
-                    'match_id'=>$data['match_id'],
-                    'match_name'=>$check->match_name,
-                    'orderId'=>Str::random(16),
-                    'partners_name'=>$data['partners_name']
-                ]);
-
-              return response()->json([
-                  'status' => true,
-                  'message'=> 'Registration Done',
-                  'data'=>$free,
-                  'payment_url'=> 'https://troesports.zobayerdev.top/'
-              ]);
+              return $this->free_match($check,$data['partners_name'] ?? []);
             }
         }
         catch (\Exception $exception){
             return $this->errorResponse($exception->getMessage(), 'Something went wrong', 400);
         }
+    }
+
+    public function free_match(Matches $match, ?array $partners = null)
+    {
+        $free =  PaymentInfo::create([
+            'user_id'=>Auth::id(),
+            'game_username'=>Auth::user()->game_username,
+            'payment_number'=>null,
+            'method'=>null,
+            'email'=>Auth::user()->email,
+            'amount'=>0,
+            'status'=>'free',
+            'transaction_id'=>null,
+            'date'=>Carbon::now('Asia/Dhaka')->format('Y-m-d'),
+            'time'=>Carbon::now('Asia/Dhaka')->format('H:i:s'),
+            'match_id'=>$match->id,
+            'match_name'=>$match->match_name,
+            'orderId'=>Str::random(16),
+            'partners_name'=>$partners ?? []
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message'=> 'Registration Done',
+            'data'=>$free,
+        ]);
     }
 
     public function verify(Request $request)
