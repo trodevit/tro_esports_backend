@@ -129,7 +129,7 @@ class PaymentController extends Controller
                     'time'=>Carbon::now('Asia/Dhaka')->format('H:i:s'),
                     'match_id'=>$data['match_id'],
                     'match_name'=>$check->match_name,
-                    'orderId'=>$data['invoice_id'],
+                    'orderId'=>Str::random(16),
                     'partners_name'=>$data['partners_name']
                 ]);
 
