@@ -37,7 +37,7 @@ class ApiController extends Controller
 
 //        dd($userDateTime, $matchDateTime);
 
-        if ($userDateTime->gte($matchDateTime)) {
+//        if ($userDateTime->gte($matchDateTime)) {
             $purchaced = PaymentInfo::where('match_id',$match->id)->where('user_id',Auth::id())->exists();
             if (!$purchaced){
                 $match->room_details = null;
@@ -56,12 +56,12 @@ class ApiController extends Controller
             }
             $match->progress = $progress;
         }
-        else{
-            return response()->json([
-                'status' => false,
-                'message' => 'You cannot register after the match has started!'
-            ], 400);
-        }
+//        else{
+//            return response()->json([
+//                'status' => false,
+//                'message' => 'You cannot register after the match has started!'
+//            ], 400);
+//        }
 
         return $this->successResponse($match,$match->match_name.' Match Details',200);
     }
