@@ -86,13 +86,176 @@ class ApiController extends Controller
 
     public function matchHistory()
     {
-        $history = MatchHistory::join('users', 'users.game_username', '=', 'match_histories.username')
+        $rows = MatchHistory::query()
+            ->join('users', 'users.game_username', '=', 'match_histories.username')
             ->join('matches','matches.id','=','match_histories.match_id')
-            ->select('match_histories.*', 'users.*')
+            ->select([
+                // history
+                'match_histories.id as history_id',
+                'match_histories.match_id as history_match_id',
+                'match_histories.username',
+                'match_histories.prize_money',
+                'match_histories.match_kill',
+                'match_histories.total_kill_money',
+                'match_histories.position',
+                'match_histories.created_at as history_created_at',
+
+                // user
+                'users.id as user_id',
+                'users.name as user_name',
+                'users.email as user_email',
+                'users.phone as user_phone',
+                'users.game_username as user_game_username',
+                'users.balance as user_balance',
+
+                // match
+                'matches.id as match_id',
+                'matches.match_name',
+                'matches.category',
+                'matches.entry_fee',
+                'matches.player_limit',
+                'matches.match_date',
+                'matches.match_time',
+                'matches.instructions',
+                'matches.grand_prize',
+                'matches.per_kill_price',
+                'matches.match_type',
+                'matches.map_type',
+                'matches.version',
+                'matches.room_details',
+            ])
             ->get();
 
-        return $this->successResponse($history,'Match History',200);
+        $data = $rows->map(function ($row) {
+            return [
+                'history' => [
+                    'id'               => (int) $row->history_id,
+                    'match_id'         => (int) $row->history_match_id,
+                    'username'         => $row->username,
+                    'prize_money'      => (float) $row->prize_money,
+                    'match_kill'       => (int) $row->match_kill,
+                    'total_kill_money' => (float) $row->total_kill_money,
+                    'position'         => (int) $row->position,
+                    'created_at'       => $row->history_created_at,
+                ],
+                'user' => [
+                    'id'            => (int) $row->user_id,
+                    'name'          => $row->user_name,
+                    'email'         => $row->user_email,
+                    'phone'         => $row->user_phone,
+                    'game_username' => $row->user_game_username,
+                    'balance'       => (float) $row->user_balance,
+                ],
+                'match' => [
+                    'id'            => (int) $row->match_id,
+                    'match_name'    => $row->match_name,
+                    'category'      => $row->category,
+                    'entry_fee'     => (float) $row->entry_fee,
+                    'player_limit'  => (int) $row->player_limit,
+                    'match_date'    => $row->match_date,
+                    'match_time'    => $row->match_time,
+                    'instructions'  => $row->instructions,
+                    'grand_prize'   => (float) $row->grand_prize,
+                    'per_kill_price'=> (float) $row->per_kill_price,
+                    'match_type'    => $row->match_type,
+                    'map_type'      => $row->map_type,
+                    'version'       => $row->version,
+                    'room_details'  => $row->room_details,
+                ],
+            ];
+        });
+
+        return $this->successResponse($data, 'Match History', 200);
     }
+
+
+    public function matchHistoryByID($id)
+    {
+        $row = MatchHistory::query()
+            ->join('users', 'users.game_username', '=', 'match_histories.username')
+            ->join('matches','matches.id','=','match_histories.match_id')
+            ->where('match_histories.id', $id)
+            ->select([
+                // history
+                'match_histories.id as history_id',
+                'match_histories.match_id as history_match_id',
+                'match_histories.username',
+                'match_histories.prize_money',
+                'match_histories.match_kill',
+                'match_histories.total_kill_money',
+                'match_histories.position',
+                'match_histories.created_at as history_created_at',
+
+                // user (NO sensitive fields)
+                'users.id as user_id',
+                'users.name as user_name',
+                'users.email as user_email',
+                'users.phone as user_phone',
+                'users.game_username as user_game_username',
+                'users.balance as user_balance',
+
+                // match
+                'matches.id as match_id',
+                'matches.match_name',
+                'matches.category',
+                'matches.entry_fee',
+                'matches.player_limit',
+                'matches.match_date',
+                'matches.match_time',
+                'matches.instructions',
+                'matches.grand_prize',
+                'matches.per_kill_price',
+                'matches.match_type',
+                'matches.map_type',
+                'matches.version',
+                'matches.room_details',
+            ])
+            ->first();
+
+        if (!$row) {
+            return $this->errorResponse(null, 'Match history not found', 404);
+        }
+
+        $data = [
+            'history' => [
+                'id'               => (int) $row->history_id,
+                'match_id'         => (int) $row->history_match_id,
+                'username'         => $row->username,
+                'prize_money'      => (float) $row->prize_money,
+                'match_kill'       => (int) $row->match_kill,
+                'total_kill_money' => (float) $row->total_kill_money,
+                'position'         => (int) $row->position,
+                'created_at'       => $row->history_created_at,
+            ],
+            'user' => [
+                'id'            => (int) $row->user_id,
+                'name'          => $row->user_name,
+                'email'         => $row->user_email,
+                'phone'         => $row->user_phone,
+                'game_username' => $row->user_game_username,
+                'balance'       => (float) $row->user_balance,
+            ],
+            'match' => [
+                'id'            => (int) $row->match_id,
+                'match_name'    => $row->match_name,
+                'category'      => $row->category,
+                'entry_fee'     => (float) $row->entry_fee,
+                'player_limit'  => (int) $row->player_limit,
+                'match_date'    => $row->match_date,
+                'match_time'    => $row->match_time,
+                'instructions'  => $row->instructions,
+                'grand_prize'   => (float) $row->grand_prize,
+                'per_kill_price'=> (float) $row->per_kill_price,
+                'match_type'    => $row->match_type,
+                'map_type'      => $row->map_type,
+                'version'       => $row->version,
+                'room_details'  => $row->room_details,
+            ],
+        ];
+
+        return $this->successResponse($data, 'Match History', 200);
+    }
+
 
     public function categoryWiseMatch($category)
     {
