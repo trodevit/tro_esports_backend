@@ -278,6 +278,10 @@ class ApiController extends Controller
     {
         $category = Matches::where('category',$category)->where('is_hidden', 0)->get()->get();
 
+        if ($category->isEmpty()) {
+            return $this->successResponse([], 'No matches available at the moment', 200);
+        }
+
         return $this->successResponse($category,'Category wise match list',200);
     }
 }
