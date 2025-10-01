@@ -276,7 +276,7 @@ class ApiController extends Controller
 
     public function categoryWiseMatch($category)
     {
-        $category = Matches::where('category',$category)->where('is_hidden', 0)->get()->get();
+        $category = Matches::where('category',$category)->where('is_hidden', 0)->get();
 
         if ($category->isEmpty()) {
             return $this->successResponse([], 'No matches available at the moment', 200);
