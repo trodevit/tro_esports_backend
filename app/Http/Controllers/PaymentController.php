@@ -38,14 +38,14 @@ class PaymentController extends Controller
 
             if ($check->match_type == 'Duo') {
                 $data['amount'] = Matches::where('id', $data['match_id'])->value('entry_fee') * 2;
-            }elseif ($check->match_type == '4v4'){
+            } elseif ($check->match_type == '4v4') {
                 $data['amount'] = Matches::where('id', $data['match_id'])->value('entry_fee') * 4;
-            }else{
+            } else {
                 $data['amount'] = Matches::where('id', $data['match_id'])->value('entry_fee');
             }
 
             Session::put('order_id', $order_id);
-            Session::put('user_id',Auth::id());
+            Session::put('user_id', Auth::id());
 
             $matchDate = date('Y-m-d', strtotime(Matches::where('id', $data['match_id'])->value('match_date')));
             $matchTime = date('H:i:s', strtotime(Matches::where('id', $data['match_id'])->value('match_time')));
@@ -73,46 +73,48 @@ class PaymentController extends Controller
                 }
             }
 
-            $baseURL = 'https://payment.trodevit.com/troesports/api/checkout';
-            $sandBoxURL = 'https://sandbox.uddoktapay.com/api/checkout-v2';
-            $apiKey = 'jYX9XBfxSxeAmRQZh3PqjvNFxm1quLqnyi7athqe';
-            $sandBoxApi = '982d381360a69d419689740d9f2e26ce36fb7a50';
-            $email = Auth::user()->email;
-            $body = [
-                'full_name' => Auth::user()->name,
-                'email' => $email,
-                'amount' => $data['amount'],
-                'metadata' => [
-                    'match_id' =>$data['match_id'],
-                    'partners_name'=>$data['partners_name'],
-                    'user_id' => Auth::id()
-                ],
-                'redirect_url' => route('uddoktapay.verify',[],true),
-                'return_type' => 'GET',
-                'cancel_url' => route('uddoktapay.cancel',[],true)
-            ];
+            if ($check->category == 'free_match') {
+                $baseURL = 'https://payment.trodevit.com/troesports/api/checkout';
+                $sandBoxURL = 'https://sandbox.uddoktapay.com/api/checkout-v2';
+                $apiKey = 'jYX9XBfxSxeAmRQZh3PqjvNFxm1quLqnyi7athqe';
+                $sandBoxApi = '982d381360a69d419689740d9f2e26ce36fb7a50';
+                $email = Auth::user()->email;
+                $body = [
+                    'full_name' => Auth::user()->name,
+                    'email' => $email,
+                    'amount' => $data['amount'],
+                    'metadata' => [
+                        'match_id' => $data['match_id'],
+                        'partners_name' => $data['partners_name'],
+                        'user_id' => Auth::id()
+                    ],
+                    'redirect_url' => route('uddoktapay.verify', [], true),
+                    'return_type' => 'GET',
+                    'cancel_url' => route('uddoktapay.cancel', [], true)
+                ];
 
-            if (env('APP_ENV') == 'production') {
-                $response = Http::withHeaders([
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                    'RT-UDDOKTAPAY-API-KEY' => $apiKey,
-                ])->post($baseURL, $body);
-            }else{
-                $response = Http::withoutVerifying()->withHeaders([
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                    'RT-UDDOKTAPAY-API-KEY' => $sandBoxApi,
-                ])->post($sandBoxURL, $body);
+                if (env('APP_ENV') == 'production') {
+                    $response = Http::withHeaders([
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
+                        'RT-UDDOKTAPAY-API-KEY' => $apiKey,
+                    ])->post($baseURL, $body);
+                } else {
+                    $response = Http::withoutVerifying()->withHeaders([
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
+                        'RT-UDDOKTAPAY-API-KEY' => $sandBoxApi,
+                    ])->post($sandBoxURL, $body);
+                }
+
+                if ($response->successful()) {
+                    $url = $response->json('payment_url');
+                    return $this->successResponse($url, 'Checking Out', 200);
+                } else {
+                    return $this->errorResponse($response->json('message'), 'Something went wrong', 400);
+                }
+
             }
-
-            if ($response->successful()) {
-                $url = $response->json('payment_url');
-                return $this->successResponse($url, 'Checking Out', 200);
-            } else {
-                return $this->errorResponse($response->json('message'), 'Something went wrong', 400);
-            }
-
         }
         catch (\Exception $exception){
             return $this->errorResponse($exception->getMessage(), 'Something went wrong', 400);
