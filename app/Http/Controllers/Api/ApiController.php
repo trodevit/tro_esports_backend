@@ -55,7 +55,7 @@ class ApiController extends Controller
                 $progress = (($count / $match->player_limit) * 100);
             }
             $match->progress = $progress;
-        }
+//        }
 //        else{
 //            return response()->json([
 //                'status' => false,
