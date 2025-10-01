@@ -210,6 +210,7 @@ class ApiController extends Controller
                 'matches.version',
                 'matches.room_details',
             ])
+            ->orderBy('match_histories.position', 'asc')
             ->get();
 
         if ($rows->isEmpty()) {
