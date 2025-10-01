@@ -35,7 +35,7 @@ class ApiController extends Controller
         $matchDateTime = Carbon::parse("$matchDate $matchTime");
         $userDateTime  = Carbon::parse("$currentDate $currentTime");
 
-        dd($userDateTime, $matchDateTime);
+
 
         if ($userDateTime->gte($matchDateTime)) {
             $purchaced = PaymentInfo::where('match_id',$match->id)->where('user_id',Auth::id())->exists();
