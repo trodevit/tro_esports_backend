@@ -73,7 +73,7 @@ class PaymentController extends Controller
                 }
             }
 
-            if ($check->category == 'free_match') {
+            if (!$check->category == 'free_match') {
                 $baseURL = 'https://payment.trodevit.com/troesports/api/checkout';
                 $sandBoxURL = 'https://sandbox.uddoktapay.com/api/checkout-v2';
                 $apiKey = 'jYX9XBfxSxeAmRQZh3PqjvNFxm1quLqnyi7athqe';
@@ -114,6 +114,26 @@ class PaymentController extends Controller
                     return $this->errorResponse($response->json('message'), 'Something went wrong', 400);
                 }
 
+            }
+            else{
+              $free =  PaymentInfo::create([
+                    'user_id'=>Auth::id(),
+                    'game_username'=>Auth::user()->game_username,
+                    'payment_number'=>null,
+                    'method'=>null,
+                    'email'=>Auth::user()->email,
+                    'amount'=>0,
+                    'status'=>'free',
+                    'transaction_id'=>null,
+                    'date'=>Carbon::now('Asia/Dhaka')->format('Y-m-d'),
+                    'time'=>Carbon::now('Asia/Dhaka')->format('H:i:s'),
+                    'match_id'=>$data['match_id'],
+                    'match_name'=>$check->match_name,
+                    'orderId'=>$data['invoice_id'],
+                    'partners_name'=>$data['partners_name']
+                ]);
+
+              return $this->successResponse($free,'Register Done',201);
             }
         }
         catch (\Exception $exception){
