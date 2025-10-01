@@ -52,6 +52,7 @@
                         <th class="text-end">Grand Prize</th>
                         <th class="text-center">Details</th>
                         <th class="text-center">Register</th>
+                        <th class="text-center">Visibility</th>
                         <th class="text-end" style="width:72px;">Actions</th>
                     </tr>
                     </thead>
@@ -106,6 +107,22 @@
                                 </a>
                             </td>
 
+                            <td class="text-center">
+                                <form action="{{ route('matches.toggleHidden', $match->id) }}" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit"
+                                            class="btn btn-sm rounded-pill
+                               {{ $match->is_hidden ? 'btn-outline-secondary' : 'btn-outline-success' }}">
+                                        @if($match->is_hidden)
+                                            <i class="bi bi-eye-slash me-1"></i> Hidden
+                                        @else
+                                            <i class="bi bi-eye me-1"></i> Visible
+                                        @endif
+                                    </button>
+                                </form>
+                            </td>
+
                             <td class="text-end">
                                 <div class="dropdown">
                                     <button class="btn btn-sm btn-light border dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -131,6 +148,7 @@
                                     </ul>
                                 </div>
                             </td>
+
                         </tr>
                     @empty
                         <tr>

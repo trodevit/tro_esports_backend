@@ -15,7 +15,7 @@ class ApiController extends Controller
 {
     public function matches()
     {
-        $match = Matches::all();
+        $match = Matches::where('is_hidden', 0)->get();
 
         return $this->successResponse($match,'All Matches List',200);
     }
@@ -272,7 +272,7 @@ class ApiController extends Controller
 
     public function categoryWiseMatch($category)
     {
-        $category = Matches::where('category',$category)->get();
+        $category = Matches::where('category',$category)->where('is_hidden', 0)->get()->get();
 
         return $this->successResponse($category,'Category wise match list',200);
     }

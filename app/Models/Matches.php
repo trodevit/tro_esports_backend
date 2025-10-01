@@ -19,6 +19,7 @@ class Matches extends Model
         'match_type',
         'map_type',
         'version',
-        'room_details'
+        'room_details',
+        'is_hidden'
     ];
 }

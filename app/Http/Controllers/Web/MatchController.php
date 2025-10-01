@@ -81,25 +81,35 @@ class MatchController extends Controller
         $match = Matches::findOrFail($id);
 
         $data = $request->validate([
-            'match_name'      => 'required|string|max:255',
-            'category'        => 'required|string|max:100',
-            'entry_fee'       => 'required|numeric|min:0',
-            'player_limit'    => 'required|integer|min:1',
-            'match_date'      => 'required|date',
-            'match_time'      => 'required',
-            'instructions'    => 'nullable|string',
-            'grand_prize'     => 'required|numeric|min:0',
-            'per_kill_price'  => 'required|numeric|min:0',
-            'match_type'      => 'required|string|max:50',
-            'map_type'        => 'required|string|max:50',
-            'version'         => 'required|string|max:50',
-            'room_details'    => 'nullable|string',
+            'match_name'      => 'sometimes|nullable|string|max:255',
+            'category'        => 'sometimes|nullable|string|max:100',
+            'entry_fee'       => 'sometimes|nullable|numeric|min:0',
+            'player_limit'    => 'sometimes|nullable|integer|min:1',
+            'match_date'      => 'sometimes|nullable|date',
+            'match_time'      => 'sometimes|nullable',
+            'instructions'    => 'sometimes|nullable|string',
+            'grand_prize'     => 'sometimes|nullable|numeric|min:0',
+            'per_kill_price'  => 'sometimes|nullable|numeric|min:0',
+            'match_type'      => 'sometimes|nullable|string|max:50',
+            'map_type'        => 'sometimes|nullable|string|max:50',
+            'version'         => 'sometimes|nullable|string|max:50',
+            'room_details'    => 'sometimes|nullable|string',
         ]);
         $data['match_time'] = \Carbon\Carbon::parse($request->match_time)->format('H:i');
         $match->update($data);
 
         return redirect()->route('matches.index',['updated' => $match->id])->with('success', 'Match updated successfully');
     }
+
+    public function toggleHidden($id)
+    {
+        $match = Matches::findOrFail($id);
+        $match->is_hidden = !$match->is_hidden;
+        $match->save();
+
+        return back()->with('success', 'Match visibility updated.');
+    }
+
 
     /**
      * Remove the specified resource from storage.

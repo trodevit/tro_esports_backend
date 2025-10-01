@@ -33,6 +33,7 @@ Route::middleware(AdminAuth::class)->group(function () {
     Route::get('/dashboard',[AuthController::class,'dashboard'])->name('dashboard');
 
     Route::resource('matches',MatchController::class);
+    Route::patch('matches/{id}/toggle-hidden', [MatchController::class, 'toggleHidden'])->name('matches.toggleHidden');
     Route::resource('prizes',PrizeController::class);
     Route::resource('players',PlayerController::class);
     Route::resource('match/history',MatchHistoryController::class)->names('match.history');
