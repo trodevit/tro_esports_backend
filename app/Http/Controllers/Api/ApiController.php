@@ -210,7 +210,7 @@ class ApiController extends Controller
                 'matches.version',
                 'matches.room_details',
             ])
-            ->first();
+            ->get();
 
         if (!$row) {
             return $this->errorResponse(null, 'Match history not found', 404);
