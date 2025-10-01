@@ -17,6 +17,10 @@ class ApiController extends Controller
     {
         $match = Matches::where('is_hidden', 0)->get();
 
+        if ($match->isEmpty()) {
+            return $this->successResponse([], 'No matches available at the moment', 200);
+        }
+
         return $this->successResponse($match,'All Matches List',200);
     }
 
