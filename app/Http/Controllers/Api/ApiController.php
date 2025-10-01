@@ -174,7 +174,7 @@ class ApiController extends Controller
         $row = MatchHistory::query()
             ->join('users', 'users.game_username', '=', 'match_histories.username')
             ->join('matches','matches.id','=','match_histories.match_id')
-            ->where('match_histories.id', $id)
+            ->where('matches.id', $id)
             ->select([
                 // history
                 'match_histories.id as history_id',
