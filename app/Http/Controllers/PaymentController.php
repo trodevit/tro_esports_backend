@@ -73,7 +73,7 @@ class PaymentController extends Controller
                 }
             }
 
-            if (!$check->category == 'free_match') {
+            if ($check->category != 'free_match') {
                 $baseURL = 'https://payment.trodevit.com/troesports/api/checkout';
                 $sandBoxURL = 'https://sandbox.uddoktapay.com/api/checkout-v2';
                 $apiKey = 'jYX9XBfxSxeAmRQZh3PqjvNFxm1quLqnyi7athqe';
