@@ -14,6 +14,13 @@ use App\Http\Controllers\BkashController;
 use App\Http\Controllers\MatchHistoryController;
 Route::get('/',[WebsiteController::class,'index'])->name('home');
 
+Route::get('/download-apk', function () {
+    $file = public_path('app-release.apk');
+    return response()->download($file, 'TroESports.apk', [
+        'Content-Type' => 'application/vnd.android.package-archive',
+    ]);
+})->name('download-apk');
+
 Route::post('contact',[WebsiteController::class,'contactUs'])->name('contact');
 
 Route::get('/matches',[WebsiteController::class,'matchList'])->name('matches');

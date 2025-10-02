@@ -142,7 +142,7 @@
                 <p class="hero-sub fs-5" data-i18n="hero.sub">গেম খেলে আপনি জিতলে নিতে পারবেন প্রতিদিন ১০০০-২০০০ টাকা পর্যন্ত রিওয়ার্ড। আজই শুরু করুন!</p>
                 <div class="d-flex flex-wrap gap-3 pt-2">
                     <a href="#video" class="btn btn-ghost btn-pill" data-i18n="hero.watch"><i class="bi bi-play-circle me-2"></i>ভিডিও দেখুন</a>
-                    <a href="#download" class="btn btn-accent btn-pill" data-i18n="hero.download"><i class="bi bi-download me-2"></i>অ্যাপটি ডাউনলোড করুন</a>
+                    <a href="{{route('download-apk')}}" class="btn btn-accent btn-pill" data-i18n="hero.download"><i class="bi bi-download me-2"></i>অ্যাপটি ডাউনলোড করুন</a>
                 </div>
             </div>
             <div class="col-lg-5">
@@ -150,7 +150,7 @@
                     <div class="display-6 mb-2">🎮</div>
                     <h5 class="mb-2" data-i18n="hero.card.title">দ্রুত সাইন-আপ</h5>
                     <p class="mb-3" data-i18n="hero.card.text">২ মিনিটে অ্যাকাউন্ট তৈরি করুন, ম্যাচে যোগ দিন এবং পুরস্কার জিতুন।</p>
-                    <a href="#download" class="btn btn-accent w-100 btn-pill" data-i18n="hero.card.cta">এখনই শুরু করুন</a>
+                    <a href="{{route('download-apk')}}" class="btn btn-accent w-100 btn-pill" data-i18n="hero.card.cta">এখনই শুরু করুন</a>
                 </div>
             </div>
         </div>
@@ -223,7 +223,7 @@
                 <h2 class="section-title" data-i18n="download.title">Download</h2>
                 <p class="section-lead" data-i18n="download.lead">Android ও iOS-এ অ্যাপ ডাউনলোড করে ম্যাচ ব্রাউজ, রেজিস্টার ও রিওয়ার্ড ট্র্যাক করুন।</p>
                 <div class="d-flex flex-wrap gap-3 pt-2">
-                    <a class="btn btn-accent btn-pill" href="#"><i class="bi bi-android2 me-2"></i><span data-i18n="download.android">অ্যান্ড্রয়েড অ্যাপ</span></a>
+                    <a class="btn btn-accent btn-pill" href="{{route('download-apk')}}"><i class="bi bi-android2 me-2"></i><span data-i18n="download.android">অ্যান্ড্রয়েড অ্যাপ</span></a>
                     <a class="btn btn-ghost btn-pill" href="#"><i class="bi bi-apple me-2"></i><span data-i18n="download.ios">iOS অ্যাপ</span></a>
                 </div>
             </div>
