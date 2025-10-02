@@ -85,19 +85,34 @@ class PaymentController extends Controller
                 $apiKey = 'jYX9XBfxSxeAmRQZh3PqjvNFxm1quLqnyi7athqe';
                 $sandBoxApi = '982d381360a69d419689740d9f2e26ce36fb7a50';
                 $email = Auth::user()->email;
-                $body = [
-                    'full_name' => Auth::user()->name,
-                    'email' => $email,
-                    'amount' => $data['amount'],
-                    'metadata' => [
-                        'match_id' => $data['match_id'],
-                        'partners_name' => $data['partners_name'],
-                        'user_id' => Auth::id()
-                    ],
-                    'redirect_url' => route('uddoktapay.verify', [], true),
-                    'return_type' => 'GET',
-                    'cancel_url' => route('uddoktapay.cancel', [], true)
-                ];
+                if ($check->match_type != 'Solo') {
+                    $body = [
+                        'full_name' => Auth::user()->name,
+                        'email' => $email,
+                        'amount' => $data['amount'],
+                        'metadata' => [
+                            'match_id' => $data['match_id'],
+                            'partners_name' => $data['partners_name'],
+                            'user_id' => Auth::id()
+                        ],
+                        'redirect_url' => route('uddoktapay.verify', [], true),
+                        'return_type' => 'GET',
+                        'cancel_url' => route('uddoktapay.cancel', [], true)
+                    ];
+                }else{
+                    $body = [
+                        'full_name' => Auth::user()->name,
+                        'email' => $email,
+                        'amount' => $data['amount'],
+                        'metadata' => [
+                            'match_id' => $data['match_id'],
+                            'user_id' => Auth::id()
+                        ],
+                        'redirect_url' => route('uddoktapay.verify', [], true),
+                        'return_type' => 'GET',
+                        'cancel_url' => route('uddoktapay.cancel', [], true)
+                    ];
+                }
 
                 if (env('APP_ENV') == 'production') {
                     $response = Http::withHeaders([

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MatchHistory;
 use App\Models\PaymentInfo;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,9 +14,11 @@ class RegisterMatchController extends Controller
         $register = PaymentInfo::where('match_id',$id)
             ->join('matches','matches.id','=','payment_infos.match_id')
             ->join('users','users.id','=','payment_infos.user_id')
-            ->select('payment_infos.*','matches.*','users.*')
+            ->select('payment_infos.*','matches.*','users.*','matches.id as match_id')
             ->get();
-        return view('registerMatch.index',['register'=>$register]);
+
+        $match = MatchHistory::where('match_id',$id)->join('users','users.game_username','=','match_histories.username')->exists();
+        return view('registerMatch.index',['register'=>$register,'match'=>$match]);
     }
 
     public function addBalance(Request $request,$id)
