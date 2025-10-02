@@ -78,7 +78,7 @@ class ApiController extends Controller
     }
 
     public function prizebyID($id){
-        $prize = Prizes::find($id);
+        $prize = Prizes::where('match_id',$id)->first();
 
         return $this->successResponse($prize,'Prize Details',200);
     }
