@@ -13,7 +13,7 @@ use App\Http\Controllers\Web\WithdrawMoneyController;
 use App\Http\Middleware\AdminAuth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/',[WebsiteController::class,'app']);
+Route::get('/',[WebsiteController::class,'index'])->name('home');
 
 Route::get('/download-apk', function () {
     $file = public_path('app-release.apk');
