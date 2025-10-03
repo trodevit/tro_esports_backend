@@ -105,7 +105,7 @@ class ApiController extends Controller
                 'match_histories.position',
                 'match_histories.created_at as history_created_at',
 
-                // user
+                // userLayouts
                 'users.id as user_id',
                 'users.name as user_name',
                 'users.email as user_email',
@@ -143,7 +143,7 @@ class ApiController extends Controller
                     'position'         => (int) $row->position,
                     'created_at'       => $row->history_created_at,
                 ],
-                'user' => [
+                'userLayouts' => [
                     'id'            => (int) $row->user_id,
                     'name'          => $row->user_name,
                     'email'         => $row->user_email,
@@ -191,7 +191,7 @@ class ApiController extends Controller
                 'match_histories.position',
                 'match_histories.created_at as history_created_at',
 
-                // user
+                // userLayouts
                 'users.id as user_id',
                 'users.name as user_name',
                 'users.email as user_email',
@@ -253,7 +253,7 @@ class ApiController extends Controller
                     'position'         => (int) $r->position,
                     'created_at'       => $r->history_created_at,
                 ],
-                'user' => [
+                'userLayouts' => [
                     'id'            => (int) $r->user_id,
                     'name'          => $r->user_name,
                     'email'         => $r->user_email,

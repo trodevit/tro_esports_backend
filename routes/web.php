@@ -1,18 +1,19 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\BkashController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\MatchController;
-use App\Http\Middleware\AdminAuth;
-use App\Http\Controllers\WebsiteController;
-use App\Http\Controllers\Web\PrizeController;
+use App\Http\Controllers\Web\MatchHistoryController;
 use App\Http\Controllers\Web\PlayerController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\WithdrawMoneyController;
-use App\Http\Controllers\RegisterMatchController;
-use App\Http\Controllers\BkashController;
-use App\Http\Controllers\MatchHistoryController;
-Route::get('/',[WebsiteController::class,'index'])->name('home');
+use App\Http\Controllers\Web\PrizeController;
+use App\Http\Controllers\Web\RegisterMatchController;
+use App\Http\Controllers\Web\WebsiteController;
+use App\Http\Controllers\Web\WithdrawMoneyController;
+use App\Http\Middleware\AdminAuth;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/',[WebsiteController::class,'app']);
 
 Route::get('/download-apk', function () {
     $file = public_path('app-release.apk');
@@ -26,6 +27,8 @@ Route::post('contact',[WebsiteController::class,'contactUs'])->name('contact');
 Route::get('/matches',[WebsiteController::class,'matchList'])->name('matches');
 
 Route::get('/login',[AuthController::class,'loginPage'])->name('login');
+Route::get('/register',[AuthController::class,'registerPage'])->name('register');
+Route::post('/register',[AuthController::class,'register'])->name('registration');
 Route::post('/login',[AuthController::class,'login'])->name('loggedIn');
 
 Route::get('getToken',[BkashController::class,'getToken']);
@@ -35,6 +38,10 @@ Route::get('/verify', [PaymentController::class, 'verify'])->name('uddoktapay.ve
 Route::get('/cancel', [PaymentController::class, 'cancel'])->name('uddoktapay.cancel');
 Route::post('/ipn', [PaymentController::class, 'ipn'])->name('uddoktapay.ipn');
 Route::post('/refund', [PaymentController::class, 'refund'])->name('uddoktapay.refund');
+
+Route::get('profile',[AuthController::class,'profile'])->name('profile');
+
+Route::post('userLayouts/logout',[AuthController::class,'userLogout'])->name('users.logout');
 
 Route::middleware(AdminAuth::class)->group(function () {
     Route::get('/dashboard',[AuthController::class,'dashboard'])->name('dashboard');

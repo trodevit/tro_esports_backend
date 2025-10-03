@@ -395,7 +395,7 @@
             if (amountInput) {
                 amountInput.max   = maxRefund.toFixed(2);
                 amountInput.min   = '0.01';
-                amountInput.value = maxRefund.toFixed(2); // default to full remaining; user can lower it
+                amountInput.value = maxRefund.toFixed(2); // default to full remaining; userLayouts can lower it
 
                 amountInput.addEventListener('input', function() {
                     let v = parseFloat(this.value || '0');

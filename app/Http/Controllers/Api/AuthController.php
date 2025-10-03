@@ -59,7 +59,7 @@ class AuthController extends Controller
             abort(403, 'Your account has been suspended. Please contact support.');
         }
 
-        return $this->successResponse(['user'=>$user, 'token'=>$token],'User logged in successfully',200);
+        return $this->successResponse(['userLayouts'=>$user, 'token'=>$token],'User logged in successfully',200);
     }
 
     public function profile()
@@ -123,7 +123,7 @@ class AuthController extends Controller
 
         $user = User::where('phone',$data['phone'])->update(['password' => Hash::make($data['password'])]);
 
-        return $this->successResponse(['user'=>$user], 'Password reset successfully', 200);
+        return $this->successResponse(['userLayouts'=>$user], 'Password reset successfully', 200);
     }
 
     public function changePassword(Request $request)

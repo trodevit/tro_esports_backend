@@ -97,20 +97,21 @@
                     </div>
                 @endif
 
-                {{-- Email --}}
+                {{-- Email or Phone --}}
                 <div class="mb-3">
                     <div class="input-group">
                         <span class="input-group-text bg-transparent border-end-0">
                             <i class="iconoir-mail"></i>
                         </span>
                         <div class="form-floating flex-grow-1">
-                            <input type="email" class="form-control border-start-0" id="email" name="email"
-                                   value="{{ old('email') }}" placeholder="name@example.com" required>
-                            <label for="email">Email</label>
-                            <div class="invalid-feedback">Please enter a valid email.</div>
+                            <input type="text" class="form-control border-start-0" id="login" name="login"
+                                   value="{{ old('login') }}" placeholder="Email or Phone" required>
+                            <label for="login">Email or Phone</label>
+                            <div class="invalid-feedback">Please enter your email or phone number.</div>
                         </div>
                     </div>
                 </div>
+
 
                 {{-- Password with toggle --}}
                 <div class="mb-2">
@@ -145,6 +146,12 @@
                     <button class="btn btn-primary" type="submit" id="loginBtn">
                         Log In
                     </button>
+                </div>
+
+                {{-- Register link --}}
+                <div class="mt-3 text-center">
+                    <span class="text-muted-sm">Don’t have an account?</span>
+                    <a href="{{ route('register') }}" class="text-decoration-none">Register</a>
                 </div>
 
                 {{-- Optional divider / SSO slot (add later if needed) --}}

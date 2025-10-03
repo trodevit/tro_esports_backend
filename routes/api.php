@@ -1,13 +1,11 @@
 <?php
 
-use App\Http\Controllers\MatchHistoryController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\WithdrawMoneyController;
-use App\Http\Controllers\BkashController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Web\MatchHistoryController;
+use App\Http\Controllers\Web\WithdrawMoneyController;
+use Illuminate\Support\Facades\Route;
 
 
 Route::post('register',[AuthController::class,'register']);

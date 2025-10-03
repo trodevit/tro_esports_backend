@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Matches;
 use App\Models\PaymentInfo;
 use App\Models\User;
@@ -11,7 +12,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
-use UddoktaPay\LaravelSDK\Requests\CheckoutRequest;
 use UddoktaPay\LaravelSDK\UddoktaPay;
 
 class PaymentController extends Controller

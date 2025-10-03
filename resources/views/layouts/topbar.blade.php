@@ -137,7 +137,7 @@
                                                 <small class="float-end text-muted ps-2">{{ $n->time_ago ?? '' }}</small>
                                                 <div class="d-flex align-items-center">
                                                     <div class="flex-shrink-0 bg-primary-subtle text-primary thumb-md rounded-circle d-inline-flex align-items-center justify-content-center">
-                                                        <i class="{{ $n->icon ?? 'iconoir-user' }} fs-4" aria-hidden="true"></i>
+                                                        <i class="{{ $n->icon ?? 'iconoir-userLayouts' }} fs-4" aria-hidden="true"></i>
                                                     </div>
                                                     <div class="flex-grow-1 ms-2 text-truncate">
                                                         <h6 class="my-0 fw-medium text-dark fs-13 text-truncate">{{ $n->title ?? 'Team activity' }}</h6>

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Web;
 
+use App\Http\Controllers\Controller;
 use App\Models\ContactUs;
 use App\Models\Matches;
 use Illuminate\Http\Request;
@@ -26,7 +27,7 @@ class WebsiteController extends Controller
             ->orderBy('match_time')
             ->get();
 
-        return view('welcome',['matches'=>$matches]);
+        return view('usesLayouts.app',['matches'=>$matches]);
     }
     public function matchList(Request $request)
     {
