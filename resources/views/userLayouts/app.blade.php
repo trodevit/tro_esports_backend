@@ -109,7 +109,7 @@
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg sticky-top border-bottom border-secondary-subtle">
     <div class="container">
-        <a class="navbar-brand fw-bold text-white" href="#home">
+        <a class="navbar-brand fw-bold text-white" href="{{route('home')}}">
             <img src="{{ asset('favicon-32x32.png') }}" alt="Tro ESports Logo" width="28" height="28" class="me-2">
             <span data-i18n="brand">Tro ESports</span>
         </a>
@@ -121,14 +121,15 @@
                 <li class="nav-item"><a class="nav-link" href="{{route('home')}}" data-i18n="nav.home">হোম</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{route('home')}}#about" data-i18n="nav.about">আমাদের সম্পর্কে</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{route('home')}}#matches" data-i18n="nav.matches">ম্যাচ সমূহ</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('leaderboard')}}"><i class="bi bi-trophy me-2"></i>Leaderboard</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{route('home')}}#download" data-i18n="nav.download">ডাউনলোড করুন</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{route('home')}}#contact" data-i18n="nav.contact">যোগাযোগ</a></li>
                 @if(Auth::check())
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="d-inline-flex justify-content-center align-items-center rounded-circle bg-light text-dark" style="width:28px;height:28px;">
-                <i class="bi bi-person-fill"></i>
-            </span>
+                                <span class="d-inline-flex justify-content-center align-items-center rounded-circle bg-light text-dark" style="width:28px;height:28px;">
+                                    <i class="bi bi-person-fill"></i>
+                                </span>
                             <span class="fw-semibold">{{ Auth::user()->name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow">
@@ -145,6 +146,20 @@
                                 <button type="button" class="dropdown-item d-flex align-items-center gap-2" id="navPaymentHistoryBtn">
                                     <i class="bi bi-receipt"></i>
                                     <span>Payment History</span>
+                                </button>
+                            </li>
+
+                            <li>
+                                <button type="button" class="dropdown-item d-flex align-items-center gap-2" id="navMyMatchesBtn">
+                                    <i class="bi bi-collection-play"></i>
+                                    <span>My Matches</span>
+                                </button>
+                            </li>
+
+                            <li>
+                                <button type="button" class="dropdown-item d-flex align-items-center gap-2" id="navMatchResultBtn">
+                                    <i class="bi bi-trophy"></i>
+                                    <span>Match Result</span>
                                 </button>
                             </li>
 
@@ -183,6 +198,7 @@
 
 
 
+
             </ul>
         </div>
     </div>
@@ -190,7 +206,7 @@
  @yield('content')
 
 <!-- FOOTER -->
-<footer class="py-2 mt-4  text-light">
+<footer class="py-2 mt-4 fixed-bottom text-light">
     <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
         <div class="small">
             © <span id="y"></span> <span data-i18n="brand">Tro ESports</span>.
@@ -303,15 +319,21 @@
     });
 
     document.getElementById('navPaymentHistoryBtn')?.addEventListener('click', () => {
-        // TODO: route to payment history page
+        window.location.href = "{{ route('payment.history') }}";
     });
 
     document.getElementById('navChangePasswordBtn')?.addEventListener('click', () => {
-        {{--window.location.href = "{{ route('password.change') }}"; // create this route--}}
+        window.location.href = "{{ route('change.password') }}"; // create this route
     });
 
     document.getElementById('navEditInfoBtn')?.addEventListener('click', () => {
-        {{--window.location.href = "{{ route('profile.edit') }}"; // create this route--}}
+        window.location.href = "{{ route('edit.profile') }}"; // create this route
+    });
+    document.getElementById('navMyMatchesBtn')?.addEventListener('click', () => {
+        window.location.href = "{{ route('myMatch') }}";
+    });
+    document.getElementById('navMatchResultBtn')?.addEventListener('click', () => {
+        window.location.href = "{{ route('match.result') }}";
     });
 </script>
 <!-- App JS: uses the injected "modes" and "matchesByMode" -->
@@ -457,7 +479,7 @@
               <div class="col-6"><span class="text-white-50">Prize:</span> ${m.prize}</div>
             </div>
             <div class="mt-3 d-flex gap-2">
-              <a href="#contact" class="btn btn-accent btn-pill"><i class="bi bi-rocket-takeoff me-2"></i>Join</a>
+              <a href="match/join/${m.id}" class="btn btn-accent btn-pill"><i class="bi bi-rocket-takeoff me-2"></i>Join</a>
               <button class="btn btn-ghost btn-pill" onclick="navigator.clipboard.writeText('${m.title} — ${m.type}');"><i class="bi bi-share me-2"></i>Share</button>
             </div>
           </div>

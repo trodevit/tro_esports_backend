@@ -138,7 +138,7 @@
                         <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                         <label class="form-check-label" for="remember">Remember me</label>
                     </div>
-                    {{-- <a href="{{ route('password.request') }}" class="small text-decoration-none">Forgot password?</a> --}}
+                     <a href="{{route('phone.check')}}" class="small text-decoration-none">Forgot password?</a>
                 </div>
 
                 {{-- Submit --}}

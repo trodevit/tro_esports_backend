@@ -12,6 +12,7 @@ use App\Http\Controllers\Web\WebsiteController;
 use App\Http\Controllers\Web\WithdrawMoneyController;
 use App\Http\Middleware\AdminAuth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\WebMatchJoinController;
 
 Route::get('/',[WebsiteController::class,'index'])->name('home');
 
@@ -21,6 +22,30 @@ Route::get('/download-apk', function () {
         'Content-Type' => 'application/vnd.android.package-archive',
     ]);
 })->name('download-apk');
+
+Route::get('leaderboard',[WebsiteController::class,'leaderboard'])->name('leaderboard');
+Route::get('leaderboard/{id}',[WebsiteController::class,'matchHistoryByID'])->name('leaderboard.history');
+
+Route::get('match/join/{id}',[WebMatchJoinController::class,'index'])->name('match.join');
+
+Route::post('match/payment/checkout', [WebMatchJoinController::class, 'paymentInit'])->name('webMatch.checkout');
+Route::get('match/payment/verify', [WebMatchJoinController::class, 'verify'])->name('webMatch.verify');
+Route::get('match/payment/cancel', [WebMatchJoinController::class, 'cancel'])->name('webMatch.cancel');
+
+Route::get('myMatch',[WebsiteController::class,'myMatch'])->name('myMatch');
+Route::get('payment/history',[WebsiteController::class,'paymentHistory'])->name('payment.history');
+Route::get('match/result',[WebsiteController::class,'matchResult'])->name('match.result');
+
+Route::post('withdraw/money',[WebsiteController::class,'withDrawMoneyStore'])->name('withdraw.money');
+Route::get('change/password',[WebsiteController::class,'changePassword'])->name('change.password');
+Route::post('change/password',[WebsiteController::class,'passwordChange'])->name('password.change');
+Route::get('edit/profile',[WebsiteController::class,'editProfile'])->name('edit.profile');
+Route::post('edit/profile',[WebsiteController::class,'profileUpdate'])->name('profile.edit');
+
+Route::get('phone/check',[WebsiteController::class,'checkPhone'])->name('phone.check');
+Route::post('/forgot/phone-check', [WebsiteController::class, 'phoneCheck'])->name('check.phone');
+Route::get('/forgot/reset',       [WebsiteController::class, 'passwordForget'])->name('forgot.password');
+Route::post('forget/password',[WebsiteController::class,'forgotPassword'])->name('password.forget');
 
 Route::post('contact',[WebsiteController::class,'contactUs'])->name('contact');
 

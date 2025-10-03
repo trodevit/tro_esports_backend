@@ -87,7 +87,8 @@ class AuthController extends Controller
 
     public function profile()
     {
-        return view('profile');
+        $money = WithdrawMoney::where('user_id', Auth::id())->get();
+        return view('profile',['money'=>$money]);
     }
 
     public function logout(){

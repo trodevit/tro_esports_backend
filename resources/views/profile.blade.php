@@ -46,32 +46,13 @@
                                 ⚠️ You can withdraw money once your balance reaches ৳50 or more.
                             </div>
                         @endif
-
+                        <div class="mt-3 d-grid">
+                            <a href="{{ route('edit.profile') }}" class="btn btn-ghost btn-pill">
+                                <i class="bi bi-pencil-square me-2"></i>Edit Profile
+                            </a>
+                        </div>
 
                         {{-- Optional: profile quick stats --}}
-                        @isset($stats)
-                            <div class="divider"></div>
-                            <div class="row g-2 text-center">
-                                <div class="col-4">
-                                    <div class="card-dark p-3 rounded-3">
-                                        <div class="small text-white-50">Matches</div>
-                                        <div class="fw-semibold">{{ $stats['matches'] ?? 0 }}</div>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="card-dark p-3 rounded-3">
-                                        <div class="small text-white-50">Wins</div>
-                                        <div class="fw-semibold">{{ $stats['wins'] ?? 0 }}</div>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="card-dark p-3 rounded-3">
-                                        <div class="small text-white-50">Payouts</div>
-                                        <div class="fw-semibold">৳{{ number_format($stats['payouts'] ?? 0) }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endisset
                     </div>
                 </div>
 
@@ -88,28 +69,31 @@
                                     <thead>
                                     <tr>
                                         <th>Date</th>
+                                        <th>Account</th>
                                         <th>Amount</th>
                                         <th>Method</th>
-                                        <th>Account</th>
+                                        <th>Transaction Id</th>
                                         <th class="text-end">Status</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @forelse(($withdrawals ?? []) as $w)
+                                    @forelse(($money ?? []) as $w)
                                         @php
+                                            $status = ucfirst(strtolower($w->payment_status));
                                             $badge = [
-                                                'pending'  => 'warning',
-                                                'approved' => 'success',
-                                                'rejected' => 'danger',
-                                            ][$w->status] ?? 'secondary';
+                                                'Pending'  => 'warning',
+                                                'Approved' => 'success',
+                                                'Rejected' => 'danger',
+                                            ][$status] ?? 'secondary';
                                         @endphp
                                         <tr>
                                             <td>{{ \Carbon\Carbon::parse($w->created_at)->format('M d, Y h:i A') }}</td>
+                                            <td>{{$w->payment_number}}</td>
                                             <td>৳{{ number_format($w->amount) }}</td>
-                                            <td>{{ strtoupper($w->method) }}</td>
-                                            <td class="text-truncate" style="max-width:220px">{{ $w->account }}</td>
+                                            <td>{{ strtoupper($w->payment_method) }}</td>
+                                            <td class="text-truncate" style="max-width:220px">{{ $w->transaction_id }}</td>
                                             <td class="text-end">
-                                                <span class="badge text-bg-{{ $badge }}">{{ ucfirst($w->status) }}</span>
+                                                <span class="badge text-bg-{{ $badge }}">{{ ucfirst($w->payment_status) }}</span>
                                             </td>
                                         </tr>
                                     @empty
@@ -138,10 +122,10 @@
     <div class="modal fade" id="withdrawModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form class="modal-content bg-dark text-light needs-validation" novalidate
-                  action="{{ route('withdraw.money.update', Auth::id()) }}"
+                  action="{{ route('withdraw.money')}}"
                   method="POST">
                 @csrf
-                @method('PUT')
+{{--                @method('PUT')--}}
 
                 <div class="modal-header border-secondary">
                     <h5 class="modal-title">Withdraw Money</h5>
@@ -150,7 +134,7 @@
 
                 <div class="modal-body">
                     <div class="alert alert-info small">
-                        Available balance: <strong>৳{{ number_format($balance ?? 0) }}</strong>
+                        Available balance: <strong>৳{{ number_format(Auth::user()->balance ?? 0) }}</strong>
                     </div>
 
                     <div class="mb-3">
@@ -161,7 +145,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">Method</label>
-                        <select class="form-select bg-transparent text-white border-light" name="method" required>
+                        <select class="form-select bg-transparent text-white border-light" name="payment_method" required>
                             <option value="" disabled selected>Select</option>
                             <option value="bkash">bKash</option>
                             <option value="nagad">Nagad</option>
@@ -173,7 +157,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">Account / Number</label>
-                        <input type="text" class="form-control bg-transparent text-white border-light" name="account" required placeholder="Account number or details">
+                        <input type="text" class="form-control bg-transparent text-white border-light" name="payment_number" required placeholder="Account number or details">
                         <div class="invalid-feedback">Please enter account/number.</div>
                     </div>
 
