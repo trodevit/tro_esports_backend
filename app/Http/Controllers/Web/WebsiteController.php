@@ -27,7 +27,7 @@ class WebsiteController extends Controller
             ->orderBy('match_time')
             ->get();
 
-        return view('usesLayouts.app',['matches'=>$matches]);
+        return view('welcome',['matches'=>$matches]);
     }
     public function matchList(Request $request)
     {
