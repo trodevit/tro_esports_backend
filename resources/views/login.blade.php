@@ -105,9 +105,9 @@
                         </span>
                         <div class="form-floating flex-grow-1">
                             <input type="text" class="form-control border-start-0" id="login" name="login"
-                                   value="{{ old('login') }}" placeholder="Email or Phone" required>
-                            <label for="login">Email or Phone</label>
-                            <div class="invalid-feedback">Please enter your email or phone number.</div>
+                                   value="{{ old('login') }}" placeholder="Phone" required>
+                            <label for="login">Phone</label>
+                            <div class="invalid-feedback">Please enter your phone number.</div>
                         </div>
                     </div>
                 </div>
