@@ -9,30 +9,72 @@
         <div class="container position-relative">
             <div class="row align-items-center g-4">
                 <div class="col-lg-7">
-                    <span class="badge rounded-pill badge-pill px-3 py-2 mb-3"><small data-i18n="badge">Tro ESports রিওয়ার্ডস</small></span>
-                    <h1 class="display-5" data-i18n="hero.title">আপনি কি একজন Tro ESports প্লেয়ার?</h1>
-                    <p class="hero-sub fs-5" data-i18n="hero.sub">গেম খেলে আপনি জিতলে নিতে পারবেন প্রতিদিন ১০০০-২০০০
-                        টাকা পর্যন্ত রিওয়ার্ড। আজই শুরু করুন!</p>
-                    <div class="d-flex flex-wrap gap-3 pt-2">
-                        <a href="#video" class="btn btn-ghost btn-pill" data-i18n="hero.watch"><i
-                                class="bi bi-play-circle me-2"></i>ভিডিও দেখুন</a>
-                        <a href="{{route('download-apk')}}" class="btn btn-accent btn-pill" data-i18n="hero.download"><i
-                                class="bi bi-download me-2"></i>অ্যাপটি ডাউনলোড করুন</a>
-                    </div>
+                <span class="badge rounded-pill badge-pill px-3 py-2 mb-3">
+                    <small data-i18n="badge">Tro ESports রিওয়ার্ডস</small>
+                </span>
+
+                    @if(Auth::check())
+                        {{-- Logged-in message --}}
+                        <h1 class="display-5">👋 Welcome back, {{ Auth::user()->name }}!</h1>
+                        <p class="hero-sub fs-5">Check out today’s matches and start playing to win rewards.</p>
+                        <div class="d-flex flex-wrap gap-3 pt-2">
+                            <a href="#matches" class="btn btn-accent btn-pill">
+                                <i class="bi bi-controller me-2"></i> Browse Matches
+                            </a>
+                            <a href="{{ route('profile') }}" class="btn btn-ghost btn-pill">
+                                <i class="bi bi-person-circle me-2"></i> My Profile
+                            </a>
+                        </div>
+                    @else
+                        {{-- Guest message --}}
+                        <h1 class="display-5" data-i18n="hero.title">আপনি কি একজন Tro ESports প্লেয়ার?</h1>
+                        <p class="hero-sub fs-5" data-i18n="hero.sub">
+                            গেম খেলে আপনি জিতলে নিতে পারবেন প্রতিদিন ১০০০-২০০০ টাকা পর্যন্ত রিওয়ার্ড। আজই শুরু করুন!
+                        </p>
+                        <div class="d-flex flex-wrap gap-3 pt-2">
+                            <a href="#video" class="btn btn-ghost btn-pill" data-i18n="hero.watch">
+                                <i class="bi bi-play-circle me-2"></i>ভিডিও দেখুন
+                            </a>
+                            <a href="{{ route('register') }}" class="btn btn-accent btn-pill">
+                                <i class="bi bi-person-plus me-2"></i> Register Now
+                            </a>
+                        </div>
+                    @endif
                 </div>
+
                 <div class="col-lg-5">
                     <div class="glass-card p-4 p-lg-5 text-center">
                         <div class="display-6 mb-2">🎮</div>
-                        <h5 class="mb-2" data-i18n="hero.card.title">দ্রুত সাইন-আপ</h5>
-                        <p class="mb-3" data-i18n="hero.card.text">২ মিনিটে অ্যাকাউন্ট তৈরি করুন, ম্যাচে যোগ দিন এবং
-                            পুরস্কার জিতুন।</p>
-                        <a href="{{route('download-apk')}}" class="btn btn-accent w-100 btn-pill"
-                           data-i18n="hero.card.cta">এখনই শুরু করুন</a>
+                        <h5 class="mb-2">
+                            @if(Auth::check())
+                                Ready to Play?
+                            @else
+                                দ্রুত সাইন-আপ
+                            @endif
+                        </h5>
+                        <p class="mb-3">
+                            @if(Auth::check())
+                                Join matches and compete for daily rewards!
+                            @else
+                                ২ মিনিটে অ্যাকাউন্ট তৈরি করুন, ম্যাচে যোগ দিন এবং পুরস্কার জিতুন।
+                            @endif
+                        </p>
+
+                        @if(Auth::check())
+                            <a href="#matches" class="btn btn-accent w-100 btn-pill">
+                                <i class="bi bi-trophy me-2"></i> View Matches
+                            </a>
+                        @else
+                            <a href="{{ route('register') }}" class="btn btn-accent w-100 btn-pill">
+                                এখনই শুরু করুন
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </header>
+
 
     <!-- ABOUT -->
     <section id="about">

@@ -118,11 +118,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navMain">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" href="#home" data-i18n="nav.home">হোম</a></li>
-                <li class="nav-item"><a class="nav-link" href="#about" data-i18n="nav.about">আমাদের সম্পর্কে</a></li>
-                <li class="nav-item"><a class="nav-link" href="#matches" data-i18n="nav.matches">ম্যাচ সমূহ</a></li>
-                <li class="nav-item"><a class="nav-link" href="#download" data-i18n="nav.download">ডাউনলোড করুন</a></li>
-                <li class="nav-item"><a class="nav-link" href="#contact" data-i18n="nav.contact">যোগাযোগ</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('home')}}" data-i18n="nav.home">হোম</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('home')}}#about" data-i18n="nav.about">আমাদের সম্পর্কে</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('home')}}#matches" data-i18n="nav.matches">ম্যাচ সমূহ</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('home')}}#download" data-i18n="nav.download">ডাউনলোড করুন</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('home')}}#contact" data-i18n="nav.contact">যোগাযোগ</a></li>
                 @if(Auth::check())
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -190,7 +190,7 @@
  @yield('content')
 
 <!-- FOOTER -->
-<footer class="py-4 mt-4 fixed-bottom bg-dark text-light">
+<footer class="py-2 mt-4  text-light">
     <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
         <div class="small">
             © <span id="y"></span> <span data-i18n="brand">Tro ESports</span>.
