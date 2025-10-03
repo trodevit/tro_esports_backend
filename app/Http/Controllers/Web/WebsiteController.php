@@ -150,7 +150,7 @@ class WebsiteController extends Controller
                     'position'         => (int) $r->position,
                     'created_at'       => $r->history_created_at,
                 ],
-                'userLayouts' => [
+                'user' => [
                     'id'            => (int) $r->user_id,
                     'name'          => $r->user_name,
                     'email'         => $r->user_email,
