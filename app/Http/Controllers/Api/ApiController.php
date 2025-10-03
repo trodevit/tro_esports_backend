@@ -143,7 +143,7 @@ class ApiController extends Controller
                     'position'         => (int) $row->position,
                     'created_at'       => $row->history_created_at,
                 ],
-                'userLayouts' => [
+                'user' => [
                     'id'            => (int) $row->user_id,
                     'name'          => $row->user_name,
                     'email'         => $row->user_email,
@@ -253,7 +253,7 @@ class ApiController extends Controller
                     'position'         => (int) $r->position,
                     'created_at'       => $r->history_created_at,
                 ],
-                'userLayouts' => [
+                'user' => [
                     'id'            => (int) $r->user_id,
                     'name'          => $r->user_name,
                     'email'         => $r->user_email,
