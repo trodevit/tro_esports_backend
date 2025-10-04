@@ -102,10 +102,10 @@ class BkashController extends Controller
         dd($response->json());
     }
 
-    public function executeAgreement()
+    public function executeAgreement(Request $request)
     {
         $token = Session::get('token');
-        $paymentId = Session::get('paymentID');
+        $paymentId = $request->query('paymentId');
         dd($token, $paymentId);
         if (!$token && !$paymentId) {
             return response()->json([
