@@ -185,7 +185,7 @@
                     <h5 class="modal-title" id="deleteMatchLabel">Delete Match</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="deleteMatchForm" method="POST" action="#">
+                <form id="deleteMatchForm" method="POST" action="{{route('matches.delete')}}">
                     @csrf
                     @method('DELETE')
                     <div class="modal-body">

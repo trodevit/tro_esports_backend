@@ -143,8 +143,14 @@ class BkashController extends Controller
         }
         if ($response->successful()) {
             $response->json();
+            Session::put('agreementID',$response->json('agreementID'));
         }
         dd($response->json());
+    }
+
+    public function createPayment(Request $request)
+    {
+        $agreement = Session::get('agreementID');
     }
 
 }
