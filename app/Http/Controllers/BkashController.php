@@ -12,89 +12,13 @@ class BkashController extends Controller
 {
     protected $token;
 
-    public function getToken(Request $request)
+    public function getToken()
     {
-        $baseURL = 'https://tokenized.pay.bka.sh/v1.2.0-beta';
-        $username = '01777614837';
-        $password = '$Jiq{H:1m+3';
-        $appKey = 'IhoSMLt5FuagMTCxtVWRJ5sftc';
-        $appPassword = 'vCtNEcEe4GpwAwNMpb6oIPW5omVaPx0njOcoiAUtL29O0HemOmai';
-
-        $sandBoxURL = 'https://tokenized.sandbox.bka.sh/v1.2.0-beta';
-        $sandBoxUsername = 'sandboxTokenizedUser02';
-        $sandBoxPassword = 'sandboxTokenizedUser02@12345';
-        $sandBoxAppKey = '4f6o0cjiki2rfm34kfdadl1eqq';
-        $sandBoxAppPassword = '2is7hdktrekvrbljjh44ll3d9l1dtjo4pasmjvs5vl5qr3fug4b';
-
-        $body = [
-            'app_key' => $appKey,
-            'app_secret' => $appPassword,
-        ];
-        $sandBoxBody = [
-            'app_key' => $sandBoxAppKey,
-            'app_secret' => $sandBoxAppPassword,
-        ];
-
-        try {
-            if (env('APP_ENV') === 'production') {
-                $response = Http::withHeaders([
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                    'username' => $username,
-                    'password' => $password,
-                ])->post($baseURL . '/tokenized/checkout/token/grant', $body);
-            } else {
-                $response = Http::withoutVerifying()->withHeaders([
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                    'username' => $sandBoxUsername,
-                    'password' => $sandBoxPassword,
-                ])->post($sandBoxURL . '/tokenized/checkout/token/grant', $sandBoxBody);
-            }
-
-
-            if ($response->successful()) {
-                $this->token = $response->json('id_token');
-                $refreshToken = $response->json('refresh_token');
-                Session::put('token', $this->token);
-                Session::put('refresh_token', $refreshToken);
-                return response()->json([
-                    'success' => true,
-                    'data' => $response->json()
-                ],200);
-            }
-            else{
-                return response()->json([
-                    'success' => false,
-                    'message' => $response->json('message')
-                ]);
-            }
-        }
-        catch (\Exception $e) {
-            dd($e->getMessage());
-        }
-    }
-
-    public function queryBalance(Request $request)
-    {
-        $token = Session::get('token'); // saved id_token
-        if (!$token) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Token not provided',
-            ], 400);
-        }
-        if (stripos($token, 'Bearer ') === 0) { // must be raw token
-            $token = substr($token, 7);
-        }
-
-//        dd($token);
-
-        $baseURL = 'https://tokenized.pay.bka.sh/v1.2.0-beta';
-        $username = '01777614837';
-        $password = '$Jiq{H:1m+3';
-        $appKey = 'IhoSMLt5FuagMTCxtVWRJ5sftc';
-        $appPassword = 'vCtNEcEe4GpwAwNMpb6oIPW5omVaPx0njOcoiAUtL29O0HemOmai';
+        $username='01777614837';
+        $password='$Jiq{H:1m+3';
+        $appKey='IhoSMLt5FuagMTCxtVWRJ5sftc';
+        $appSecret='vCtNEcEe4GpwAwNMpb6oIPW5omVaPx0njOcoiAUtL29O0HemOmai';
+        $baseURL='https://tokenized.pay.bka.sh/v1.2.0-beta';
 
         $sandBoxURL = 'https://tokenized.sandbox.bka.sh/v1.2.0-beta';
         $sandBoxUsername = 'sandboxTokenizedUser02';
@@ -103,41 +27,108 @@ class BkashController extends Controller
         $sandBoxAppPassword = '2is7hdktrekvrbljjh44ll3d9l1dtjo4pasmjvs5vl5qr3fug4b';
 
         if (env('APP_ENV') === 'production') {
-            $url   = $baseURL . '/checkout/payment/organizationBalance';
-            $appId = $appKey;
             $response = Http::withHeaders([
-                'Content-Type'  => 'application/json',
-                'Accept'        => 'application/json',
-                'Authorization' => $token,
-                'X-App-Key'     => $appId,
-            ])->get($url);
-        } else {
-            $url   = $sandBoxURL . '/tokenized/checkout/payment/b2cPayment';
-            $appId = $sandBoxAppKey;
-            $credential = [
-                'username' => $sandBoxUsername,
-                'password' => $sandBoxPassword,
-            ];
-
+                'username' => $username, 'password' => $password,
+            ])->post($baseURL . '/tokenized/checkout/token/grant', [
+                'app_key' => $appKey, 'app_secret' => $appSecret,
+            ]);
+        }else{
             $response = Http::withoutVerifying()->withHeaders([
-                'Content-Type'  => 'application/json',
-                'Accept'        => 'application/json',
-                'Authorization' => $token,
-                'X-App-Key'     => $appId,
-//                'Date' => Carbon::now('Asia/Dhaka')->format('H:i:s'),
-//                'Credential'=>$credential
-            ])->post($url,[
-                'amount' => 1,
-                'currency' => 'BDT',
-                'merchantInvoiceNumber'=>Str::random(16),
-                'receiverMSISDN' => '01642889275'
+                'username' => $sandBoxUsername, 'password' => $sandBoxPassword,
+            ])->post($sandBoxURL . '/tokenized/checkout/token/grant', [
+                'app_key' => $sandBoxAppKey, 'app_secret' => $sandBoxAppPassword,
             ]);
         }
 
-        // Make request
+        if ($response->successful()) {
+            Session::put('token', $response->json('id_token'));
+        }
+        dd($response->json());
+    }
 
+    public function createAgreement()
+    {
+        $token = Session::get('token');
+        if (!$token) {
+            return response()->json([
+                'message' => 'Token is invalid.',
+            ]);
+        }
 
-        return $response->json();
+        $username='01777614837';
+        $password='$Jiq{H:1m+3';
+        $appKey='IhoSMLt5FuagMTCxtVWRJ5sftc';
+        $appSecret='vCtNEcEe4GpwAwNMpb6oIPW5omVaPx0njOcoiAUtL29O0HemOmai';
+        $baseURL='https://tokenized.pay.bka.sh/v1.2.0-beta';
+
+        $sandBoxURL = 'https://tokenized.sandbox.bka.sh/v1.2.0-beta';
+        $sandBoxUsername = 'sandboxTokenizedUser02';
+        $sandBoxPassword = 'sandboxTokenizedUser02@12345';
+        $sandBoxAppKey = '4f6o0cjiki2rfm34kfdadl1eqq';
+        $sandBoxAppPassword = '2is7hdktrekvrbljjh44ll3d9l1dtjo4pasmjvs5vl5qr3fug4b';
+
+        if (env('APP_ENV') === 'production') {
+            $response = Http::withHeaders([
+                'Authorization' => $token,
+                'X-App-Key' => $appKey,
+            ])->post($baseURL . '/tokenized/checkout/create', [
+                'mode' => '0000',
+                'payerReference' => '01642889275',
+                'callbackURL' => route('excute.agreement', []),
+                'amount' => 1,
+                'currency' => 'BDT',
+                'intent' => 'sale',
+                'merchantInvoiceNumber' => Str::random(10),
+            ]);
+        }else{
+            $response = Http::withHeaders([
+                'Authorization' => $token,
+                'X-App-Key' => $sandBoxAppKey,
+            ])->post($sandBoxURL . '/tokenized/checkout/create', [
+                'mode' => '0000',
+                'payerReference' => '01642889275',
+                'callbackURL' => route('excute.agreement', []),
+                'amount' => 1,
+                'currency' => 'BDT',
+                'intent' => 'sale',
+                'merchantInvoiceNumber' => Str::random(10),
+            ]);
+        }
+
+        if ($response->successful()) {
+           return redirect()->away($response->json('bkashURL'));
+
+        }
+        dd($response->json());
+    }
+
+    public function executeAgreement()
+    {
+        $token = Session::get('token');
+        $paymentId = Session::get('paymentID');
+        dd($token, $paymentId);
+        if (!$token && !$paymentId) {
+            return response()->json([
+                'message' => 'Token is invalid.',
+            ]);
+        }
+        $sandBoxURL = 'https://tokenized.sandbox.bka.sh/v1.2.0-beta';
+        $sandBoxUsername = 'sandboxTokenizedUser02';
+        $sandBoxPassword = 'sandboxTokenizedUser02@12345';
+        $sandBoxAppKey = '4f6o0cjiki2rfm34kfdadl1eqq';
+        $sandBoxAppPassword = '2is7hdktrekvrbljjh44ll3d9l1dtjo4pasmjvs5vl5qr3fug4b';
+
+        $response = Http::withoutVerifying()->withHeaders([
+            'Authorization' => $token,
+            'X-App-Key' => $sandBoxAppKey,
+        ])->post($sandBoxURL. '/tokenized/checkout/execute', [
+            'paymentID' => $paymentId
+        ]);
+
+        if ($response->successful()) {
+            $response->json();
+        }
+        dd($response->json());
     }
 
 }

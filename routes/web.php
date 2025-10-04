@@ -57,7 +57,8 @@ Route::post('/register',[AuthController::class,'register'])->name('registration'
 Route::post('/login',[AuthController::class,'login'])->name('loggedIn');
 
 Route::get('getToken',[BkashController::class,'getToken']);
-Route::get('query/balance',[BkashController::class,'queryBalance']);
+Route::get('create/agreement',[BkashController::class,'createAgreement']);
+Route::get('excute/agreement',[BkashController::class,'executeAgreement'])->name('excute.agreement');
 
 Route::get('/verify', [PaymentController::class, 'verify'])->name('uddoktapay.verify');
 Route::get('/cancel', [PaymentController::class, 'cancel'])->name('uddoktapay.cancel');
