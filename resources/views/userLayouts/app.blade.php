@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tro ESports</title>
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TRDC9VYF7M"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-TRDC9VYF7M');
+    </script>
     <!-- SEO Meta -->
     <meta name="description" content="Tro ESports - Competitive gaming, tournaments, and esports community. Join us for the best BR and Class Squad matches.">
     <meta name="keywords" content="Tro ESports, esports, gaming, tournaments, BR Match, Class Squad, competitive gaming, Bangladesh esports">
