@@ -182,10 +182,10 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content rounded-3">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteMatchLabel">Delete Match</h5>
+                    <h5 class="modal-title" id="deleteMatchLabel">Delete Match: {{$match->match_name}}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="deleteMatchForm" method="POST" action="{{route('matches.destroy')}}">
+                <form id="deleteMatchForm" method="POST" action="{{route('matches.destroy',$match->id)}}">
                     @csrf
                     @method('DELETE')
                     <div class="modal-body">
