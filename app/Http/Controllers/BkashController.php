@@ -174,9 +174,40 @@ class BkashController extends Controller
         $sandBoxAppPassword = '2is7hdktrekvrbljjh44ll3d9l1dtjo4pasmjvs5vl5qr3fug4b';
 
         if (env('APP_ENV') === 'production') {
+
+            $method = 'GET';
+            $service = 'execute-api';
+            $host = parse_url($baseURL, PHP_URL_HOST);
+            $region = 'ap-southeast-1';
+            $uri = parse_url($baseURL, PHP_URL_PATH);
+            $t = gmdate('Ymd\THis\Z');
+            $date = substr($t, 0, 8);
+
+            $canonicalUri = $uri;
+            $canonicalQueryString = '';
+            $canonicalHeaders = "host:{$host}\n";
+            $signedHeaders = 'host';
+            $payloadHash = hash('sha256', '');
+            $canonicalRequest = "{$method}\n{$canonicalUri}\n{$canonicalQueryString}\n{$canonicalHeaders}\n{$signedHeaders}\n{$payloadHash}";
+
+            $algorithm = 'AWS4-HMAC-SHA256';
+            $credentialScope = "{$date}/{$region}/{$service}/aws4_request";
+            $stringToSign = "{$algorithm}\n{$t}\n{$credentialScope}\n" . hash('sha256', $canonicalRequest);
+
+            // derive signing key
+            $kDate = hash_hmac('sha256', $date, "AWS4{$appSecret}", true);
+            $kRegion = hash_hmac('sha256', $region, $kDate, true);
+            $kService = hash_hmac('sha256', $service, $kRegion, true);
+            $kSigning = hash_hmac('sha256', "aws4_request", $kService, true);
+            $signature = hash_hmac('sha256', $stringToSign, $kSigning);
+
+            $authorizationHeader = "{$algorithm} Credential={$appKey}/{$credentialScope}, SignedHeaders={$signedHeaders}, Signature={$signature}";
+
+
             $response = Http::withHeaders([
-                'Authorization' => $token,
+                'Authorization' => $authorizationHeader,
                 'X-App-Key' => $appKey,
+                'X-Amz-Date' =>$t
             ])->post($baseURL . '/tokenized/checkout/payment/organizationBalance');
         }
         else{
